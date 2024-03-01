@@ -503,7 +503,8 @@ for(int i=0;i<docu.docs.length;i++){
                 statusval==true  ?SizedBox():  Row(
                   children: [
                     Padding(
-                      padding:  EdgeInsets.all(8.0),
+                      padding:  EdgeInsets.symmetric(
+                          vertical: height/94.5,horizontal: width/45),
                       child: Text(
                         "Answer",
                         style: GoogleFonts.poppins(
@@ -566,7 +567,7 @@ for(int i=0;i<docu.docs.length;i++){
 
                 SizedBox(height: height / 49.133),
                 _pickedFile!=null?    Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                   child: Center(
                     child: InkWell(
                       onTap: () {
@@ -585,20 +586,20 @@ for(int i=0;i<docu.docs.length;i++){
                                   12)),
 
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0,
-                                bottom: 8,
-                                right: 8,
-                                left: 8),
+                            padding:  EdgeInsets.only(
+                                top: height/94.5,
+                               bottom: height/94.5,
+                                 right: width/45,
+                                 left: width/45),
                             child: Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                                     child: Icon(Icons.file_download_done_sharp),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets
-                                        .only(left: 15.0),
+                                    padding:  EdgeInsets
+                                        .only(left: width/24),
                                     child: Container(
                                       width: width/2.117,
                                       child: Text(
@@ -624,7 +625,7 @@ for(int i=0;i<docu.docs.length;i++){
                   ),
                 ): SizedBox(),
                 _pickedFile2!=null?    Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                   child: Center(
                     child: InkWell(
                       onTap: () {
@@ -643,20 +644,20 @@ for(int i=0;i<docu.docs.length;i++){
                                   12)),
 
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0,
-                                bottom: 8,
-                                right: 8,
-                                left: 8),
+                            padding:  EdgeInsets.only(
+                                top: height/94.5,
+                               bottom: height/94.5,
+                                 right: width/45,
+                                 left: width/45),
                             child: Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                                     child: Icon(Icons.file_download_done_sharp),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets
-                                        .only(left: 15.0),
+                                    padding:  EdgeInsets
+                                        .only(left: width/24),
                                     child: Container(
                                       width: width/2.30588235,
                                       child: Text(
@@ -682,7 +683,7 @@ for(int i=0;i<docu.docs.length;i++){
                   ),
                 ): SizedBox(),
                 _pickedFile3!=null?    Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                   child: Center(
                     child: InkWell(
                       onTap: () {
@@ -701,20 +702,20 @@ for(int i=0;i<docu.docs.length;i++){
                                   12)),
 
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0,
-                                bottom: 8,
-                                right: 8,
-                                left: 8),
+                            padding:  EdgeInsets.only(
+                                top: height/94.5,
+                               bottom: height/94.5,
+                                 right: width/45,
+                                 left: width/45),
                             child: Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                                     child: Icon(Icons.file_download_done_sharp),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets
-                                        .only(left: 15.0),
+                                    padding:  EdgeInsets
+                                        .only(left: width/24),
                                     child: Container(
                                       width: width/2.30588235,
                                       child: Text(
@@ -740,7 +741,7 @@ for(int i=0;i<docu.docs.length;i++){
                   ),
                 ): SizedBox(),
                 _pickedFile4!=null?    Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                   child: Center(
                     child: InkWell(
                       onTap: () {
@@ -759,20 +760,20 @@ for(int i=0;i<docu.docs.length;i++){
                                   12)),
 
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0,
-                                bottom: 8,
-                                right: 8,
-                                left: 8),
+                            padding:  EdgeInsets.only(
+                                top: height/94.5,
+                               bottom: height/94.5,
+                                 right: width/45,
+                                 left: width/45),
                             child: Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                                     child: Icon(Icons.file_download_done_sharp),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets
-                                        .only(left: 15.0),
+                                    padding:  EdgeInsets
+                                        .only(left:width/24),
                                     child: Container(
                                       width: width/2.30588235,
                                       child: Text(
@@ -798,7 +799,7 @@ for(int i=0;i<docu.docs.length;i++){
                   ),
                 ): SizedBox(),
                 _pickedFile5!=null?    Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                   child: Center(
                     child: InkWell(
                       onTap: () {
@@ -817,20 +818,20 @@ for(int i=0;i<docu.docs.length;i++){
                                   12)),
 
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0,
-                                bottom: 8,
-                                right: 8,
-                                left: 8),
+                            padding:  EdgeInsets.only(
+                                top: height/94.5,
+                               bottom: height/94.5,
+                                 right: width/45,
+                                 left: width/45),
                             child: Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding:  EdgeInsets.symmetric(vertical: height/94.5,horizontal: width/45),
                                     child: Icon(Icons.file_download_done_sharp),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets
-                                        .only(left: 15.0),
+                                    padding:  EdgeInsets
+                                        .only(left:width/24 ),
                                     child: Container(
                                       width: width/2.30588235,
                                       child: Text(
@@ -873,11 +874,11 @@ for(int i=0;i<docu.docs.length;i++){
                                 12)),
 
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 8.0,
-                              bottom: 8,
-                              right: 8,
-                              left: 8),
+                          padding:  EdgeInsets.only(
+                              top: height/94.5,
+                             bottom: height/94.5,
+                               right: width/45,
+                               left: width/45),
                           child: Row(
                               children: [
                                 Material(
@@ -902,8 +903,8 @@ for(int i=0;i<docu.docs.length;i++){
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets
-                                      .only(left: 15.0),
+                                  padding:  EdgeInsets
+                                      .only(left: width/24),
                                   child: Container(
                                     width: width/2.30588235,
                                     child: Text(
@@ -923,8 +924,8 @@ for(int i=0;i<docu.docs.length;i++){
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets
-                                      .only(left: 60.0),
+                                  padding:  EdgeInsets
+                                      .only(left: width/6),
                                   child: Icon(Icons
                                       .info_outline_rounded,
                                       color: Colors

@@ -5,13 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'Profile_More_Page.dart';
 import 'Profileview.dart';
-import 'Today Presents_Page.dart';
-import 'demo.dart';
+
 
 
 class Profile extends StatefulWidget {

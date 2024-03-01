@@ -234,7 +234,7 @@ class _AssignmentReportsState extends State<AssignmentReports> {
                     maxLines: 5,
                     minLines: 1,
                     decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 15),
+                        contentPadding: EdgeInsets.only(top: height/50.4),
                         suffixIcon:
                             Icon(Icons.calendar_month, color: Colors.black),
                         hintText: "Due Date",

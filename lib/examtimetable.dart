@@ -707,6 +707,7 @@ print("filledMark value---------------------------------------------------------
 
   Alredysubmittedmarkpopup(){
     print("Enter Alertdialog");
+    double width= MediaQuery.of(context).size.width;
     return
       showDialog(context: context, builder:(context) {
         return
@@ -715,7 +716,7 @@ print("filledMark value---------------------------------------------------------
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Already Marks are Assigned",style: TextStyle(fontSize: 14),),
+                  Text("Already Marks are Assigned",style: TextStyle(fontSize: width/25.714),),
                 ],
               ),
               actions: [

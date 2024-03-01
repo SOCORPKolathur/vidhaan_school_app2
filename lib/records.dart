@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vidhaan_school_app/assignmentsreports.dart';
 import 'package:vidhaan_school_app/records2.dart';
-
 import 'examreports.dart';
-import 'examtimetable.dart';
+
 
 
 class Records extends StatefulWidget {

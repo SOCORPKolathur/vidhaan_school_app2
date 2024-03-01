@@ -223,14 +223,23 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
                 //   ),
                 // ),
               ]),
-              Text(
+              dropdownValue4 != "Class"? Text(
                 "Time Table",
                 style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontSize: width / 22,
                     fontWeight: FontWeight.w700),
+              ): Center(
+                child: Text(
+                  "Time Table Not Available Please Select a Class",
+                  style: GoogleFonts.poppins(
+                      color: Colors.black,
+                      fontSize: width / 26,
+                      fontWeight: FontWeight.w700),
+                ),
               ),
               SizedBox(height: height / 50.4),
+             dropdownValue4 != "Class"?
               Padding(
                 padding: EdgeInsets.only(left: width / 12),
                 child: Row(
@@ -268,7 +277,7 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
                     ),
                   ],
                 ),
-              ),
+              ):const SizedBox(),
 
               StreamBuilder<QuerySnapshot>(
                   stream: _firestore2db

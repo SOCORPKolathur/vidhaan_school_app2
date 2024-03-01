@@ -30,10 +30,14 @@ class _StudentAttendance_PageState extends State<StudentAttendance_Page> {
   List absentlist=[];
   List absentlist2=[];
   List absentlist3=[];
-  
   List allabsentdaylist=[];
   List allabsentdaylist2=[];
   List presentabsentdaylist=[];
+  List Holidays1=[];
+  List Holidays2=[];
+  List Holidays3=[];
+  List AllHolidays_List=[];
+
 
   List<DateTime?> _dialogCalendarPickerValue = [];
 
@@ -49,9 +53,7 @@ class _StudentAttendance_PageState extends State<StudentAttendance_Page> {
   int presentdayvalue=0;
   int absentdayvalue=0;
   int Totalvalue=0;
-
-String cmonth = "";
-
+  String cmonth = "";
   String getMonth(int currentMonthIndex) {
     return DateFormat('MMM').format(DateTime(0, currentMonthIndex)).toString();
   }
@@ -72,17 +74,82 @@ String cmonth = "";
       absentlist2.clear();
       absentlist3.clear();
       splitlist.clear();
-
+      Holidays1.clear();
+      Holidays2.clear();
+      Holidays3.clear();
+      AllHolidays_List.clear();
     });
+
+    print("get Holiday Enterreeeeeeeeeeeeeeeee");
+    print("get Holiday Functionsssssssssssssssssssssssssssssssssssss");
+    DateTime startDate = DateTime(DateTime.now().year, 6, 1);
+    DateTime endDate = DateTime(DateTime.now().year+1, 4, 30);
+
+    for (DateTime date = startDate; date.isBefore(endDate); date = date.add(Duration(days: 1))) {
+      if (date.weekday == DateTime.sunday) {
+        Holidays1.add(date.day);
+        Holidays2.add(date.month);
+        Holidays3.add(date.year);
+        AllHolidays_List.add(DateFormat("yyyy-MM-dd").format(DateTime(date.year ,date.month, date.day)));
+      }
+    }
+    print(Holidays1);
+    print(Holidays2);
+    print(Holidays3);
+    print(AllHolidays_List);
+    print("get Holiday Functionsssssssssssssssssssssssssssssssssssss");
+
+
+
 
     var studentdocument= await _firestore2db.collection("Students").doc(widget.Studentid).
     collection('Attendance').orderBy("timesatmp",descending: true).get();
     print("Studnet 2 id ${widget.Studentid}");
-    setState(() {
-      Totalvalue=studentdocument.docs.length;
-    });
-    print("Studnet 3 id ${widget.Studentid}");
-    print("Length of doc ${studentdocument.docs.length}");
+
+    var Eventsholiday= await  _firestore2db.collection("Events").where("type",isEqualTo:"Holiday").get();
+
+      print("Event document Length");
+       print(Eventsholiday.docs.length.toString());
+
+    print("Student Attendanceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+    for(int k =0;k<Eventsholiday.docs.length;k++){
+      print("K value======================================$k");
+       setState(() {
+        final split = Eventsholiday.docs[k]['ondate'].split('/');
+        final Map<int, String> values = {
+          for (int s = 0; s < split.length; s++)
+            s: split[s]
+        };
+        print("Holidays1111111111111111111111111111111111111111111111111111111");
+
+        Holidays1.add(int.parse(values[0]!));
+        Holidays2.add(int.parse(values[1]!));
+        Holidays3.add(int.parse(values[2]!));
+        AllHolidays_List.add(DateTime(int.parse(values[2]!), int.parse(values[1]!), int.parse(values[0]!)));
+      });
+      print(Holidays1);
+      print(Holidays2);
+      print(Holidays3);
+      print(AllHolidays_List);
+      print("AllHolidays_Listtttttttttttttttttttttttttttttttttt");
+    }
+    for(int l=0;l<AllHolidays_List.length;l++){
+
+      print("AllHolidays_List of =valueeeeeeeeeeeee----------------------------${AllHolidays_List[l]}");
+      setState(() {
+        _markedDateMap.add(
+            new DateTime(Holidays3[l],Holidays2[l], Holidays1[l]),
+            new Event(
+              date: new DateTime(Holidays3[l],Holidays2[l], Holidays1[l]),
+              title: 'Holidays',
+            ));
+        markedDates.add(
+            MarkedDate(color: Color(0xffE7B41F),
+                textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w700,color: Colors.white),
+                date: DateTime(Holidays3[l],Holidays2[l], Holidays1[l])));
+      });
+
+    }
     for(int i=0;i<studentdocument.docs.length;i++){
       if(studentdocument.docs[i]['Attendance']=="Present"){
         print(studentdocument.docs[i]['Date']);
@@ -90,23 +157,24 @@ String cmonth = "";
           setState(() {
             presentdayvalue=presentdayvalue+1;
           });
-        }
-        setState(() {
-          final split = studentdocument.docs[i]['Date'].split('-');
-          final Map<int, String> values = {
-            for (int k = 0; k < split.length; k++)
-              k: split[k]
-          };
 
-          Presntlist.add(int.parse(values[0]!));
-          Presntlist2.add(int.parse(values[1]!));
-          Presntlist3.add(int.parse(values[2]!));
 
-          presentabsentdaylist.add( DateTime(int.parse(values[2]!), int.parse(values[1]!), int.parse(values[0]!)));
+         setState(() {
+           final split = studentdocument.docs[i]['Date'].split('-');
+           final Map<int, String> values = {
+             for (int k = 0; k < split.length; k++)
+               k: split[k]
+           };
+           Presntlist.add(int.parse(values[0]!));
+           Presntlist2.add(int.parse(values[1]!));
+           Presntlist3.add(int.parse(values[2]!));
+           presentabsentdaylist.add( DateTime(int.parse(values[2]!), int.parse(values[1]!), int.parse(values[0]!)));
+         });
+       }
 
-        });
+
         print(presentdayvalue);
-        print("++++++++++++++++++++++");
+        print("++++++++++++kkokokokoko++++++++++");
         print(Presntlist);
         print(Presntlist2);
         print(Presntlist3);
@@ -116,9 +184,8 @@ String cmonth = "";
           setState(() {
             absentdayvalue=absentdayvalue+1;
           });
-        }
         setState(() {
-          allabsentdaylist2.add(studentdocument.docs[i]['Date']);
+
           final split = studentdocument.docs[i]['Date'].split('-');
           final Map<int, String> values = {
             for (int k = 0; k < split.length; k++)
@@ -130,22 +197,18 @@ String cmonth = "";
           absentlist.add(int.parse(values[0]!));
           absentlist2.add(int.parse(values[1]!));
           absentlist3.add(int.parse(values[2]!));
-
           allabsentdaylist.add( DateTime(int.parse(values[2]!), int.parse(values[1]!), int.parse(values[0]!)));
+          allabsentdaylist2.add(("${int.parse(values[0]!)}-${int.parse(values[1]!)}-${int.parse(values[2]!)}").toString());
 
         });
+      }
         print(absentdayvalue);
       }
-
     }
-
-    print("prrinting the lists presnt and absent lists");
-    print(Presntlist);
-    print(Presntlist2);
-    print(Presntlist3);
-    print(absentlist);
-    print(absentlist2);
-    print(absentlist3);
+    print("Absent Days List ==================================================");
+    print(allabsentdaylist);
+    print("Present Days List ==================================================");
+    print(presentabsentdaylist);
     for(int i=0;i<Presntlist.length;i++){
       setState(() {
         _markedDateMap.add(
@@ -159,9 +222,7 @@ String cmonth = "";
                   textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w700,color: Colors.white),
                 date: DateTime(Presntlist3[i], Presntlist2[i], Presntlist[i])));
       });
-
     }
-
     for(int j=0;j<absentlist.length;j++){
       setState(() {
         _markedDateMap.add(
@@ -176,16 +237,13 @@ String cmonth = "";
                 date: DateTime(absentlist3[j], absentlist2[j], absentlist[j])));
 
       });
-
     }
     setState(() {
-
+      Totalvalue=presentdayvalue+absentdayvalue;
     });
-    print(_dialogCalendarPickerValue);
-    print("Hello");
-    print(_markedDateMap.events.keys.indexed);
-    print("Presnt value000000000000000000000000$presentdayvalue");
-    print("Absnet valeuooooooooooooooooooooo$absentdayvalue");
+    print("Holidays Listssssssssssssssssss$AllHolidays_List");
+    print("Holidays Listssssssssssssssssss$Presntlist");
+    print("Holidays Listssssssssssssssssss$absentlist");
 
   }
 
@@ -208,9 +266,9 @@ String cmonth = "";
 
   @override
   void initState() {
-  cmonth = getMonth(DateTime
-      .now()
-      .month);
+  cmonth = getMonth(DateTime.now().month);
+  print("cmonthtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+  print(cmonth);
     studentatten();
     setState((){
       _currentMonth = DateFormat.yMMM().format(DateTime.now());
@@ -219,14 +277,23 @@ String cmonth = "";
     super.initState();
   }
   presentvalue(){
-    return (((presentdayvalue/Totalvalue)*100)/100);
-
+    print(Totalvalue);
+    if(Totalvalue!=0) {
+      return (((presentdayvalue / Totalvalue) * 100) / 100);
+    }
+    else{
+      return 0.0;
+    }
 }
 
 
   presentvaluetext(){
-    return (((presentdayvalue/Totalvalue)*100)).toInt();
-
+    if(Totalvalue!=0) {
+      return (((presentdayvalue / Totalvalue) * 100)).toInt();
+    }
+    else{
+      return 0;
+    }
 }
 
 
@@ -252,7 +319,7 @@ String cmonth = "";
       headerText: 'Custom Header',
       weekFormat: true,
       markedDatesMap: _markedDateMap,
-      height: 200.0,
+      height: height/3.78,
       selectedDateTime: _currentDate2,
       daysTextStyle: TextStyle(color: Colors.black),
       inactiveWeekendTextStyle: TextStyle(color: Colors.black),
@@ -262,9 +329,6 @@ String cmonth = "";
       customGridViewPhysics: NeverScrollableScrollPhysics(),
       markedDateShowIcon: true,
       markedDateIconMaxShown: 2,
-
-
-
       minSelectedDate: _currentDate.subtract(Duration(days: 360)),
       maxSelectedDate: _currentDate.add(Duration(days: 360)),
       todayButtonColor: Colors.transparent,
@@ -295,7 +359,6 @@ String cmonth = "";
       headerTextStyle:  GoogleFonts.poppins(fontWeight: FontWeight.w700,color: Colors.black),
       nextDaysTextStyle:  GoogleFonts.poppins(fontWeight: FontWeight.w700,color: Colors.black),
       markedDateMoreCustomTextStyle:  GoogleFonts.poppins(fontWeight: FontWeight.w700,color: Colors.black),
-
       markedDateCustomTextStyle:  GoogleFonts.poppins(
         fontWeight: FontWeight.w700,
           color:  Colors.white),
@@ -303,11 +366,14 @@ String cmonth = "";
       weekFormat: false,
 //      firstDayOfWeek: 4,
       markedDatesMap: _markedDateMap,
-      height: 420.0,
+      height: height/1.8,
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
-
-      selectedDayButtonColor: presentabsentdaylist.contains(_currentDate)?Colors.green:allabsentdaylist.contains(_currentDate)?Colors.red:Colors.transparent,
+      selectedDayBorderColor: Colors.white,
+      selectedDayButtonColor: presentabsentdaylist.contains(_currentDate)?
+      Colors.green:allabsentdaylist.contains(_currentDate)?Colors.red:
+      AllHolidays_List.contains(_currentDate)?
+      Colors.yellow:Colors.transparent,
       customGridViewPhysics: NeverScrollableScrollPhysics(),
       markedDateCustomShapeBorder:
       CircleBorder(
@@ -315,8 +381,8 @@ String cmonth = "";
 
       showHeader: false,
       todayTextStyle: GoogleFonts.poppins(
-        color: presentabsentdaylist.contains(_currentDate)?Colors.white:allabsentdaylist.contains(_currentDate)?Colors.white:Colors.blue,
-
+        color: presentabsentdaylist.contains(_currentDate)?Colors.white:allabsentdaylist.contains(_currentDate)?Colors.white:
+        AllHolidays_List.contains(_currentDate)?Colors.white:Colors.blue,
         fontWeight: FontWeight.w700
       ),
       todayButtonColor: Colors.indigoAccent,
@@ -358,24 +424,18 @@ String cmonth = "";
       child: Column(
         children: [
 
-          IgnorePointer(
-           ignoring: false,
-            child: SizedBox(
-              height: height/2.3,
+           SizedBox(
+              height: height/2.05,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
 
                 children: <Widget>[
-                  //custom icon
 
-                  // This trailing comma makes auto-formatting nicer for build methods.
-
-                  //custom icon without header
                   Container(
                     margin: EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
+                      left: width/22.5,
+                      right: width/22.5,
                     ),
                     child: new Row(
                       children: <Widget>[
@@ -394,7 +454,10 @@ String cmonth = "";
                               _targetDateTime = DateTime(_targetDateTime.year, _targetDateTime.month - 1);
                               _currentMonth = DateFormat.yMMM().format(_targetDateTime);
                             });
-
+                            cmonth = getMonth(_targetDateTime.month);
+                            print(cmonth);
+                            print("Month callllll-----------------");
+                            studentatten();
                             print(_targetDateTime);
                             print(_currentMonth);
                           },
@@ -408,16 +471,24 @@ String cmonth = "";
                               _currentMonth =
                                   DateFormat.yMMM().format(_targetDateTime);
                             });
+                            cmonth = getMonth(_targetDateTime.month);
+                            print(cmonth);
+                            print("Month callllll-----------------");
+                            studentatten();
                           },
                         )
                       ],
                     ),
                   ),
-
-                  SizedBox
-                    (
-                    child: _calendarCarouselNoHeader,
+                  IgnorePointer(
+                    ignoring: true,
+                    child:SizedBox
+                      (
+                      child: _calendarCarouselNoHeader,
+                    ),
                   ),
+
+
 
 
 
@@ -426,14 +497,14 @@ String cmonth = "";
                 ],
               ),
             ),
-          ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children:  [
               CircleAvatar(
                 radius: 8,
                 foregroundColor: Colors.yellow,
-                backgroundColor: Colors.yellowAccent,
+                backgroundColor: Colors.yellow,
               ),
               SizedBox(
                width: width/72,

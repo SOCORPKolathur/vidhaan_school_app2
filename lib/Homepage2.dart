@@ -39,18 +39,17 @@ import 'package:printing/printing.dart';
 import 'package:vidhaan_school_app/modules/home/controllers/home_controller.dart';
 
 
-
-
-
 class Frontpage extends StatefulWidget {
-String?staffid;
-Frontpage(this.staffid);
+  String?staffid;
+
+  Frontpage(this.staffid);
 
   @override
   State<Frontpage> createState() => _FrontpageState();
 }
 
-class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMixin {
+class _FrontpageState extends State<Frontpage>
+    with SingleTickerProviderStateMixin {
 
 
   String? _selectedLocation;
@@ -76,56 +75,61 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
   List Period = [];
 
 
-  List mondaylists = [0,1,2,3,4,5,6,7];
-  List tueslists = [8,9,10,11,12,13,14,15];
-  List wedneslists = [16,17,18,19,20,21,22,23];
-  List thurslists = [24,25,26,27,28,29,30,31];
-  List Fridaylists = [32,33,34,35,36,37,38,39];
-  List Satlists = [40,41,42,43,44,45,46,47];
+  List mondaylists = [0, 1, 2, 3, 4, 5, 6, 7];
+  List tueslists = [8, 9, 10, 11, 12, 13, 14, 15];
+  List wedneslists = [16, 17, 18, 19, 20, 21, 22, 23];
+  List thurslists = [24, 25, 26, 27, 28, 29, 30, 31];
+  List Fridaylists = [32, 33, 34, 35, 36, 37, 38, 39];
+  List Satlists = [40, 41, 42, 43, 44, 45, 46, 47];
 
 
-  showwwaring(){
-    double width = MediaQuery.of(context).size.width;
+  showwwaring() {
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return AwesomeDialog(
-        width: width/0.8,
-        context: context,
-        dialogType: DialogType.warning,
-        animType: AnimType.rightSlide,
-        title: 'Instructions',
-        desc: "Image Should be clear and visible  \nImage should be less than 2MB\nAll images formats are accepted\n",
+      width: width / 0.8,
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.rightSlide,
+      title: 'Instructions',
+      desc: "Image Should be clear and visible  \nImage should be less than 2MB\nAll images formats are accepted\n",
 
 
-        descTextStyle: TextStyle(
+      descTextStyle: TextStyle(
 
-        ),
+      ),
 
-        btnOkOnPress: () {
+      btnOkOnPress: () {
 
-        },
+      },
 
-    )..show();
-
-
+    )
+      ..show();
   }
-  revokedshow(){
-    double width = MediaQuery.of(context).size.width;
+
+  revokedshow() {
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return AwesomeDialog(
-        width: width/0.8,
-        context: context,
-        dialogType: DialogType.success,
-        animType: AnimType.rightSlide,
-        title: 'Leave Successfully Revoked',
-        descTextStyle: TextStyle(
+      width: width / 0.8,
+      context: context,
+      dialogType: DialogType.success,
+      animType: AnimType.rightSlide,
+      title: 'Leave Successfully Revoked',
+      descTextStyle: TextStyle(
 
-        ),
+      ),
 
-        btnOkOnPress: () {
+      btnOkOnPress: () {
 
-        },
+      },
 
-    )..show();
-
-
+    )
+      ..show();
   }
 
   Date() async {
@@ -165,7 +169,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
       print(Period);
     }
-   else if (day == "Wednesday") {
+    else if (day == "Wednesday") {
       for (int i = 0; i < wedneslists.length; i++) {
         setState(() {
           Period.add(wedneslists[i]);
@@ -173,7 +177,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
       print(Period);
     }
-   else if (day == "Thursday") {
+    else if (day == "Thursday") {
       for (int i = 0; i < thurslists.length; i++) {
         setState(() {
           Period.add(thurslists[i]);
@@ -181,7 +185,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
       print(Period);
     }
-  else  if (day == "Friday") {
+    else if (day == "Friday") {
       for (int i = 0; i < Fridaylists.length; i++) {
         setState(() {
           Period.add(Fridaylists[i]);
@@ -189,7 +193,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
       print(Period);
     }
-    else  if (day == "Saturday") {
+    else if (day == "Saturday") {
       for (int i = 0; i < Satlists.length; i++) {
         setState(() {
           Period.add(Satlists[i]);
@@ -197,7 +201,6 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
       print(Period);
     }
-
   }
 
   @override
@@ -208,8 +211,6 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
     Date();
     dayfun();
     adddropdownvalue();
-
-
     super.initState();
   }
 
@@ -260,7 +261,10 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
   String staffregno = "";
   String staffimg = "";
   String staffphono = "";
+  String staffdateofjoin = "";
   String staffauthendicationid = "";
+  String staffdesignation = "";
+  int notifycount = 0;
 
   getstaffdetails() async {
     var document = await _firestore2db.collection("Staffs").get();
@@ -275,6 +279,17 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
     };
 
+    _firestore2db.collection("Staffs")
+        .doc(staffid).collection("Notification").where(
+        "readstatus", isEqualTo: false).snapshots()
+        .listen((event) {
+      setState(() {
+        notifycount = event.docs.length;
+      });
+    });
+    print(notifycount);
+
+
     var staffdocument = await _firestore2db.collection("Staffs")
         .doc(staffid)
         .get();
@@ -284,13 +299,33 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       staffregno = staffvalue['regno'];
       staffimg = staffvalue['imgurl'];
       staffphono = staffvalue['mobile'];
+      staffdateofjoin = staffvalue['date'];
+      staffdesignation = staffvalue['designation'];
     });
 
 
     print("Home PAge 2");
     print(staffname);
+    print(staffdesignation);
+    print(staffdateofjoin);
     print(staffregno);
     print(staffimg);
+  }
+
+
+  notificatouncountdisaapersfun() async {
+    var Notificationdocument = await _firestore2db.collection("Staffs")
+        .doc(staffid).collection("Notification").get();
+    for (int i = 0; i < Notificationdocument.docs.length; i++) {
+      _firestore2db.collection("Staffs")
+          .doc(staffid).collection("Notification").doc(
+          Notificationdocument.docs[i].id).update({
+        "readstatus": true,
+      });
+    }
+    setState(() {
+
+    });
   }
 
 
@@ -302,7 +337,13 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
   static final List<String> classes = [];
   static final List<String> section = [];
   static final List<String> subjects = [];
-  static final List<String> leave = ["Leave Type","Casual leave","Medical leave","Earned leave","Commuted leave"];
+  static final List<String> leave = [
+    "Leave Type",
+    "Casual leave",
+    "Medical leave",
+    "Earned leave",
+    "Commuted leave"
+  ];
 
   String dropdownValue4 = "Class";
   String dropdownValue5 = "Section";
@@ -335,8 +376,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         section.add(document2.docs[i]["name"]);
       });
     }
-    var documentsub = await _firestore2db.collection("SubjectMaster").orderBy(
-        "order").get();
+    var documentsub = await _firestore2db.collection("SubjectMaster").orderBy("order").get();
     setState(() {
       subjects.add("Subject");
     });
@@ -373,7 +413,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
   int pageselected = 0;
 
-  List<String>  Homesearclist=[
+  List<String> Homesearclist = [
     "Attendance",
     "Assignments",
     "Feedback",
@@ -386,7 +426,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
   ];
 
-  bool search=false;
+  bool search = false;
 
   @override
   Widget build(BuildContext context) {
@@ -411,28 +451,33 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         .height;
 
 
-    List<Widget> widgetlist=[
+    List<Widget> widgetlist = [
+
       ///Attendance
       Icon(
         Icons.calendar_month_outlined,
         color: Color(0xff609F00),
         size: width / 12,
       ),
+
       ///asisignment
       Icon(Icons.note_alt_sharp,
           color: Color(0xffFECE3E),
           size: width / 12),
+
       ///Feed Back
       Icon(Icons.person_outline,
           color: Color(
               0xffA021FF),
           size: width / 12),
+
       ///Circulars
       Icon(
-        Icons.note_alt_outlined,
+          Icons.note_alt_outlined,
           color: Color(
               0xffFECE3E),
           size: width / 12),
+
       ///Time Table
       Icon(Icons.timer_outlined,
           color: Color(0xff224FFF),
@@ -444,6 +489,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         color: Color(
             0xff609F00),
         size: width / 12,),
+
       ///payroll
       Icon(
         Icons.payment_rounded,
@@ -456,6 +502,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
           color: Color(
               0xffFECE3E),
           size: width / 12),
+
       ///Groups
       Icon(Icons.message_sharp,
         color: Color(0xffA021FF),
@@ -489,24 +536,31 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                 padding: EdgeInsets.only(
                                     top: height / 25.745, left: width / 40.4),
                                 child: GestureDetector(
-                                  onTap: (){
-                                    print("Height r============" + height.toString());
-                                    print("Width ==============" + width.toString());
+                                  onTap: () {
+                                    print("Height r============" +
+                                        height.toString());
+                                    print("Width ==============" +
+                                        width.toString());
                                   },
                                   child: InkWell(
-                                      onTap:(){
+                                    onTap: () {
                                       Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context)=>Profileview2(staffimg))
-                                      );},
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Profileview2(staffimg))
+                                      );
+                                    },
                                     child: Container(
-                                      width: width/3.26666667,
-                                      height: height/6.525,
+                                      width: width / 3.26666667,
+                                      height: height / 6.525,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(100),
+                                        borderRadius: BorderRadius.circular(
+                                            100),
                                         color: Colors.white,
                                       ),
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(100),
+                                        borderRadius: BorderRadius.circular(
+                                            100),
                                         child: CachedNetworkImage(
                                           imageUrl:
                                           staffimg,
@@ -517,14 +571,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                 ),
                               ),
 
-                              SizedBox(height: height/156.6,),
+                              SizedBox(height: height / 156.6,),
 
                               Padding(
                                 padding: EdgeInsets.only(left: width / 10),
                                 child: Text(
                                   staffname, style: GoogleFonts.poppins(
                                     color: Colors.white,
-                                    fontSize: width/17.81818182,
+                                    fontSize: width / 17.81818182,
                                     fontWeight: FontWeight.bold
 
                                 ),),
@@ -555,7 +609,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                   radius: 20,
                                   backgroundColor: Colors.white,
                                   child: Icon(Icons.create_outlined,
-                                    color: Colors.black, size: height/30.11538462,)
+                                    color: Colors.black,
+                                    size: height / 30.11538462,)
                               ),
                             ),
                           )
@@ -586,7 +641,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
               ),
 
 
-             /* GestureDetector(
+              /* GestureDetector(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => Root_Page2(),));
@@ -824,7 +879,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
               AnimatedContainer(
                 duration: Duration(milliseconds: 700),
                 curve: Curves.ease,
-                height: page == "Home" &&Searchcontroller.text==""? height / 2.055 :
+                height: page == "Home" && Searchcontroller.text == "" ? height /
+                    2.055 :
                 page == "Attendance" ? height / 3.63 :
                 page == "Home Works" ? height / 3.63 :
                 page == "Behaviour" ? 76.123 :
@@ -833,7 +889,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                 page == "Payroll" ? 76.123 :
                 page == "Leave" ? 76.123 :
                 page == "Messages" ? 76.123 :
-                Searchcontroller.text!=""&& page == "Home"?height / 3.63:0,
+                Searchcontroller.text != "" && page == "Home"
+                    ? height / 3.63
+                    : 0,
 
 
                 child: page == "Circulars" || page == "Behaviour" ||
@@ -858,14 +916,15 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                             MainAxisAlignment.start,
                             children: [
                               InkWell(
-                                  onTap:(){
+                                onTap: () {
                                   Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context)=>Profileview2(staffimg))
+                                      MaterialPageRoute(builder: (context) =>
+                                          Profileview2(staffimg))
                                   );
-                                  },
+                                },
                                 child: Container(
-                                  width: width/4.9,
-                                  height: height/9.7875,
+                                  width: width / 4.9,
+                                  height: height / 9.7875,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(100),
                                     color: Colors.white,
@@ -879,9 +938,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                   ),
                                 ),
                               ),
-                              SizedBox(width:width/39.2),
+                              SizedBox(width: width / 39.2),
                               Container(
-                                width:width/2.06315789,
+                                width: width / 2.06315789,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -891,18 +950,18 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                                           color: Colors.white,
                                           fontWeight: FontWeight.w600,
-                                          fontSize: width/15.68),
+                                          fontSize: width / 15.68),
                                       overflow: TextOverflow.ellipsis,
-                                        
+
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(left:0),
+                                      padding: EdgeInsets.only(left: 0),
                                       child: Text(
                                         "ID : ${staffregno}",
                                         style: GoogleFonts.poppins(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w500,
-                                            fontSize: width/21.77777778),
+                                            fontSize: width / 21.77777778),
                                       ),
                                     ),
                                   ],
@@ -910,46 +969,79 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                               ),
 
 
-                              Row(
+                              Stack(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) =>
-                                            Notifications(),));
-                                    },
-                                    child: Container(
-                                        margin: EdgeInsets.only(
-                                            right: width / 36),
-                                        height: height / 20.47,
-                                        width: width / 10.333,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                            BorderRadius.circular(6)),
-                                        child:
-                                        Icon(Icons.notifications_none,
-                                            color: Color(0xff2C79F1))),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      key.currentState!.openEndDrawer();
-                                    },
-                                    child: Container(
-                                        height: height / 20.47,
-                                        width: width / 10.333,
-                                        decoration: BoxDecoration(
-
-                                            border: Border.all(
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                         // notificatouncountdisaapersfun();
+                                          Navigator.push(
+                                              context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                Notifications(
+                                                    Userdocid: staffid),));
+                                        },
+                                        child: Container(
+                                            margin: EdgeInsets.only(
+                                                right: width / 36),
+                                            height: height / 20.47,
+                                            width: width / 10.333,
+                                            decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                width: 2
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                                5)),
-                                        child:
-                                        Icon(Icons.menu_sharp,
-                                            color: Colors.white)),
+                                                borderRadius:
+                                                BorderRadius.circular(6)),
+                                            child:
+                                            Icon(Icons.notifications_none,
+                                                color: Color(0xff2C79F1))),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          key.currentState!.openEndDrawer();
+                                        },
+                                        child: Container(
+                                            height: height / 20.47,
+                                            width: width / 10.333,
+                                            decoration: BoxDecoration(
+
+                                                border: Border.all(
+                                                    color: Colors.white,
+                                                    width: width/180
+                                                ),
+                                                borderRadius: BorderRadius
+                                                    .circular(
+                                                    5)),
+                                            child:
+                                            Icon(Icons.menu_sharp,
+                                                color: Colors.white)),
+                                      ),
+                                    ],
                                   ),
+                                  notifycount == 0 ?
+                                  SizedBox() :
+                                  Positioned(
+                                    left: width / 18,
+                                    top: 0,
+                                    child: Container(
+                                        height: height / 40.8,
+                                        width: width / 20,
+                                        decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius: BorderRadius.circular(
+                                                100)
+                                        ),
+                                        child:
+                                        Center(child: Text(
+                                            notifycount
+                                                .toString(),
+                                            style: GoogleFonts.poppins(
+                                                fontSize: width / 31,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.white)))
+                                    ),
+                                  ),
+
+
                                 ],
                               ),
 
@@ -991,7 +1083,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w500,
-                                        fontSize: width/19.6),
+                                        fontSize: width / 19.6),
                                   ),
                                   SizedBox(width: width * 2 / 368.5),
                                   Icon(
@@ -1018,7 +1110,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w500,
-                                        fontSize: width/20.63157895),
+                                        fontSize: width / 20.63157895),
                                   ),
                                 ],
                               ),
@@ -1063,7 +1155,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                         Container(
 
-                          height: height/756,
+                          height: height / 756,
                           width: width / 0.947,
                           color: Colors.white,
 
@@ -1098,103 +1190,214 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                             borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(35),
                                 topLeft: Radius.circular(35))),
-                          child: page == "Home"
+                        child: page == "Home"
                             ? Padding(
-                          padding: EdgeInsets.only(top: Searchcontroller.text!=""?height / 250.12:height / 20.12),
-                          child: Searchcontroller.text==""?
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 0.0,
-                                    left: width / 45,
-                                    bottom: height / 46.12),
-                                child: Text(
-                                  "Dashboard",
-                                  style: GoogleFonts.poppins(
-                                      color: Color(0xff0873C4),
-                                      fontSize: width/17.81818182,
-                                      fontWeight:
-                                      FontWeight.w700),
+                            padding: EdgeInsets.only(top: Searchcontroller
+                                .text != "" ? height / 250.12 : height / 20.12),
+                            child: Searchcontroller.text == "" ?
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 0.0,
+                                      left: width / 45,
+                                      bottom: height / 46.12),
+                                  child: Text(
+                                    "Dashboard",
+                                    style: GoogleFonts.poppins(
+                                        color: Color(0xff0873C4),
+                                        fontSize: width / 17.81818182,
+                                        fontWeight:
+                                        FontWeight.w700),
+                                  ),
                                 ),
-                              ),
-                              ExpandablePageView(
-                                children: [
-                                  Container(
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              top: height / 37.8),
-                                          child: Row(
+                                ExpandablePageView(
+                                  children: [
+                                    Container(
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: height / 37.8),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                              children: [
+
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      page = "Attendance";
+                                                      Searchcontroller.clear();
+                                                    });
+                                                    print("Attendance");
+                                                  },
+                                                  child: Container(
+                                                    width: width / 3.56363636,
+                                                    height: height /
+                                                        11.18571429,
+
+                                                    child: Column(
+                                                      children: [
+                                                        Icon(Icons
+                                                            .calendar_month_outlined,
+                                                          color: Color(
+                                                              0xff609F00),
+                                                          size: width / 12,),
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 45,
+                                                              right: width / 45,
+                                                              top: height /
+                                                                  94.5,
+                                                              bottom: height /
+                                                                  94.5),
+                                                          child: Text(
+                                                            "Attendance",
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    28,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                /// Attendance
+
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      page = "Home Works";
+                                                      Searchcontroller.clear();
+                                                    });
+                                                    print("Attendance");
+                                                  },
+                                                  child: Container(
+                                                    width: width / 3.56363636,
+                                                    height: height /
+                                                        11.18571429,
+                                                    child: Column(
+                                                      children: [
+
+                                                        Icon(Icons
+                                                            .note_alt_sharp,
+                                                            color: Color(
+                                                                0xffFECE3E),
+                                                            size: width / 12),
+
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 45,
+                                                              right: width / 45,
+                                                              top: height /
+                                                                  94.5,
+                                                              bottom: height /
+                                                                  94.5),
+                                                          child: Text(
+                                                            "Assignment",
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    28,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                ///  home works
+
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      page = "Behaviour";
+                                                      Searchcontroller.clear();
+                                                    });
+                                                    print("Behaviour");
+                                                  },
+                                                  child: Container(
+                                                    width: width / 3.56363636,
+                                                    height: height /
+                                                        11.18571429,
+                                                    child: Column(
+                                                      children: [
+                                                        Icon(Icons
+                                                            .person_outline,
+                                                            color: Color(
+                                                                0xffA021FF),
+                                                            size: width / 12),
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 45,
+                                                              right: width / 45,
+                                                              top: height /
+                                                                  94.5,
+                                                              bottom: height /
+                                                                  94.5),
+                                                          child: Text(
+                                                            "Feedback",
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    28,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                ///  behaviour
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: height / 18.9),
+
+                                          Row(
                                             mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                             children: [
-
                                               InkWell(
                                                 onTap: () {
                                                   setState(() {
-                                                    page = "Attendance";
+                                                    page = "Circulars";
                                                     Searchcontroller.clear();
                                                   });
-                                                  print("Attendance");
+                                                  print("Circulars");
                                                 },
                                                 child: Container(
-                                                  width: width/3.56363636,
-                                                  height: height/11.18571429,
-
+                                                  width: width / 3.56363636,
+                                                  height: height / 11.18571429,
                                                   child: Column(
                                                     children: [
-                                                      Icon(Icons
-                                                          .calendar_month_outlined,
-                                                        color: Color(
-                                                            0xff609F00),
-                                                        size: width / 12,),
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .only(
-                                                            left: width / 45,
-                                                            right: width / 45,
-                                                            top: height / 94.5,
-                                                            bottom: height /
-                                                                94.5),
-                                                        child: Text(
-                                                          "Attendance",
-                                                          style: GoogleFonts
-                                                              .poppins(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: width/28,
-                                                              fontWeight:
-                                                              FontWeight.w500),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-
-                                              /// Attendance
-
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    page = "Home Works";
-                                                    Searchcontroller.clear();
-                                                  });
-                                                  print("Attendance");
-                                                },
-                                                child: Container(
-                                                  width: width/3.56363636,
-                                                  height: height/11.18571429,
-                                                  child: Column(
-                                                    children: [
-
-                                                      Icon(Icons.note_alt_sharp,
+                                                      Icon(
+                                                          Icons
+                                                              .note_alt_outlined,
                                                           color: Color(
                                                               0xffFECE3E),
                                                           size: width / 12),
-
                                                       Padding(
                                                         padding: EdgeInsets
                                                             .only(
@@ -1204,12 +1407,13 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                             bottom: height /
                                                                 94.5),
                                                         child: Text(
-                                                          "Assignment",
+                                                          "Circulars",
                                                           style: GoogleFonts
                                                               .poppins(
                                                               color: Colors
                                                                   .black,
-                                                              fontSize: width/28,
+                                                              fontSize: width /
+                                                                  28,
                                                               fontWeight:
                                                               FontWeight.w500),
                                                         ),
@@ -1219,24 +1423,25 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 ),
                                               ),
 
-                                              ///  home works
+                                              /// circulars
 
                                               InkWell(
                                                 onTap: () {
                                                   setState(() {
-                                                    page = "Behaviour";
+                                                    page = "Time Table";
                                                     Searchcontroller.clear();
                                                   });
-                                                  print("Behaviour");
+                                                  timetablelogic();
+                                                  print("Time Table");
                                                 },
                                                 child: Container(
-                                                  width: width/3.56363636,
-                                                  height: height/11.18571429,
+                                                  width: width / 3.56363636,
+                                                  height: height / 11.18571429,
                                                   child: Column(
                                                     children: [
-                                                      Icon(Icons.person_outline,
+                                                      Icon(Icons.timer_outlined,
                                                           color: Color(
-                                                              0xffA021FF),
+                                                              0xff224FFF),
                                                           size: width / 12),
                                                       Padding(
                                                         padding: EdgeInsets
@@ -1247,12 +1452,13 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                             bottom: height /
                                                                 94.5),
                                                         child: Text(
-                                                          "Feedback",
+                                                          "Time Table",
                                                           style: GoogleFonts
                                                               .poppins(
                                                               color: Colors
                                                                   .black,
-                                                              fontSize: width/28,
+                                                              fontSize: width /
+                                                                  28,
                                                               fontWeight:
                                                               FontWeight.w500),
                                                         ),
@@ -1262,178 +1468,22 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 ),
                                               ),
 
-                                              ///  behaviour
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: height / 18.9),
-
-                                        Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  page = "Circulars";
-                                                  Searchcontroller.clear();
-                                                });
-                                                print("Circulars");
-                                              },
-                                              child: Container(
-                                                width: width/3.56363636,
-                                                height: height/11.18571429,
-                                                child: Column(
-                                                  children: [
-                                                    Icon(
-                                                        Icons.note_alt_outlined,
-                                                        color: Color(
-                                                            0xffFECE3E),
-                                                        size: width / 12),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: width / 45,
-                                                          right: width / 45,
-                                                          top: height / 94.5,
-                                                          bottom: height /
-                                                              94.5),
-                                                      child: Text(
-                                                        "Circulars",
-                                                        style: GoogleFonts
-                                                            .poppins(
-                                                            color: Colors.black,
-                                                            fontSize: width/28,
-                                                            fontWeight:
-                                                            FontWeight.w500),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-
-                                            /// circulars
-
-                                            InkWell(
-                                              onTap: () {
-
-                                                setState(() {
-                                                  page = "Time Table";
-                                                  Searchcontroller.clear();
-                                                });
-                                                timetablelogic();
-                                                print("Time Table");
-                                              },
-                                              child: Container(
-                                                width: width/3.56363636,
-                                                height: height/11.18571429,
-                                                child: Column(
-                                                  children: [
-                                                    Icon(Icons.timer_outlined,
-                                                        color: Color(
-                                                            0xff224FFF),
-                                                        size: width / 12),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: width / 45,
-                                                          right: width / 45,
-                                                          top: height / 94.5,
-                                                          bottom: height /
-                                                              94.5),
-                                                      child: Text(
-                                                        "Time Table",
-                                                        style: GoogleFonts
-                                                            .poppins(
-                                                            color: Colors.black,
-                                                            fontSize: width/28,
-                                                            fontWeight:
-                                                            FontWeight.w500),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-
-                                            /// attendance
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  page = "CheckIn";
-                                                  Searchcontroller.clear();
-                                                });
-                                              },
-                                              child: Container(
-                                                width: width/3.56363636,
-                                                height: height/8.7,
-
-                                                child: Column(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.input_rounded,
-                                                      color: Color(
-                                                          0xff609F00),
-                                                      size: width / 12,),
-                                                    Padding(
-                                                      padding: EdgeInsets
-                                                          .only(
-                                                          left: width / 45,
-                                                          right: width / 45,
-                                                          top: height / 94.5,
-                                                          bottom: height /
-                                                              90.5),
-                                                      child: Text(
-                                                        "Check - IN / \nOUT",
-                                                        style: GoogleFonts
-                                                            .poppins(
-                                                            color: Colors
-                                                                .black,
-                                                            fontSize: width/28,
-                                                            fontWeight:
-                                                            FontWeight.w500),
-                                                          textAlign: TextAlign.center,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-
-
-                                            /// messages
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    height: height/2.61,
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              top: height / 37.8),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                            children: [
-
+                                              /// attendance
                                               InkWell(
                                                 onTap: () {
                                                   setState(() {
-                                                    page = "Payroll";
+                                                    page = "CheckIn";
                                                     Searchcontroller.clear();
                                                   });
-                                                  print("Payroll");
                                                 },
                                                 child: Container(
-                                                  width: width/3.56363636,
-                                                  height: height/11.18571429,
+                                                  width: width / 3.56363636,
+                                                  height: height / 8.7,
 
                                                   child: Column(
                                                     children: [
                                                       Icon(
-                                                        Icons.payment_rounded,
+                                                        Icons.input_rounded,
                                                         color: Color(
                                                             0xff609F00),
                                                         size: width / 12,),
@@ -1444,16 +1494,19 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                             right: width / 45,
                                                             top: height / 94.5,
                                                             bottom: height /
-                                                                94.5),
+                                                                90.5),
                                                         child: Text(
-                                                          "Payroll",
+                                                          "Check - IN / \nOUT",
                                                           style: GoogleFonts
                                                               .poppins(
                                                               color: Colors
                                                                   .black,
-                                                              fontSize: width/28,
+                                                              fontSize: width /
+                                                                  28,
                                                               fontWeight:
                                                               FontWeight.w500),
+                                                          textAlign: TextAlign
+                                                              .center,
                                                         ),
                                                       ),
                                                     ],
@@ -1461,251 +1514,340 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 ),
                                               ),
 
-                                              /// Attendance
 
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    page = "Leave";
-                                                    Searchcontroller.clear();
-                                                  });
-                                                  print("Leave");
-                                                },
-                                                child: Container(
-                                                  width: width/3.56363636,
-                                                  height: height/11.18571429,
-                                                  child: Column(
-                                                    children: [
-
-                                                      Icon(Icons.sick_rounded,
-                                                          color: Color(
-                                                              0xffFECE3E),
-                                                          size: width / 12),
-
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .only(
-                                                            left: width / 45,
-                                                            right: width / 45,
-                                                            top: height / 94.5,
-                                                            bottom: height /
-                                                                94.5),
-                                                        child: Text(
-                                                          "LTP",
-                                                          style: GoogleFonts
-                                                              .poppins(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: width/28,
-                                                              fontWeight:
-                                                              FontWeight.w500),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-
-                                              ///  home works
-
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    page = "Messages";
-                                                    Searchcontroller.clear();
-                                                  });
-                                                  print("Messages");
-                                                },
-                                                child: Container(
-                                                  width: width/3.56363636,
-                                                  height: height/11.18571429,
-                                                  child: Column(
-                                                    children: [
-                                                      Icon(Icons.message,
-                                                          color: Color(0xffA021FF),
-                                                          size: width / 12),
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .only(
-                                                            left: width / 45,
-                                                            right: width / 45,
-                                                            top: height / 94.5,
-                                                            bottom: height /
-                                                                94.5),
-                                                        child: Text(
-                                                          "Groups",
-                                                          style: GoogleFonts
-                                                              .poppins(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: width/28,
-                                                              fontWeight:
-                                                              FontWeight.w500),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-
-                                              ///  behaviour
+                                              /// messages
                                             ],
                                           ),
-                                        ),
-                                        SizedBox(height: height / 18.9),
-
-
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                    Container(
+                                      height: height / 2.61,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: height / 37.8),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                              children: [
 
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      page = "Payroll";
+                                                      Searchcontroller.clear();
+                                                    });
+                                                    print("Payroll");
+                                                  },
+                                                  child: Container(
+                                                    width: width / 3.56363636,
+                                                    height: height /
+                                                        11.18571429,
 
-                            ],
-
-
-                          ):
-                          SingleChildScrollView(
-                            physics: const ScrollPhysics(),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                ListView.builder(
-                                  
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount:Homesearclist.length,
-                                  shrinkWrap: true,
-                                  itemBuilder:(context, index) {
-
-                                    if( Homesearclist[index].toString().toLowerCase().contains(Searchcontroller.text.toLowerCase()))
-                                    {
-                                      return  InkWell(
-                                        onTap:(){
-
-                                          if(Homesearclist[index]=="Attendance"){
-                                            setState((){
-                                              page="Attendance";
-                                              Searchcontroller.clear();
-                                            });
-                                          }
-                                          if(Homesearclist[index]=="Assignments"){
-                                            setState((){
-                                              page="Home Works";
-                                              Searchcontroller.clear();
-                                            });
-                                          }
-                                          if(Homesearclist[index]=="Feedback"){
-                                            setState((){
-                                              page="Behaviour";
-                                              Searchcontroller.clear();
-                                            });
-                                          }
-                                          if(Homesearclist[index]=="Time Table"){
-                                            setState((){
-                                              page="Time Table";
-                                              Searchcontroller.clear();
-                                            });
-                                            timetablelogic();
-                                          }
-                                          if(Homesearclist[index]=="Circulars"){
-                                            setState((){
-                                              page="Circulars";
-                                              Searchcontroller.clear();
-                                            });
-                                          }
-                                          if(Homesearclist[index]=="Check-In/Out"){
-                                            setState((){
-                                              page="CheckIn";
-                                              Searchcontroller.clear();
-                                            });
-                                          }
-                                          if(Homesearclist[index]=="Payroll"){
-                                            setState((){
-                                              page="Payroll";
-                                              Searchcontroller.clear();
-                                            });
-                                          }
-                                          if(Homesearclist[index]=="LTP"){
-                                            setState((){
-                                              page="Leave";
-                                              Searchcontroller.clear();
-                                            });
-
-                                          }
-                                          if(Homesearclist[index]=="Groups"){
-                                            setState((){
-                                              page="Messages";
-                                              Searchcontroller.clear();
-                                            });
-
-                                          }
-
-                                        },
-                                        child: Padding(
-                                          padding:  EdgeInsets.only(
-
-                                              bottom:height/184.5,
-                                              top:height/64.5,
-                                              left: width/45,
-                                              right: width/45
-                                          ),
-                                          child: Material(
-                                            borderRadius: BorderRadius.circular(8),
-                                            color: Color(0xffF9F9F9),
-                                            elevation:2,
-                                            child: Container(
-                                              height:height/14.45,
-                                              width:width/1.028,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(8),
-                                                color: Color(0xffF9F9F9),
-
-                                              ),
-
-                                              child: Container(
-                                                width: width/3.56363636,
-                                                height: height/11.18571429,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(width:width/8.0),
-                                                    widgetlist[index],
-                                                    SizedBox(width:width/10.0),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-
-                                                          top: height / 94.5,
-                                                          bottom: height / 94.5),
-                                                      child: Text(
-                                                        Homesearclist[index].toString(),
-                                                        style: GoogleFonts.poppins(
-                                                            color: Colors.black,
-                                                            fontSize: width/25.714,
-                                                            fontWeight:
-                                                            FontWeight.w500),
-                                                      ),
+                                                    child: Column(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.payment_rounded,
+                                                          color: Color(
+                                                              0xff609F00),
+                                                          size: width / 12,),
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 45,
+                                                              right: width / 45,
+                                                              top: height /
+                                                                  94.5,
+                                                              bottom: height /
+                                                                  94.5),
+                                                          child: Text(
+                                                            "Payroll",
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    28,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
+                                                  ),
+                                                ),
+
+                                                /// Attendance
+
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      page = "Leave";
+                                                      Searchcontroller.clear();
+                                                    });
+                                                    print("Leave");
+                                                  },
+                                                  child: Container(
+                                                    width: width / 3.56363636,
+                                                    height: height /
+                                                        11.18571429,
+                                                    child: Column(
+                                                      children: [
+
+                                                        Icon(Icons.sick_rounded,
+                                                            color: Color(
+                                                                0xffFECE3E),
+                                                            size: width / 12),
+
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 45,
+                                                              right: width / 45,
+                                                              top: height /
+                                                                  94.5,
+                                                              bottom: height /
+                                                                  94.5),
+                                                          child: Text(
+                                                            "LTP",
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    28,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                ///  home works
+
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      page = "Messages";
+                                                      Searchcontroller.clear();
+                                                    });
+                                                    print("Messages");
+                                                  },
+                                                  child: Container(
+                                                    width: width / 3.56363636,
+                                                    height: height /
+                                                        11.18571429,
+                                                    child: Column(
+                                                      children: [
+                                                        Icon(Icons.message,
+                                                            color: Color(
+                                                                0xffA021FF),
+                                                            size: width / 12),
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 45,
+                                                              right: width / 45,
+                                                              top: height /
+                                                                  94.5,
+                                                              bottom: height /
+                                                                  94.5),
+                                                          child: Text(
+                                                            "Groups",
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    28,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                ///  behaviour
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: height / 18.9),
+
+
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+
+                              ],
+
+
+                            ) :
+                            SingleChildScrollView(
+                              physics: const ScrollPhysics(),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  ListView.builder(
+
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: Homesearclist.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      if (Homesearclist[index]
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(Searchcontroller.text
+                                          .toLowerCase())) {
+                                        return InkWell(
+                                          onTap: () {
+                                            if (Homesearclist[index] ==
+                                                "Attendance") {
+                                              setState(() {
+                                                page = "Attendance";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                            if (Homesearclist[index] ==
+                                                "Assignments") {
+                                              setState(() {
+                                                page = "Home Works";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                            if (Homesearclist[index] ==
+                                                "Feedback") {
+                                              setState(() {
+                                                page = "Behaviour";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                            if (Homesearclist[index] ==
+                                                "Time Table") {
+                                              setState(() {
+                                                page = "Time Table";
+                                                Searchcontroller.clear();
+                                              });
+                                              timetablelogic();
+                                            }
+                                            if (Homesearclist[index] ==
+                                                "Circulars") {
+                                              setState(() {
+                                                page = "Circulars";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                            if (Homesearclist[index] ==
+                                                "Check-In/Out") {
+                                              setState(() {
+                                                page = "CheckIn";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                            if (Homesearclist[index] ==
+                                                "Payroll") {
+                                              setState(() {
+                                                page = "Payroll";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                            if (Homesearclist[index] == "LTP") {
+                                              setState(() {
+                                                page = "Leave";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                            if (Homesearclist[index] ==
+                                                "Groups") {
+                                              setState(() {
+                                                page = "Messages";
+                                                Searchcontroller.clear();
+                                              });
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+
+                                                bottom: height / 184.5,
+                                                top: height / 64.5,
+                                                left: width / 45,
+                                                right: width / 45
+                                            ),
+                                            child: Material(
+                                              borderRadius: BorderRadius
+                                                  .circular(8),
+                                              color: Color(0xffF9F9F9),
+                                              elevation: 2,
+                                              child: Container(
+                                                height: height / 14.45,
+                                                width: width / 1.028,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius
+                                                      .circular(8),
+                                                  color: Color(0xffF9F9F9),
+
+                                                ),
+
+                                                child: Container(
+                                                  width: width / 3.56363636,
+                                                  height: height / 11.18571429,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      SizedBox(
+                                                          width: width / 8.0),
+                                                      widgetlist[index],
+                                                      SizedBox(
+                                                          width: width / 10.0),
+                                                      Padding(
+                                                        padding: EdgeInsets
+                                                            .only(
+
+                                                            top: height / 94.5,
+                                                            bottom: height /
+                                                                94.5),
+                                                        child: Text(
+                                                          Homesearclist[index]
+                                                              .toString(),
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                              color: Colors
+                                                                  .black,
+                                                              fontSize: width /
+                                                                  25.714,
+                                                              fontWeight:
+                                                              FontWeight.w500),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      );
+                                        );
+                                      }
 
 
-                                    }
+                                      return const SizedBox();
+                                    },),
+                                  SizedBox(height: height / 15.12),
 
-
-                                    return const SizedBox();
-
-                                  }, ),
-                                SizedBox(height:height/15.12),
-
-                              ],
-                            ),
-                          )
+                                ],
+                              ),
+                            )
 
                         )
                             : page == "Circulars"
@@ -1729,7 +1871,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     "Circulars",
                                     style: GoogleFonts.poppins(
                                         color: Color(0xff0873C4),
-                                        fontSize: width/21.77777778,
+                                        fontSize: width / 21.77777778,
                                         fontWeight: FontWeight.w600),
                                   ),
                                 ),
@@ -1741,13 +1883,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                 Row(
                                   children: [
                                     Text(
-                                      "${DateFormat.yMMMd().format(DateTime.now())}",
+                                      "${DateFormat.yMMMd().format(
+                                          DateTime.now())}",
                                       style: GoogleFonts
                                           .poppins(
                                           color: Colors
                                               .grey
                                               .shade700,
-                                          fontSize: width/26.13333333,
+                                          fontSize: width / 26.13333333,
                                           fontWeight:
                                           FontWeight
                                               .w500),
@@ -1773,7 +1916,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                           color: Colors
                                               .grey
                                               .shade700,
-                                          fontSize: width/26.13333333,
+                                          fontSize: width / 26.13333333,
                                           fontWeight:
                                           FontWeight
                                               .w500),
@@ -1791,7 +1934,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                                 StreamBuilder(
                                     stream: _firestore2db.collection(
-                                        "Circulars").orderBy("timestamp",descending: true).snapshots(),
+                                        "Circulars")
+                                        .orderBy("timestamp", descending: true)
+                                        .snapshots(),
 
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData == null) {
@@ -1811,275 +1956,333 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                           physics: const ScrollPhysics(),
                                           itemCount: snapshot.data!.docs.length,
                                           itemBuilder: (context, index) {
-                                         return
-                                           Searchcontroller.text==""&&snapshot.data!.docs[index]["type"].toString().toLowerCase()!="Student".toString().toLowerCase()?
-                                           Container(
+                                            return
+                                              Searchcontroller.text == "" &&
+                                                  snapshot.data!
+                                                      .docs[index]["type"]
+                                                      .toString()
+                                                      .toLowerCase() !=
+                                                      "Student"
+                                                          .toString()
+                                                          .toLowerCase() ?
+                                              Container(
 
-                                             width: width / 1.0714,
-                                             margin: EdgeInsets.only(
-                                                 bottom: height / 30.24),
-                                             decoration: BoxDecoration(
-                                                 color: Colors.white,
-                                                 borderRadius:
-                                                 BorderRadius.circular(12),
-                                                 border: Border.all(
-                                                     color: Colors.black)),
-                                             child: Padding(
-                                               padding: EdgeInsets.only(
-                                                   left: width / 45,
-                                                   right: width / 45,
-                                                   top: height / 94.5,
-                                                   bottom: height / 94.5),
-                                               child: Column(
-                                                 mainAxisAlignment:
-                                                 MainAxisAlignment.start,
-                                                 crossAxisAlignment: CrossAxisAlignment
-                                                     .start,
-                                                 children: [
-                                                   Row(
-                                                     crossAxisAlignment: CrossAxisAlignment
-                                                         .start,
-                                                     children: [
-                                                       Image.asset(
-                                                           "assets/Exlmtry.png"),
-                                                       SizedBox(
-                                                           width: width / 60),
-                                                       Container(
-                                                         width: width / 1.3,
-                                                         child: Text(
-                                                           snapshot.data!
-                                                               .docs[index]["Descr"],
-                                                           style:
-                                                           GoogleFonts.poppins(
-                                                               color:
-                                                               Colors.black,
-                                                               fontSize: width /
-                                                                   22.5,
-                                                               fontWeight:
-                                                               FontWeight
-                                                                   .w600),
-                                                         ),
-                                                       ),
-                                                     ],
-                                                   ),
-                                                   SizedBox(
-                                                       height: height / 73.7),
-                                                   Text(
-                                                     snapshot.data!
-                                                         .docs[index]["reason"],
-                                                     style: GoogleFonts
-                                                         .poppins(
-                                                         color: Colors.black,
-                                                         fontSize: width/26.13333333,
-                                                         fontWeight:
-                                                         FontWeight.w500),
-                                                   ),
-                                                   SizedBox(height: height/78.3),
-                                                   Row(
-                                                     mainAxisAlignment:
-                                                     MainAxisAlignment
-                                                         .start,
-                                                     children: [
-                                                       Container(
-                                                         width: width / 3.8,
-                                                         child: Text(
-                                                           snapshot.data!
-                                                               .docs[index]["Date"],
+                                                width: width / 1.0714,
+                                                margin: EdgeInsets.only(
+                                                    bottom: height / 30.24),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(12),
+                                                    border: Border.all(
+                                                        color: Colors.black)),
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: width / 45,
+                                                      right: width / 45,
+                                                      top: height / 94.5,
+                                                      bottom: height / 94.5),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment: CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Image.asset(
+                                                              "assets/Exlmtry.png"),
+                                                          SizedBox(
+                                                              width: width /
+                                                                  60),
+                                                          Container(
+                                                            width: width / 1.3,
+                                                            child: Text(
+                                                              snapshot.data!
+                                                                  .docs[index]["Descr"],
+                                                              style:
+                                                              GoogleFonts
+                                                                  .poppins(
+                                                                  color:
+                                                                  Colors.black,
+                                                                  fontSize: width /
+                                                                      22.5,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                          height: height /
+                                                              73.7),
+                                                      Text(
+                                                        snapshot.data!
+                                                            .docs[index]["reason"],
+                                                        style: GoogleFonts
+                                                            .poppins(
+                                                            color: Colors.black,
+                                                            fontSize: width /
+                                                                26.13333333,
+                                                            fontWeight:
+                                                            FontWeight.w500),
+                                                      ),
+                                                      SizedBox(height: height /
+                                                          78.3),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Container(
+                                                            width: width / 3.8,
+                                                            child: Text(
+                                                              snapshot.data!
+                                                                  .docs[index]["Date"],
 
-                                                           style: GoogleFonts
-                                                               .poppins(
-                                                               color: Colors
-                                                                   .grey
-                                                                   .shade700,
-                                                               fontSize: width/26.13333333,
-                                                               fontWeight:
-                                                               FontWeight
-                                                                   .w500),
-                                                         ),
-                                                       ),
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade700,
+                                                                  fontSize: width /
+                                                                      26.13333333,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                            ),
+                                                          ),
 
-                                                       Padding(
-                                                         padding: const EdgeInsets.only(right: 8.0),
-                                                         child: Container(
-                                                           height:
-                                                           height / 49.133,
-                                                           width: width / 170,
-                                                           color: Colors.grey,
-                                                         ),
-                                                       ),
+                                                          Padding(
+                                                            padding:  EdgeInsets
+                                                                .only(right:width/45),
+                                                            child: Container(
+                                                              height:
+                                                              height / 49.133,
+                                                              width: width /
+                                                                  170,
+                                                              color: Colors
+                                                                  .grey,
+                                                            ),
+                                                          ),
 
-                                                       Container(
-                                                         width: width / 2.6,
-                                                         child: Text(
-                                                           snapshot.data!
-                                                               .docs[index]["Time"],
-                                                           style: GoogleFonts
-                                                               .poppins(
-                                                               color: Colors
-                                                                   .grey
-                                                                   .shade700,
-                                                               fontSize: width/26.13333333,
-                                                               fontWeight:
-                                                               FontWeight
-                                                                   .w500),
-                                                         ),
-                                                       ),
-                                                       Text(
-                                                         snapshot.data!
-                                                             .docs[index]["From"],
+                                                          Container(
+                                                            width: width / 2.6,
+                                                            child: Text(
+                                                              snapshot.data!
+                                                                  .docs[index]["Time"],
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade700,
+                                                                  fontSize: width /
+                                                                      26.13333333,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            snapshot.data!
+                                                                .docs[index]["From"],
 
-                                                         style:
-                                                         GoogleFonts.poppins(
-                                                             color:
-                                                             Colors.green,
-                                                             fontSize: width /
-                                                                 22.5,
-                                                             fontWeight:
-                                                             FontWeight
-                                                                 .w600),
-                                                       ),
-                                                     ],
-                                                   ),
-                                                 ],
-                                               ),
+                                                            style:
+                                                            GoogleFonts.poppins(
+                                                                color:
+                                                                Colors.green,
+                                                                fontSize: width /
+                                                                    22.5,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
 
-                                             ),
+                                                ),
 
-                                           ) :
-                                           snapshot.data!.docs[index]["type"].toString().toLowerCase()!="Student".toString().toLowerCase()&&snapshot.data!.docs[index]["Descr"].toString().toLowerCase().contains(Searchcontroller.text.toLowerCase()) ||
-                                               snapshot.data!.docs[index]["type"].toString().toLowerCase()!="Student".toString().toLowerCase()&& snapshot.data!.docs[index]["Date"].toString().toLowerCase().contains(Searchcontroller.text.toLowerCase()) ||
-                                               snapshot.data!.docs[index]["type"].toString().toLowerCase()!="Student".toString().toLowerCase()&& snapshot.data!.docs[index]["From"].toString().toLowerCase().contains(Searchcontroller.text.toLowerCase())
-                                               ?
-                                           Container(
+                                              ) :
+                                              snapshot.data!.docs[index]["type"]
+                                                  .toString()
+                                                  .toLowerCase() != "Student"
+                                                  .toString()
+                                                  .toLowerCase() &&
+                                                  snapshot.data!
+                                                      .docs[index]["Descr"]
+                                                      .toString().toLowerCase()
+                                                      .contains(
+                                                      Searchcontroller.text
+                                                          .toLowerCase()) ||
+                                                  snapshot.data!
+                                                      .docs[index]["type"]
+                                                      .toString()
+                                                      .toLowerCase() !=
+                                                      "Student"
+                                                          .toString()
+                                                          .toLowerCase() &&
+                                                      snapshot.data!
+                                                          .docs[index]["Date"]
+                                                          .toString()
+                                                          .toLowerCase()
+                                                          .contains(
+                                                          Searchcontroller.text
+                                                              .toLowerCase()) ||
+                                                  snapshot.data!
+                                                      .docs[index]["type"]
+                                                      .toString()
+                                                      .toLowerCase() !=
+                                                      "Student"
+                                                          .toString()
+                                                          .toLowerCase() &&
+                                                      snapshot.data!
+                                                          .docs[index]["From"]
+                                                          .toString()
+                                                          .toLowerCase()
+                                                          .contains(
+                                                          Searchcontroller.text
+                                                              .toLowerCase())
+                                                  ?
+                                              Container(
 
-                                             width: width / 1.0714,
-                                             margin: EdgeInsets.only(
-                                                 bottom: height / 30.24),
-                                             decoration: BoxDecoration(
-                                                 color: Colors.white,
-                                                 borderRadius:
-                                                 BorderRadius.circular(12),
-                                                 border: Border.all(
-                                                     color: Colors.black)),
-                                             child: Padding(
-                                               padding: EdgeInsets.only(
-                                                   left: width / 45,
-                                                   right: width / 45,
-                                                   top: height / 94.5,
-                                                   bottom: height / 94.5),
-                                               child: Column(
-                                                 mainAxisAlignment:
-                                                 MainAxisAlignment.start,
-                                                 crossAxisAlignment: CrossAxisAlignment
-                                                     .start,
-                                                 children: [
-                                                   Row(
-                                                     crossAxisAlignment: CrossAxisAlignment
-                                                         .start,
-                                                     children: [
-                                                       Image.asset(
-                                                           "assets/Exlmtry.png"),
-                                                       SizedBox(
-                                                           width: width / 60),
-                                                       Container(
-                                                         width: width / 1.3,
-                                                         child: Text(
-                                                           snapshot.data!
-                                                               .docs[index]["Descr"],
-                                                           style:
-                                                           GoogleFonts.poppins(
-                                                               color:
-                                                               Colors.black,
-                                                               fontSize: width /
-                                                                   22.5,
-                                                               fontWeight:
-                                                               FontWeight
-                                                                   .w600),
-                                                         ),
-                                                       ),
-                                                     ],
-                                                   ),
-                                                   SizedBox(
-                                                       height: height / 73.7),
-                                                   Text(
-                                                     snapshot.data!
-                                                         .docs[index]["reason"],
-                                                     style: GoogleFonts
-                                                         .poppins(
-                                                         color: Colors.black,
-                                                         fontSize: width/26.13333333,
-                                                         fontWeight:
-                                                         FontWeight.w500),
-                                                   ),
-                                                   SizedBox(height: height/78.3),
-                                                   Row(
-                                                     mainAxisAlignment:
-                                                     MainAxisAlignment
-                                                         .spaceBetween,
-                                                     children: [
-                                                       Text(
-                                                         snapshot.data!
-                                                             .docs[index]["Date"],
+                                                width: width / 1.0714,
+                                                margin: EdgeInsets.only(
+                                                    bottom: height / 30.24),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(12),
+                                                    border: Border.all(
+                                                        color: Colors.black)),
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: width / 45,
+                                                      right: width / 45,
+                                                      top: height / 94.5,
+                                                      bottom: height / 94.5),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment: CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Image.asset(
+                                                              "assets/Exlmtry.png"),
+                                                          SizedBox(
+                                                              width: width /
+                                                                  60),
+                                                          Container(
+                                                            width: width / 1.3,
+                                                            child: Text(
+                                                              snapshot.data!
+                                                                  .docs[index]["Descr"],
+                                                              style:
+                                                              GoogleFonts
+                                                                  .poppins(
+                                                                  color:
+                                                                  Colors.black,
+                                                                  fontSize: width /
+                                                                      22.5,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                          height: height /
+                                                              73.7),
+                                                      Text(
+                                                        snapshot.data!
+                                                            .docs[index]["reason"],
+                                                        style: GoogleFonts
+                                                            .poppins(
+                                                            color: Colors.black,
+                                                            fontSize: width /
+                                                                26.13333333,
+                                                            fontWeight:
+                                                            FontWeight.w500),
+                                                      ),
+                                                      SizedBox(height: height /
+                                                          78.3),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            snapshot.data!
+                                                                .docs[index]["Date"],
 
-                                                         style: GoogleFonts
-                                                             .poppins(
-                                                             color: Colors
-                                                                 .grey
-                                                                 .shade700,
-                                                             fontSize: width/26.13333333,
-                                                             fontWeight:
-                                                             FontWeight
-                                                                 .w500),
-                                                       ),
-                                                       SizedBox(
-                                                           width:
-                                                           width / 33.33),
-                                                       Container(
-                                                         height:
-                                                         height / 49.133,
-                                                         width: width / 170,
-                                                         color: Colors.grey,
-                                                       ),
-                                                       SizedBox(
-                                                           width:
-                                                           width / 33.33),
-                                                       Text(
-                                                         snapshot.data!
-                                                             .docs[index]["Time"],
-                                                         style: GoogleFonts
-                                                             .poppins(
-                                                             color: Colors
-                                                                 .grey
-                                                                 .shade700,
-                                                             fontSize: width/26.13333333,
-                                                             fontWeight:
-                                                             FontWeight
-                                                                 .w500),
-                                                       ),
-                                                       Text(
-                                                         snapshot.data!
-                                                             .docs[index]["From"],
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade700,
+                                                                fontSize: width /
+                                                                    26.13333333,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                          SizedBox(
+                                                              width:
+                                                              width / 33.33),
+                                                          Container(
+                                                            height:
+                                                            height / 49.133,
+                                                            width: width / 170,
+                                                            color: Colors.grey,
+                                                          ),
+                                                          SizedBox(
+                                                              width:
+                                                              width / 33.33),
+                                                          Text(
+                                                            snapshot.data!
+                                                                .docs[index]["Time"],
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade700,
+                                                                fontSize: width /
+                                                                    26.13333333,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                          ),
+                                                          Text(
+                                                            snapshot.data!
+                                                                .docs[index]["From"],
 
-                                                         style:
-                                                         GoogleFonts.poppins(
-                                                             color:
-                                                             Colors.green,
-                                                             fontSize: width /
-                                                                 22.5,
-                                                             fontWeight:
-                                                             FontWeight
-                                                                 .w600),
-                                                       ),
-                                                     ],
-                                                   ),
-                                                 ],
-                                               ),
+                                                            style:
+                                                            GoogleFonts.poppins(
+                                                                color:
+                                                                Colors.green,
+                                                                fontSize: width /
+                                                                    22.5,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
 
-                                             ),
+                                                ),
 
-                                           ): SizedBox();
-
-
+                                              ) : SizedBox();
                                           }
                                       );
                                     }
@@ -2116,7 +2319,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     "Assignment",
                                     style: GoogleFonts.poppins(
                                         color: Color(0xff0873C4),
-                                        fontSize: width/21.77777778,
+                                        fontSize: width / 21.77777778,
                                         fontWeight:
                                         FontWeight.w600),
                                   ),
@@ -2125,11 +2328,12 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                 Row(
                                   children: [
                                     Text(
-                                      "${DateFormat.yMMMd().format(DateTime.now())}",
+                                      "${DateFormat.yMMMd().format(
+                                          DateTime.now())}",
                                       style: GoogleFonts.poppins(
                                           color: Colors
                                               .grey.shade700,
-                                          fontSize: width/26.13333333,
+                                          fontSize: width / 26.13333333,
                                           fontWeight:
                                           FontWeight.w500),
                                     ),
@@ -2149,7 +2353,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                       style: GoogleFonts.poppins(
                                           color: Colors
                                               .grey.shade700,
-                                          fontSize: width/26.13333333,
+                                          fontSize: width / 26.13333333,
                                           fontWeight:
                                           FontWeight.w500),
                                     ),
@@ -2196,7 +2400,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                               isExpanded: true,
                                               style: TextStyle(
                                                   color: Color(0xff3D8CF8),
-                                                  fontSize: width/23.05882353,
+                                                  fontSize: width / 23.05882353,
                                                   fontWeight: FontWeight.w700),
                                               underline: Container(
                                                 color: Colors.deepPurpleAccent,
@@ -2242,7 +2446,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                               isExpanded: true,
                                               style: TextStyle(
                                                   color: Color(0xff3D8CF8),
-                                                  fontSize: width/23.05882353,
+                                                  fontSize: width / 23.05882353,
                                                   fontWeight: FontWeight.w700),
                                               underline: Container(
                                                 color: Colors.deepPurpleAccent,
@@ -2307,7 +2511,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   .poppins(
                                                 color: Colors
                                                     .black,
-                                                fontSize: width/28,
+                                                fontSize: width / 28,
                                                 fontWeight:
                                                 FontWeight
                                                     .w500,
@@ -2377,7 +2581,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                     //set output date to TextField value.
                                                   });
                                                   print("Date is not selected");
-                                                 }
+                                                }
                                                 //else {
                                                 //   print("Date is not selected");
                                                 // }
@@ -2386,7 +2590,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   .poppins(
                                                 color: Colors
                                                     .black,
-                                                fontSize: width/28,
+                                                fontSize: width / 28,
                                                 fontWeight:
                                                 FontWeight
                                                     .w500,
@@ -2397,7 +2601,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                               decoration:
                                               InputDecoration(
                                                   contentPadding: EdgeInsets
-                                                      .only(top: 15),
+                                                      .only(top: height/50.4),
                                                   suffixIcon: Icon(
                                                       Icons.calendar_month,
                                                       color: Colors.black),
@@ -2408,7 +2612,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                       .poppins(
                                                     color: Colors
                                                         .black,
-                                                    fontSize: width/28,
+                                                    fontSize: width / 28,
                                                     fontWeight:
                                                     FontWeight
                                                         .w500,
@@ -2429,12 +2633,12 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                       Row(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                                              padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                                             child: Text(
                                               "Topic",
                                               style: GoogleFonts.poppins(
                                                   color: Colors.black,
-                                                  fontSize: width/28,
+                                                  fontSize: width / 28,
                                                   fontWeight:
                                                   FontWeight.w600),
                                             ),
@@ -2472,7 +2676,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   color: Colors
                                                       .grey
                                                       .shade700,
-                                                  fontSize: width/28,
+                                                  fontSize: width / 28,
                                                   fontWeight:
                                                   FontWeight
                                                       .w500,
@@ -2487,12 +2691,12 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                       Row(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                                              padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                                             child: Text(
                                               "Description",
                                               style: GoogleFonts.poppins(
                                                   color: Colors.black,
-                                                  fontSize: width/28,
+                                                  fontSize: width / 28,
                                                   fontWeight:
                                                   FontWeight.w600),
                                             ),
@@ -2534,7 +2738,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   color: Colors
                                                       .grey
                                                       .shade700,
-                                                  fontSize: width/28,
+                                                  fontSize: width / 28,
                                                   fontWeight:
                                                   FontWeight
                                                       .w500,
@@ -2549,8 +2753,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                       /// center container
 
                                       SizedBox(height: height / 49.133),
-                                      _pickedFile!=null?    Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                      _pickedFile != null ? Padding(
+                                                          padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                                         child: Center(
                                           child: InkWell(
                                             onTap: () {
@@ -2569,30 +2773,105 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         12)),
 
                                                 child: Padding(
-                                                  padding:  EdgeInsets.only(
+                                                  padding: EdgeInsets.only(
+                                                      top: height / 94.5,
+                                                      bottom: height / 94.5,
+                                                      right: width / 45,
+                                                      left: width / 45),
+                                                  child: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .all(8.0),
+                                                          child: Icon(Icons
+                                                              .file_download_done_sharp),
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 24),
+                                                          child: Container(
+                                                            width: width /
+                                                                2.117,
+                                                            child: Text(
+                                                              p.basename(
+                                                                  _pickedFile!
+                                                                      .path),
+
+                                                              style:
+                                                              GoogleFonts
+                                                                  .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    23.05882353,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w500,
+                                                              ),),
+                                                          ),
+                                                        ),
+
+                                                      ]
+                                                  ),
+                                                )
+                                            ),
+                                          ),
+                                        ),
+                                      ) : SizedBox(),
+                                      _pickedFile2 != null ? Padding(
+                                                          padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+                                        child: Center(
+                                          child: InkWell(
+                                            onTap: () {
+
+                                            },
+                                            child: Container(
+
+                                                height: height / 18.685,
+                                                width: width / 1.0636,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                        color: Colors.grey),
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        12)),
+
+                                                child: Padding(
+                                                  padding:  EdgeInsets
+                                                      .only(
                                                       top: height/94.5,
                                                       bottom: height/94.5,
-                                                      right: width/45,
-                                                      left: width/45),
+                                                     right: width/45,
+                                                     left: width/45),
                                                   child: Row(
                                                       children: [
-                                                       Padding(
-                                                         padding: const EdgeInsets.all(8.0),
-                                                         child: Icon(Icons.file_download_done_sharp),
-                                                       ),
                                                         Padding(
-                                                          padding:  EdgeInsets
-                                                              .only(left: width/24),
+                                                          padding: const EdgeInsets
+                                                              .all(8.0),
+                                                          child: Icon(Icons
+                                                              .file_download_done_sharp),
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 24),
                                                           child: Container(
-                                                            width: width/2.117,
+                                                            width: width /
+                                                                2.30588235,
                                                             child: Text(
-                                                             p.basename(_pickedFile!.path),
+                                                              p.basename(
+                                                                  _pickedFile2!
+                                                                      .path),
 
                                                               style:
                                                               GoogleFonts
                                                                   .poppins(
-                                                                color: Colors.black,
-                                                                fontSize: width/23.05882353,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    23.05882353,
                                                                 fontWeight:
                                                                 FontWeight
                                                                     .w500,
@@ -2606,9 +2885,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             ),
                                           ),
                                         ),
-                                      ): SizedBox(),
-                                      _pickedFile2!=null?    Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                      ) : SizedBox(),
+                                      _pickedFile3 != null ? Padding(
+                                                          padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                                         child: Center(
                                           child: InkWell(
                                             onTap: () {
@@ -2627,30 +2906,39 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         12)),
 
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 8.0,
-                                                      bottom: 8,
-                                                      right: 8,
-                                                      left: 8),
+                                                  padding:  EdgeInsets
+                                                      .only(
+                                                      top: height/94.5,
+                                                      bottom: height/94.5,
+                                                     right: width/45,
+                                                     left: width/45),
                                                   child: Row(
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: Icon(Icons.file_download_done_sharp),
+                                                          padding: const EdgeInsets
+                                                              .all(8.0),
+                                                          child: Icon(Icons
+                                                              .file_download_done_sharp),
                                                         ),
                                                         Padding(
-                                                          padding:  EdgeInsets
-                                                              .only(left: width/24),
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 24),
                                                           child: Container(
-                                                            width: width/2.30588235,
+                                                            width: width /
+                                                                2.30588235,
                                                             child: Text(
-                                                              p.basename(_pickedFile2!.path),
+                                                              p.basename(
+                                                                  _pickedFile3!
+                                                                      .path),
 
                                                               style:
                                                               GoogleFonts
                                                                   .poppins(
-                                                                color: Colors.black,
-                                                                fontSize: width/23.05882353,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    23.05882353,
                                                                 fontWeight:
                                                                 FontWeight
                                                                     .w500,
@@ -2664,9 +2952,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             ),
                                           ),
                                         ),
-                                      ): SizedBox(),
-                                      _pickedFile3!=null?    Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                      ) : SizedBox(),
+                                      _pickedFile4 != null ? Padding(
+                                                          padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                                         child: Center(
                                           child: InkWell(
                                             onTap: () {
@@ -2685,30 +2973,39 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         12)),
 
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 8.0,
-                                                      bottom: 8,
-                                                      right: 8,
-                                                      left: 8),
+                                                  padding:  EdgeInsets
+                                                      .only(
+                                                      top: height/94.5,
+                                                      bottom: height/94.5,
+                                                     right: width/45,
+                                                     left: width/45),
                                                   child: Row(
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: Icon(Icons.file_download_done_sharp),
+                                                          padding: const EdgeInsets
+                                                              .all(8.0),
+                                                          child: Icon(Icons
+                                                              .file_download_done_sharp),
                                                         ),
                                                         Padding(
-                                                          padding:  EdgeInsets
-                                                              .only(left: width/24),
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 24),
                                                           child: Container(
-                                                            width: width/2.30588235,
+                                                            width: width /
+                                                                2.30588235,
                                                             child: Text(
-                                                              p.basename(_pickedFile3!.path),
+                                                              p.basename(
+                                                                  _pickedFile4!
+                                                                      .path),
 
                                                               style:
                                                               GoogleFonts
                                                                   .poppins(
-                                                                color: Colors.black,
-                                                                fontSize: width/23.05882353,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    23.05882353,
                                                                 fontWeight:
                                                                 FontWeight
                                                                     .w500,
@@ -2722,9 +3019,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             ),
                                           ),
                                         ),
-                                      ): SizedBox(),
-                                      _pickedFile4!=null?    Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                      ) : SizedBox(),
+                                      _pickedFile5 != null ? Padding(
+                                                          padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                                         child: Center(
                                           child: InkWell(
                                             onTap: () {
@@ -2743,30 +3040,39 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         12)),
 
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 8.0,
-                                                      bottom: 8,
-                                                      right: 8,
-                                                      left: 8),
+                                                  padding:  EdgeInsets
+                                                      .only(
+                                                      top: height/94.5,
+                                                      bottom: height/94.5,
+                                                     right: width/45,
+                                                     left: width/45),
                                                   child: Row(
                                                       children: [
                                                         Padding(
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: Icon(Icons.file_download_done_sharp),
+                                                          padding: const EdgeInsets
+                                                              .all(8.0),
+                                                          child: Icon(Icons
+                                                              .file_download_done_sharp),
                                                         ),
                                                         Padding(
-                                                          padding:  EdgeInsets
-                                                              .only(left: width/24),
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: width / 24),
                                                           child: Container(
-                                                            width: width/2.30588235,
+                                                            width: width /
+                                                                2.30588235,
                                                             child: Text(
-                                                              p.basename(_pickedFile4!.path),
+                                                              p.basename(
+                                                                  _pickedFile5!
+                                                                      .path),
 
                                                               style:
                                                               GoogleFonts
                                                                   .poppins(
-                                                                color: Colors.black,
-                                                                fontSize: width/23.05882353,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    23.05882353,
                                                                 fontWeight:
                                                                 FontWeight
                                                                     .w500,
@@ -2780,65 +3086,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             ),
                                           ),
                                         ),
-                                      ): SizedBox(),
-                                      _pickedFile5!=null?    Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Center(
-                                          child: InkWell(
-                                            onTap: () {
-
-                                            },
-                                            child: Container(
-
-                                                height: height / 18.685,
-                                                width: width / 1.0636,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        12)),
-
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 8.0,
-                                                      bottom: 8,
-                                                      right: 8,
-                                                      left: 8),
-                                                  child: Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: Icon(Icons.file_download_done_sharp),
-                                                        ),
-                                                        Padding(
-                                                          padding:  EdgeInsets
-                                                              .only(left: width/24),
-                                                          child: Container(
-                                                            width: width/2.30588235,
-                                                            child: Text(
-                                                              p.basename(_pickedFile5!.path),
-
-                                                              style:
-                                                              GoogleFonts
-                                                                  .poppins(
-                                                                color: Colors.black,
-                                                                fontSize: width/23.05882353,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w500,
-                                                              ),),
-                                                          ),
-                                                        ),
-
-                                                      ]
-                                                  ),
-                                                )
-                                            ),
-                                          ),
-                                        ),
-                                      ): SizedBox(),
+                                      ) : SizedBox(),
                                       Center(
                                         child: InkWell(
                                           onTap: () {
@@ -2857,11 +3105,11 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                       12)),
 
                                               child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 8.0,
-                                                    bottom: 8,
-                                                    right: 8,
-                                                    left: 8),
+                                                padding:  EdgeInsets.only(
+                                                    top: height/94.5,
+                                                    bottom: height/94.5,
+                                                   right: width/45,
+                                                   left: width/45),
                                                 child: Row(
                                                     children: [
                                                       Material(
@@ -2871,8 +3119,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         shadowColor: Color(
                                                             0xff0271C5),
                                                         child: Container(
-                                                          width: width/7.84,
-                                                          height: height/15.66,
+                                                          width: width / 7.84,
+                                                          height: height /
+                                                              15.66,
                                                           decoration: BoxDecoration(
 
                                                               borderRadius: BorderRadius
@@ -2880,16 +3129,19 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                           ),
                                                           child: Center(
                                                               child: Icon(
-                                                                  Icons.attachment_rounded,
+                                                                  Icons
+                                                                      .attachment_rounded,
                                                                   color: Color(
                                                                       0xff0271C5))),
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding:  EdgeInsets
-                                                            .only(left: width/24),
+                                                        padding: EdgeInsets
+                                                            .only(
+                                                            left: width / 24),
                                                         child: Container(
-                                                          width: width/2.30588235,
+                                                          width: width /
+                                                              2.30588235,
                                                           child: Text(
                                                             _pickedFile == null
                                                                 ? "Add Attachments"
@@ -2899,7 +3151,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                 .poppins(
                                                               color: Color(
                                                                   0xff0271C5),
-                                                              fontSize: width/23.05882353,
+                                                              fontSize: width /
+                                                                  23.05882353,
                                                               fontWeight:
                                                               FontWeight
                                                                   .w500,
@@ -2907,12 +3160,13 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding:  EdgeInsets
-                                                            .only(left: width/6),
+                                                        padding: EdgeInsets
+                                                            .only(
+                                                            left: width / 6),
                                                         child: GestureDetector(
-                                                            onTap:(){
-                                                              showwwaring();
-                                                            },
+                                                          onTap: () {
+                                                            showwwaring();
+                                                          },
                                                           child: Icon(Icons
                                                               .info_outline_rounded,
                                                               color: Colors
@@ -2935,7 +3189,11 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 _typeAheadControllerclass
                                                     .text != "Class" &&
                                                 _typeAheadControllersection
-                                                    .text != "Section" && dropdownValue4!="Class"&&dropdownValue5!="Section"&&duedate.text!=""&&subject!="Subject") {
+                                                    .text != "Section" &&
+                                                dropdownValue4 != "Class" &&
+                                                dropdownValue5 != "Section" &&
+                                                duedate.text != "" &&
+                                                subject != "Subject") {
                                               add();
                                               SuccessHomeworkdialog();
                                             }
@@ -3015,7 +3273,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                                   children: [
 
-                                    Searchcontroller.text==""?GestureDetector(
+                                    Searchcontroller.text == ""
+                                        ? GestureDetector(
                                       onTap: () {
                                         setState(() {
                                           page = "Home";
@@ -3027,23 +3286,25 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                         GoogleFonts.poppins(
                                             color: Colors
                                                 .blueAccent,
-                                            fontSize: width/21.77777778,
+                                            fontSize: width / 21.77777778,
                                             fontWeight:
                                             FontWeight
                                                 .w600),
                                       ),
-                                    ):const  SizedBox(),
+                                    )
+                                        : const SizedBox(),
 
-                                    Searchcontroller.text==""?   Row(
+                                    Searchcontroller.text == "" ? Row(
                                       children: [
                                         Text(
-                                          "${DateFormat.yMMMd().format(DateTime.now())}",
+                                          "${DateFormat.yMMMd().format(
+                                              DateTime.now())}",
                                           style: GoogleFonts
                                               .poppins(
                                               color: Colors
                                                   .grey
                                                   .shade700,
-                                              fontSize: width/26.13333333,
+                                              fontSize: width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w500),
@@ -3069,25 +3330,25 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                               color: Colors
                                                   .grey
                                                   .shade700,
-                                              fontSize: width/26.13333333,
+                                              fontSize: width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w500),
                                         ),
                                       ],
-                                    ):const SizedBox(),
+                                    ) : const SizedBox(),
 
                                     /// date/day
 
-                                    Searchcontroller.text==""? SizedBox(
+                                    Searchcontroller.text == "" ? SizedBox(
                                       height: height / 49.13,
-                                    ):const SizedBox(),
+                                    ) : const SizedBox(),
 
-                                    Searchcontroller.text==""? Divider(
+                                    Searchcontroller.text == "" ? Divider(
                                       color:
                                       Colors.grey.shade400,
                                       thickness: 1.5,
-                                    ):const SizedBox(),
+                                    ) : const SizedBox(),
 
                                     Column(
                                         children: [
@@ -3116,7 +3377,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   isExpanded: true,
                                                   style: TextStyle(
                                                       color: Color(0xff3D8CF8),
-                                                      fontSize: width/23.05882353,
+                                                      fontSize: width /
+                                                          23.05882353,
                                                       fontWeight: FontWeight
                                                           .w700),
                                                   underline: Container(
@@ -3166,7 +3428,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   isExpanded: true,
                                                   style: TextStyle(
                                                       color: Color(0xff3D8CF8),
-                                                      fontSize: width/23.05882353,
+                                                      fontSize: width /
+                                                          23.05882353,
                                                       fontWeight: FontWeight
                                                           .w700),
                                                   underline: Container(
@@ -3223,7 +3486,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         .poppins(
                                                         color: Colors
                                                             .black,
-                                                        fontSize: width/26.13333333,
+                                                        fontSize: width /
+                                                            26.13333333,
                                                         fontWeight:
                                                         FontWeight
                                                             .w600),
@@ -3236,7 +3500,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         .poppins(
                                                         color: Colors
                                                             .black,
-                                                        fontSize: width/26.13333333,
+                                                        fontSize: width /
+                                                            26.13333333,
                                                         fontWeight:
                                                         FontWeight
                                                             .w600),
@@ -3249,7 +3514,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                         .poppins(
                                                         color: Colors
                                                             .black,
-                                                        fontSize: width/26.13333333,
+                                                        fontSize: width /
+                                                            26.13333333,
                                                         fontWeight:
                                                         FontWeight
                                                             .w600),
@@ -3267,7 +3533,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   orderBy("timestamp")
                                                       .snapshots(),
                                                   builder: (context, snapshot) {
-                                                    if (snapshot.hasData == null) {
+                                                    if (snapshot.hasData ==
+                                                        null) {
                                                       return Center(
                                                           child: CircularProgressIndicator(
                                                             color: Color(
@@ -3292,9 +3559,16 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                           return
                                                             snapshot.data!
                                                                 .docs[index]["admitclass"] ==
-                                                                _typeAheadControllerclass.text &&
-                                                                snapshot.data!.docs[index]["section"] == _typeAheadControllersection.text ?
-                                                            Searchcontroller.text==""? Row(
+                                                                _typeAheadControllerclass
+                                                                    .text &&
+                                                                snapshot.data!
+                                                                    .docs[index]["section"] ==
+                                                                    _typeAheadControllersection
+                                                                        .text
+                                                                ?
+                                                            Searchcontroller
+                                                                .text == ""
+                                                                ? Row(
                                                               mainAxisAlignment: MainAxisAlignment
                                                                   .spaceAround,
                                                               children: [
@@ -3315,129 +3589,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                           .poppins(
                                                                           color: Colors
                                                                               .black,
-                                                                          fontSize: width/26.13333333,
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                      bottom: height /
-                                                                          37.8,
-                                                                      left: width /
-                                                                          45),
-                                                                  child:
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      setState(() {
-                                                                        present[index] =
-                                                                        true;
-                                                                      });
-                                                                    },
-                                                                    child: Container(
-                                                                      height:
-                                                                      height /
-                                                                          29.48,
-                                                                      width:
-                                                                      width /
-                                                                          10,
-                                                                      decoration:
-                                                                      BoxDecoration(
-                                                                          shape: BoxShape
-                                                                              .circle,
-                                                                          border: Border
-                                                                              .all(
-                                                                              color: Colors
-                                                                                  .green)),
-                                                                      child: Container(
-                                                                        child: Icon(
-                                                                          present[index] ==
-                                                                              true
-                                                                              ? Icons
-                                                                              .check
-                                                                              : null,
-                                                                          color: Colors
-                                                                              .green,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                  EdgeInsets
-                                                                      .only(
-                                                                      bottom: height /
-                                                                          37.8),
-                                                                  child:
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      setState(() {
-                                                                        present[index] =
-                                                                        false;
-                                                                      });
-                                                                    },
-                                                                    child: Container(
-                                                                      height:
-                                                                      height /
-                                                                          29.48,
-                                                                      width:
-                                                                      width /
-                                                                          10,
-                                                                      decoration:
-                                                                      BoxDecoration(
-                                                                          shape: BoxShape
-                                                                              .circle,
-                                                                          border: Border
-                                                                              .all(
-                                                                              color: Colors
-                                                                                  .red)),
-                                                                      child:
-                                                                      Container(
-                                                                        child: Icon(
-                                                                          present[index] ==
-                                                                              false
-                                                                              ? Icons
-                                                                              .clear
-                                                                              : null,
-                                                                          color: Colors
-                                                                              .red,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-
-
-                                                              ],
-                                                            ) :
-
-                                                            snapshot.data!.docs[index]["stname"].toLowerCase().contains(Searchcontroller.text.toString().toLowerCase()) ?
-
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment
-                                                                  .spaceAround,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                      bottom: width /
-                                                                          50.4),
-                                                                  child: Container(
-
-                                                                    width: width /
-                                                                        3.5,
-                                                                    child: Text(
-                                                                      snapshot
-                                                                          .data!
-                                                                          .docs[index]["stname"],
-                                                                      style: GoogleFonts
-                                                                          .poppins(
-                                                                          color: Colors
-                                                                              .black,
-                                                                          fontSize: width/26.13333333,
+                                                                          fontSize: width /
+                                                                              26.13333333,
                                                                           fontWeight: FontWeight
                                                                               .w600),
                                                                     ),
@@ -3535,25 +3688,161 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                                                               ],
                                                             )
-                                                                : SizedBox() : SizedBox();
+                                                                :
+
+                                                            snapshot.data!
+                                                                .docs[index]["stname"]
+                                                                .toLowerCase()
+                                                                .contains(
+                                                                Searchcontroller
+                                                                    .text
+                                                                    .toString()
+                                                                    .toLowerCase())
+                                                                ?
+
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment
+                                                                  .spaceAround,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                      bottom: width /
+                                                                          50.4),
+                                                                  child: Container(
+
+                                                                    width: width /
+                                                                        3.5,
+                                                                    child: Text(
+                                                                      snapshot
+                                                                          .data!
+                                                                          .docs[index]["stname"],
+                                                                      style: GoogleFonts
+                                                                          .poppins(
+                                                                          color: Colors
+                                                                              .black,
+                                                                          fontSize: width /
+                                                                              26.13333333,
+                                                                          fontWeight: FontWeight
+                                                                              .w600),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                      bottom: height /
+                                                                          37.8,
+                                                                      left: width /
+                                                                          45),
+                                                                  child:
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        present[index] =
+                                                                        true;
+                                                                      });
+                                                                    },
+                                                                    child: Container(
+                                                                      height:
+                                                                      height /
+                                                                          29.48,
+                                                                      width:
+                                                                      width /
+                                                                          10,
+                                                                      decoration:
+                                                                      BoxDecoration(
+                                                                          shape: BoxShape
+                                                                              .circle,
+                                                                          border: Border
+                                                                              .all(
+                                                                              color: Colors
+                                                                                  .green)),
+                                                                      child: Container(
+                                                                        child: Icon(
+                                                                          present[index] ==
+                                                                              true
+                                                                              ? Icons
+                                                                              .check
+                                                                              : null,
+                                                                          color: Colors
+                                                                              .green,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                  EdgeInsets
+                                                                      .only(
+                                                                      bottom: height /
+                                                                          37.8),
+                                                                  child:
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        present[index] =
+                                                                        false;
+                                                                      });
+                                                                    },
+                                                                    child: Container(
+                                                                      height:
+                                                                      height /
+                                                                          29.48,
+                                                                      width:
+                                                                      width /
+                                                                          10,
+                                                                      decoration:
+                                                                      BoxDecoration(
+                                                                          shape: BoxShape
+                                                                              .circle,
+                                                                          border: Border
+                                                                              .all(
+                                                                              color: Colors
+                                                                                  .red)),
+                                                                      child:
+                                                                      Container(
+                                                                        child: Icon(
+                                                                          present[index] ==
+                                                                              false
+                                                                              ? Icons
+                                                                              .clear
+                                                                              : null,
+                                                                          color: Colors
+                                                                              .red,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+
+
+                                                              ],
+                                                            )
+                                                                : SizedBox()
+                                                                : SizedBox();
                                                         });
                                                   }),
                                               SizedBox(height: height / 25.2,),
-                                              marked == false && Searchcontroller.text==""?
+                                              marked == false &&
+                                                  Searchcontroller.text == "" ?
                                               Center(
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    if (dropdownValue4 == "Class" || dropdownValue5 == "Section") {
+                                                    if (dropdownValue4 ==
+                                                        "Class" ||
+                                                        dropdownValue5 ==
+                                                            "Section") {
                                                       Errordialog();
                                                     }
                                                     else {
-                                                      if(marked == false){
+                                                      if (marked == false) {
                                                         attendaceupload();
-
                                                       }
-                                                      else{
-                                                        setState((){
-                                                          marked=true;
+                                                      else {
+                                                        setState(() {
+                                                          marked = true;
                                                         });
                                                       }
                                                     }
@@ -3624,7 +3913,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                     GoogleFonts.poppins(
                                                         color: Colors
                                                             .blueAccent,
-                                                        fontSize: width/21.77777778,
+                                                        fontSize: width /
+                                                            21.77777778,
                                                         fontWeight:
                                                         FontWeight
                                                             .w600),
@@ -3675,54 +3965,56 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                                   children: [
 
-                                  Searchcontroller.text==""? SizedBox(
-                                     child:Column(
-                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                       children: [
-                                         GestureDetector(
-                                           onTap: () {
-                                             setState(() {
-                                               page = "Home";
-                                             });
-                                           },
-                                           child: Text(
-                                             "Student Feedback",
-                                             style: GoogleFonts.poppins(
-                                                 color: Colors
-                                                     .blueAccent,
-                                                 fontSize: width/21.77777778,
-                                                 fontWeight:
-                                                 FontWeight
-                                                     .w600),
-                                           ),
-                                         ),
-                                         SizedBox(
-                                             height: height /
-                                                 92.125),
-                                         Text(
-                                           "Student report",
-                                           style: GoogleFonts
-                                               .poppins(
-                                               color: Colors
-                                                   .grey
-                                                   .shade700,
-                                               fontSize: width/26.13333333,
-                                               fontWeight:
-                                               FontWeight
-                                                   .w600),
-                                         ),
+                                    Searchcontroller.text == "" ? SizedBox(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  page = "Home";
+                                                });
+                                              },
+                                              child: Text(
+                                                "Student Feedback",
+                                                style: GoogleFonts.poppins(
+                                                    color: Colors
+                                                        .blueAccent,
+                                                    fontSize: width /
+                                                        21.77777778,
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .w600),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                height: height /
+                                                    92.125),
+                                            Text(
+                                              "Student report",
+                                              style: GoogleFonts
+                                                  .poppins(
+                                                  color: Colors
+                                                      .grey
+                                                      .shade700,
+                                                  fontSize: width / 26.13333333,
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .w600),
+                                            ),
 
-                                         SizedBox(
-                                             height:
-                                             height / 36.85),
+                                            SizedBox(
+                                                height:
+                                                height / 36.85),
 
-                                         Divider(
-                                           color: Colors.grey.shade400,
-                                           thickness: 1,
-                                         ),
-                                       ],
-                                     )
-                                   ):const SizedBox(),
+                                            Divider(
+                                              color: Colors.grey.shade400,
+                                              thickness: 1,
+                                            ),
+                                          ],
+                                        )
+                                    ) : const SizedBox(),
 
                                     SizedBox(
                                         height: height /
@@ -3755,7 +4047,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   isExpanded: true,
                                                   style: TextStyle(
                                                       color: Color(0xff3D8CF8),
-                                                      fontSize: width/23.05882353,
+                                                      fontSize: width /
+                                                          23.05882353,
                                                       fontWeight: FontWeight
                                                           .w700),
                                                   underline: Container(
@@ -3803,7 +4096,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   isExpanded: true,
                                                   style: TextStyle(
                                                       color: Color(0xff3D8CF8),
-                                                      fontSize: width/23.05882353,
+                                                      fontSize: width /
+                                                          23.05882353,
                                                       fontWeight: FontWeight
                                                           .w700),
                                                   underline: Container(
@@ -3858,7 +4152,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   color: Colors
                                                       .grey
                                                       .shade600,
-                                                  fontSize: width/28,
+                                                  fontSize: width / 28,
                                                   fontWeight:
                                                   FontWeight
                                                       .w500),
@@ -3884,7 +4178,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                       color: Colors
                                                           .black,
                                                       fontSize:
-                                                      width/26.13333333,
+                                                      width / 26.13333333,
                                                       fontWeight:
                                                       FontWeight
                                                           .w600),
@@ -3895,7 +4189,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                       color: Colors
                                                           .black,
                                                       fontSize:
-                                                      width/26.13333333,
+                                                      width / 26.13333333,
                                                       fontWeight:
                                                       FontWeight
                                                           .w600,
@@ -3944,20 +4238,32 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                             .docs[index]["section"]}" ==
                                                             "${_typeAheadControllerclass
                                                                 .text}${_typeAheadControllersection
-                                                                .text}" ? Searchcontroller.text==""?
+                                                                .text}"
+                                                            ? Searchcontroller
+                                                            .text == "" ?
                                                         GestureDetector(
-                                                          onTap: (){
-                                                            Navigator.of(context).push(
-                                                              MaterialPageRoute(builder: (context)=>Feedbackhistory(
-                                                                  snapshot.data!.docs[index].id,
-                                                                  snapshot.data!.docs[index]["stname"],
-                                                                  staffname,
-                                                                  snapshot.data!.docs[index]["token"],
-                                                                  staffid,
-                                                                  staffauthendicationid
+                                                          onTap: () {
+                                                            Navigator.of(
+                                                                context).push(
+                                                                MaterialPageRoute(
+                                                                    builder: (
+                                                                        context) =>
+                                                                        Feedbackhistory(
+                                                                            snapshot
+                                                                                .data!
+                                                                                .docs[index]
+                                                                                .id,
+                                                                            snapshot
+                                                                                .data!
+                                                                                .docs[index]["stname"],
+                                                                            staffname,
+                                                                            snapshot
+                                                                                .data!
+                                                                                .docs[index]["token"],
+                                                                            staffid,
+                                                                            staffauthendicationid
 
-                                                              )));
-
+                                                                        )));
                                                           },
                                                           child: Container(
                                                             padding:
@@ -3975,21 +4281,24 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                       2.25,
 
                                                                   child: Text(
-                                                                    snapshot.data!
+                                                                    snapshot
+                                                                        .data!
                                                                         .docs[index]["stname"],
                                                                     style: GoogleFonts
                                                                         .poppins(
                                                                         color: Colors
                                                                             .black,
                                                                         fontSize:
-                                                                        width/26.13333333,
+                                                                        width /
+                                                                            26.13333333,
                                                                         fontWeight:
                                                                         FontWeight
                                                                             .w600),
                                                                   ),
                                                                 ),
                                                                 SizedBox(
-                                                                  width: width/7.12727273),
+                                                                    width: width /
+                                                                        7.12727273),
 
                                                                 Container(
                                                                   height: height /
@@ -3997,7 +4306,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                   width:
                                                                   width / 3.6,
                                                                   decoration: BoxDecoration(
-                                                                      color:  Color(0xff3D8CF8),
+                                                                      color: Color(
+                                                                          0xff3D8CF8),
                                                                       borderRadius:
                                                                       BorderRadius
                                                                           .circular(
@@ -4015,7 +4325,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                             color: Colors
                                                                                 .white,
                                                                             fontSize:
-                                                                            width/26.13333333,
+                                                                            width /
+                                                                                26.13333333,
                                                                             fontWeight:
                                                                             FontWeight
                                                                                 .w600),
@@ -4030,20 +4341,37 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                             ),
                                                           ),
                                                         ) :
-                                                        snapshot.data!.docs[index]["stname"].toLowerCase().contains(Searchcontroller.text.toString().toLowerCase()) ?
+                                                        snapshot.data!
+                                                            .docs[index]["stname"]
+                                                            .toLowerCase()
+                                                            .contains(
+                                                            Searchcontroller
+                                                                .text.toString()
+                                                                .toLowerCase())
+                                                            ?
                                                         GestureDetector(
-                                                          onTap: (){
-                                                            Navigator.of(context).push(
-                                                                MaterialPageRoute(builder: (context)=>Feedbackhistory(snapshot.data!
-                                                                    .docs[index].id,snapshot.data!
-                                                                    .docs[index]["stname"],
-                                                                    staffname,
-                                                                    snapshot.data!.docs[index]["token"],
-                                                                    staffid,
-                                                                    staffauthendicationid
+                                                          onTap: () {
+                                                            Navigator.of(
+                                                                context).push(
+                                                                MaterialPageRoute(
+                                                                    builder: (
+                                                                        context) =>
+                                                                        Feedbackhistory(
+                                                                            snapshot
+                                                                                .data!
+                                                                                .docs[index]
+                                                                                .id,
+                                                                            snapshot
+                                                                                .data!
+                                                                                .docs[index]["stname"],
+                                                                            staffname,
+                                                                            snapshot
+                                                                                .data!
+                                                                                .docs[index]["token"],
+                                                                            staffid,
+                                                                            staffauthendicationid
 
-                                                                )));
-
+                                                                        )));
                                                           },
                                                           child: Container(
                                                             padding:
@@ -4061,21 +4389,24 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                       2.25,
 
                                                                   child: Text(
-                                                                    snapshot.data!
+                                                                    snapshot
+                                                                        .data!
                                                                         .docs[index]["stname"],
                                                                     style: GoogleFonts
                                                                         .poppins(
                                                                         color: Colors
                                                                             .black,
                                                                         fontSize:
-                                                                        width/26.13333333,
+                                                                        width /
+                                                                            26.13333333,
                                                                         fontWeight:
                                                                         FontWeight
                                                                             .w600),
                                                                   ),
                                                                 ),
                                                                 SizedBox(
-                                                                    width: width/7.12727273),
+                                                                    width: width /
+                                                                        7.12727273),
 
                                                                 Container(
                                                                   height: height /
@@ -4083,7 +4414,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                   width:
                                                                   width / 3.6,
                                                                   decoration: BoxDecoration(
-                                                                      color:  Color(0xff3D8CF8),
+                                                                      color: Color(
+                                                                          0xff3D8CF8),
                                                                       borderRadius:
                                                                       BorderRadius
                                                                           .circular(
@@ -4101,7 +4433,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                                             color: Colors
                                                                                 .white,
                                                                             fontSize:
-                                                                            width/26.13333333,
+                                                                            width /
+                                                                                26.13333333,
                                                                             fontWeight:
                                                                             FontWeight
                                                                                 .w600),
@@ -4116,7 +4449,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                             ),
                                                           ),
                                                         )
-                                                            : Container() :Container();
+                                                            : Container()
+                                                            : Container();
                                                     }
                                                 );
                                               }
@@ -4160,7 +4494,6 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-
                                       //timetablelogic();
 
                                     },
@@ -4170,7 +4503,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                           color: Colors
                                               .blueAccent,
                                           fontSize:
-                                          width/21.77777778,
+                                          width / 21.77777778,
                                           fontWeight:
                                           FontWeight
                                               .w600),
@@ -4185,13 +4518,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                   Row(
                                     children: [
                                       Text(
-                                        "${DateFormat.yMMMd().format(DateTime.now())}",
+                                        "${DateFormat.yMMMd().format(
+                                            DateTime.now())}",
                                         style: GoogleFonts.poppins(
                                             color: Colors
                                                 .grey
                                                 .shade700,
                                             fontSize:
-                                            width/26.13333333,
+                                            width / 26.13333333,
                                             fontWeight:
                                             FontWeight
                                                 .w500),
@@ -4218,7 +4552,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 .grey
                                                 .shade700,
                                             fontSize:
-                                            width/26.13333333,
+                                            width / 26.13333333,
                                             fontWeight:
                                             FontWeight
                                                 .w500),
@@ -4239,84 +4573,95 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                   ),
                                   SizedBox(height: height / 150.04,),
                                   Container(
-                                    margin: EdgeInsets.only(
-                                        bottom: height / 75.6),
-                                    padding: EdgeInsets.only(
-                                        bottom: height / 80.6),
-                                    height: height / 1.7425,
-                                    width: width / 1,
-                                    decoration: BoxDecoration(
-                                        color: Color(0xff0873C4),
-                                        borderRadius: BorderRadius.circular(
-                                            12)),
-                                    child: ListView.builder(
-                                        itemCount: teachertable.length,
-                                        itemBuilder: (context,index){
-                                      return  Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 8.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .center,
-                                          children: [
-                                            Stack(
+                                      margin: EdgeInsets.only(
+                                          bottom: height / 75.6),
+                                      padding: EdgeInsets.only(
+                                          bottom: height / 80.6),
+                                      height: height / 1.7425,
+                                      width: width / 1,
+                                      decoration: BoxDecoration(
+                                          color: Color(0xff0873C4),
+                                          borderRadius: BorderRadius.circular(
+                                              12)),
+                                      child: ListView.builder(
+                                          itemCount: teachertable.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .center,
                                                 children: [
-                                                  Container(
-                                                    height: height /
-                                                        18.425,
-                                                    width: width / 1.2,
-                                                    decoration: BoxDecoration(
-                                                        color: Color(
-                                                            0xffECECEC),
-                                                        borderRadius: BorderRadius
-                                                            .circular(
-                                                            18)),
-                                                    child:
-                                                    Padding(
-                                                      padding: EdgeInsets
-                                                          .only(
-                                                          left: width /
-                                                              4.0,top: height/150),
-                                                      child: Text(
-                                                        teachertable[index],
-                                                        style: GoogleFonts
-                                                            .poppins(
-                                                            color: teachertable[index]=="Free Period"? Color(0xfff18d27):Color(
-                                                                0xff0873C4),
-                                                            fontSize: width/19.6,
-                                                            fontWeight: FontWeight
-                                                                .w600),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    height:
-                                                    height / 18.425,
-                                                    width:
-                                                    width / 4.285,
-                                                    decoration:
-                                                    BoxDecoration(
-                                                        color: Colors
-                                                            .white,
-                                                        borderRadius: BorderRadius
-                                                            .circular(
-                                                            18)),
-                                                    child:
-                                                    Center(
-                                                      child: Text("${(index+1).toString()} Hr", style: GoogleFonts
-                                                          .poppins(
-                                                          color: Color(
-                                                              0xff0873C4),
-                                                          fontSize: width/19.6,
-                                                          fontWeight: FontWeight
-                                                              .w600),)
-                                                    ),
-                                                  ),
-                                                ]),
-                                          ],
-                                        ),
-                                      );
-                                    })
+                                                  Stack(
+                                                      children: [
+                                                        Container(
+                                                          height: height /
+                                                              18.425,
+                                                          width: width / 1.2,
+                                                          decoration: BoxDecoration(
+                                                              color: Color(
+                                                                  0xffECECEC),
+                                                              borderRadius: BorderRadius
+                                                                  .circular(
+                                                                  18)),
+                                                          child:
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .only(
+                                                                left: width /
+                                                                    4.0,
+                                                                top: height /
+                                                                    150),
+                                                            child: Text(
+                                                              teachertable[index],
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                  color: teachertable[index] ==
+                                                                      "Free Period"
+                                                                      ? Color(
+                                                                      0xfff18d27)
+                                                                      : Color(
+                                                                      0xff0873C4),
+                                                                  fontSize: width /
+                                                                      19.6,
+                                                                  fontWeight: FontWeight
+                                                                      .w600),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          height:
+                                                          height / 18.425,
+                                                          width:
+                                                          width / 4.285,
+                                                          decoration:
+                                                          BoxDecoration(
+                                                              color: Colors
+                                                                  .white,
+                                                              borderRadius: BorderRadius
+                                                                  .circular(
+                                                                  18)),
+                                                          child:
+                                                          Center(
+                                                              child: Text(
+                                                                "${(index + 1)
+                                                                    .toString()} Hr",
+                                                                style: GoogleFonts
+                                                                    .poppins(
+                                                                    color: Color(
+                                                                        0xff0873C4),
+                                                                    fontSize: width /
+                                                                        19.6,
+                                                                    fontWeight: FontWeight
+                                                                        .w600),)
+                                                          ),
+                                                        ),
+                                                      ]),
+                                                ],
+                                              ),
+                                            );
+                                          })
 
                                     /* Column(
                                                                       mainAxisAlignment:MainAxisAlignment.spaceEvenly,
@@ -4518,7 +4863,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             "Groups",
                                             style: GoogleFonts.poppins(
                                                 color: Color(0xff0873C4),
-                                                fontSize: width/21.77777778,
+                                                fontSize: width / 21.77777778,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
@@ -4530,13 +4875,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     Row(
                                       children: [
                                         Text(
-                                          "${DateFormat.yMMMd().format(DateTime.now())}",
+                                          "${DateFormat.yMMMd().format(
+                                              DateTime.now())}",
                                           style: GoogleFonts
                                               .poppins(
                                               color: Colors
                                                   .grey
                                                   .shade700,
-                                              fontSize: width/26.13333333,
+                                              fontSize: width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w500),
@@ -4562,13 +4908,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                               color: Colors
                                                   .grey
                                                   .shade700,
-                                              fontSize: width/26.13333333,
+                                              fontSize: width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w500),
                                         ),
                                       ],
                                     ),
+
                                     /// date/day
                                     SizedBox(height: height / 184.25),
                                     Divider(
@@ -4599,7 +4946,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             isExpanded: true,
                                             style: TextStyle(
                                                 color: Color(0xff3D8CF8),
-                                                fontSize: width/23.05882353,
+                                                fontSize: width / 23.05882353,
                                                 fontWeight: FontWeight
                                                     .w700),
                                             underline: Container(
@@ -4649,7 +4996,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             isExpanded: true,
                                             style: TextStyle(
                                                 color: Color(0xff3D8CF8),
-                                                fontSize: width/23.05882353,
+                                                fontSize: width / 23.05882353,
                                                 fontWeight: FontWeight
                                                     .w700),
                                             underline: Container(
@@ -4687,7 +5034,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                       width: size.width,
                                       child: StreamBuilder<QuerySnapshot>(
                                         stream: _firestore2db
-                                            .collection('${dropdownValue4}${dropdownValue5}chat')
+                                            .collection(
+                                            '${dropdownValue4}${dropdownValue5}chat')
                                             .orderBy('time')
                                             .snapshots(),
                                         builder: (context, snapshot) {
@@ -4711,13 +5059,30 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                       as Map<String,
                                                           dynamic>;
                                                       return Column(
-                                                        crossAxisAlignment: snapshot.data!.docs[index]["sender"]==staffname?CrossAxisAlignment.end: CrossAxisAlignment.start,
+                                                        crossAxisAlignment: snapshot
+                                                            .data!
+                                                            .docs[index]["sender"] ==
+                                                            staffname
+                                                            ? CrossAxisAlignment
+                                                            .end
+                                                            : CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           messageTile(
                                                               size, chatMap,
                                                               context,
-                                                              snapshot.data!.docs[index].id),
-                                                          snapshot.data!.docs[index]["submitdate"] == "${DateTime.now().year}-${ DateTime.now().month}-${ DateTime.now().day}" ?
+                                                              snapshot.data!
+                                                                  .docs[index]
+                                                                  .id),
+                                                          snapshot.data!
+                                                              .docs[index]["submitdate"] ==
+                                                              "${DateTime
+                                                                  .now()
+                                                                  .year}-${ DateTime
+                                                                  .now()
+                                                                  .month}-${ DateTime
+                                                                  .now()
+                                                                  .day}" ?
                                                           Text(
                                                             'Today  ${snapshot
                                                                 .data!
@@ -4806,7 +5171,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     height: size.height / 18,
                                     width: size.width / 1.0,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceAround,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -4842,7 +5208,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                             ),
                           ),
                         )
-                                : page == "Payroll"
+                            : page == "Payroll"
                             ? Padding(
                           padding:
                           EdgeInsets.only(
@@ -4860,627 +5226,211 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                               padding: EdgeInsets.only(left: width / 36,
                                   right: width / 36,
                                   top: width / 75.6),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                // physics: NeverScrollableScrollPhysics(),
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        page = "Home";
-                                      });
-                                    },
-                                    child: Text(
-                                      "Payroll",
-                                      style: GoogleFonts.poppins(
-                                          color: Colors
-                                              .blueAccent,
-                                          fontSize:
-                                          width/21.77777778,
-                                          fontWeight:
-                                          FontWeight
-                                              .w600),
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: height /
-                                        92.125,
-                                  ),
-
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "${DateFormat.yMMMd().format(DateTime.now())}",
-                                        style: GoogleFonts.poppins(
-                                            color: Colors
-                                                .grey
-                                                .shade700,
-                                            fontSize:
-                                            width/26.13333333,
-                                            fontWeight:
-                                            FontWeight
-                                                .w500),
-                                      ),
-                                      SizedBox(
-                                          width: width /
-                                              33.33),
-                                      Container(
-                                        height:
-                                        height /
-                                            49.133,
-                                        width: width /
-                                            260,
-                                        color: Colors
-                                            .grey,
-                                      ),
-                                      SizedBox(
-                                          width: width /
-                                              33.33),
-                                      Text(
-                                        day,
-                                        style: GoogleFonts.poppins(
-                                            color: Colors
-                                                .grey
-                                                .shade700,
-                                            fontSize:
-                                            width/26.13333333,
-                                            fontWeight:
-                                            FontWeight
-                                                .w500),
-                                      ),
-                                    ],
-                                  ),
-
-                                  /// date/day
-
-                                  SizedBox(
-                                      height: height /
-                                          36.85),
-
-                                  Divider(
-                                    color:
-                                    Colors.black,
-                                    thickness: 0.5,
-                                  ),
-                                  SizedBox(height: height / 50.04,),
-                                  Material(
-                                    elevation:5,
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: GestureDetector(
-                                      onTap: () async{
-
-                                        List<p.Widget> widgets = [];
-                                        var fontsemipoppoins = await PdfGoogleFonts.poppinsSemiBold();
-//Profile image
-
-
-//container for profile image decoration
-
-
-
-//add decorated image container to widgets list
-
-                                        widgets.add(p.Padding(
-                                            padding: const p.EdgeInsets.only(top: 90),
-                                            child: p.Container(
-                                              height: 600,
-                                              child: p.Column(
-
-                                                  children: [
-                                                  p.Text("Payslip",style: p.TextStyle(fontSize: 20)),
-                                              p.SizedBox(height: 3),
-                                              p.Text("RAVEN ENGLISH SCHOOL"),
-                                              p.SizedBox(height: 3),
-                                              p.Text("ANNANJI,THENI - 625531"),
-                                              p.SizedBox(height: 8),
-                                              p.Row(mainAxisAlignment: p.MainAxisAlignment.center, children: [
-                                                p.Container(
-                                                    child: p.Column(
-                                                        crossAxisAlignment: p.CrossAxisAlignment.start,
-                                                        mainAxisAlignment: p.MainAxisAlignment.start,
-                                                        children: [
-
-                                                          p.SizedBox(height: 5),
-                                                          p.Row(children: [
-                                                            p.Container(
-                                                              width: 110,
-                                                              height: 20,
-
-                                                              child: p.Text("Date of Joining:",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            ),
-                                                            p.Container(
-                                                              width: 140,
-                                                              height: 20,
-                                                              child: p.Text(": 2018-06-23",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            ),
-                                                          ]),
-                                                          p.SizedBox(height: 5),
-                                                          p.Row(children: [
-                                                            p.Container(
-                                                              width: 110,
-                                                              height: 20,
-                                                              child: p.Text("Pay Period",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            ),
-                                                            p.Container(
-                                                              width: 140,
-                                                              height: 20,
-                                                              child: p.Text(": August 2021",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            )
-                                                          ]),
-                                                          p.SizedBox(height: 5),
-                                                          p.Row(children: [
-                                                            p.Container(
-                                                              width: 110,
-                                                              height: 20,
-                                                              child: p.Text("Worked Days",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            ),
-                                                            p.Container(
-                                                              width: 140,
-                                                              height: 20,
-                                                              child: p.Text("26",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            )
-                                                          ]),
-                                                        ])),
-                                                p.SizedBox(width: width / 273.2),
-                                                p.Container(
-                                                    child: p.Column(
-                                                        crossAxisAlignment: p.CrossAxisAlignment.start,
-                                                        mainAxisAlignment: p.MainAxisAlignment.start,
-                                                        children: [
-                                                          p.Row(
-                                                              crossAxisAlignment: p.CrossAxisAlignment.start,
-                                                              children: [
-                                                                p.Container(
-                                                                  width: 120,
-                                                                  height: 20,
-                                                                  child: p.Text("Employee Name",
-                                                                      style: const p.TextStyle(
-                                                                          color: PdfColors.black)),
-                                                                ),
-                                                                p.Container(
-                                                                  width: 140,
-                                                                  height: 20,
-                                                                  child: p.Text(": Sally Harley",
-                                                                      style: const p.TextStyle(
-                                                                          color: PdfColors.black)),
-                                                                )
-                                                              ]),
-                                                          p.SizedBox(height: 5),
-                                                          p.Row(children: [
-                                                            p.Container(
-                                                              width: 120,
-                                                              height: 20,
-                                                              child: p.Text("Designation",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            ),
-                                                            p.Container(
-                                                              width: 140,
-                                                              height: 20,
-                                                              child: p.Text(": Marketing Evecutive",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            )
-                                                          ]),
-                                                          p.SizedBox(height: 5),
-                                                          p.Row(children: [
-                                                            p.Container(
-                                                              width: 120,
-                                                              height: 20,
-                                                              child: p.Text("Department",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            ),
-                                                            p.Container(
-                                                              width: 140,
-                                                              height: 20,
-                                                              child: p.Text(": Marketing",
-                                                                  style: const p.TextStyle(
-                                                                      color: PdfColors.black)),
-                                                            )
-                                                          ]),
-                                                        ])),
-                                              ]),
-                                              p.SizedBox(height: 5),
-
-                                              p.Container(
-                                                child: p.Row(
-                                                    mainAxisAlignment: p.MainAxisAlignment.center,
-                                                    children: [
-                                                      p.Container(
-                                                          width:380,
-                                                          height: 30,
-                                                          decoration: p.BoxDecoration(
-                                                              color: PdfColor.fromHex("0271C5"),
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-                                                          child: p.Center(
-                                                              child: p.Text("Earnings",style: p.TextStyle(
-                                                                color:PdfColors.white,
-                                                              ))
-                                                          )
-                                                      ),
-                                                      p.Container(
-                                                          width: 100,
-                                                          height: 30,
-                                                          decoration: p.BoxDecoration(
-                                                              color: PdfColor.fromHex("0271C5"),
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-
-                                                          child:p.Center(
-                                                              child:  p.Text("Amount",style: p.TextStyle(
-                                                                color:PdfColors.white,
-                                                              ))
-                                                          )
-                                                      ),
-                                                    ]
-                                                ),
-
-
-                                              ),
-                                              p.Container(
-                                                child: p.Row(
-                                                    crossAxisAlignment: p.CrossAxisAlignment.start,
-                                                    mainAxisAlignment: p.MainAxisAlignment.center,
-                                                    children: [
-                                                      p.Container(
-                                                          width:380,
-                                                          height: height/6.3,
-                                                          decoration: p.BoxDecoration(
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-                                                          child:
-                                                          p.Padding(
-                                                              padding: p.EdgeInsets.only(left: width/36.0),
-                                                              child: p.Column(
-                                                                  crossAxisAlignment: p.CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("Basic Pay"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("DA"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("House Rent Allowance"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("Other Allowance"),
-                                                                    ),
-                                                                    p.Row(
-                                                                        mainAxisAlignment: p.MainAxisAlignment.end,
-                                                                        children: [
-                                                                          p.Padding(
-                                                                            padding: p.EdgeInsets.only(right: 8,top: 10),
-                                                                            child:  p.Text("Total Earnings"),
-                                                                          ),
-                                                                        ]
-                                                                    )
-                                                                  ]
-                                                              )
-                                                          )
-                                                      ),
-                                                      p.Container(
-                                                          width: 100,
-                                                          height: height/6.3,
-                                                          decoration: p.BoxDecoration(
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-
-                                                          child: p.Padding(
-                                                              padding: p.EdgeInsets.only(right: 10),
-                                                              child: p.Column(
-                                                                  crossAxisAlignment: p.CrossAxisAlignment.end,
-                                                                  children: [
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("10000"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("1000"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("400"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("200"),
-                                                                    ),
-                                                                    p.Row(
-                                                                        mainAxisAlignment: p.MainAxisAlignment.end,
-                                                                        children: [
-                                                                          p.Padding(
-                                                                            padding: p.EdgeInsets.only(top: 10),
-                                                                            child:  p.Text("0"),
-                                                                          ),
-                                                                        ]
-                                                                    )
-                                                                  ]
-                                                              )
-                                                          )
-                                                      ),
-                                                    ]
-                                                ),
-
-
-                                              ),
-
-                                              p.SizedBox(height: height/75.6),
-
-                                              p.Container(
-                                                child: p.Row(
-                                                    mainAxisAlignment: p.MainAxisAlignment.center,
-                                                    children: [
-                                                      p.Container(
-                                                          width:380,
-                                                          height: 30,
-                                                          decoration: p.BoxDecoration(
-                                                              color: PdfColor.fromHex("0271C5"),
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-                                                          child: p.Center(
-                                                              child: p.Text("Deductions",style: p.TextStyle(
-                                                                color:PdfColors.white,
-                                                              ))
-                                                          )
-                                                      ),
-                                                      p.Container(
-                                                          width: 100,
-                                                          height: 30,
-                                                          decoration: p.BoxDecoration(
-                                                              color: PdfColor.fromHex("0271C5"),
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-
-                                                          child:p.Center(
-                                                              child:  p.Text("Amount",style: p.TextStyle(
-                                                                color:PdfColors.white,
-                                                              ))
-                                                          )
-                                                      ),
-                                                    ]
-                                                ),
-
-
-                                              ),
-                                              p.Container(
-                                                child: p.Row(
-                                                    crossAxisAlignment: p.CrossAxisAlignment.start,
-                                                    mainAxisAlignment: p.MainAxisAlignment.center,
-                                                    children: [
-                                                      p.Container(
-                                                          width:380,
-                                                          height: height/6.3,
-                                                          decoration: p.BoxDecoration(
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-                                                          child:
-                                                          p.Padding(
-                                                              padding: p.EdgeInsets.only(left: width/36.0),
-                                                              child: p.Column(
-                                                                  crossAxisAlignment: p.CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("Provident Fund "),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("Profesional Tax "),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("Loan"),
-                                                                    ),
-
-                                                                    p.Row(
-                                                                        mainAxisAlignment: p.MainAxisAlignment.end,
-                                                                        children: [
-                                                                          p.Padding(
-                                                                            padding: p.EdgeInsets.only(right: 8,top: 10),
-                                                                            child:  p.Text("Total Deductions"),
-                                                                          ),
-                                                                        ]
-                                                                    ),
-                                                                    p.Row(
-                                                                        mainAxisAlignment: p.MainAxisAlignment.end,
-                                                                        children: [
-                                                                          p.Padding(
-                                                                            padding: p.EdgeInsets.only(right: 8,top: 10),
-                                                                            child:  p.Text("Net Pay"),
-                                                                          ),
-                                                                        ]
-                                                                    )
-                                                                  ]
-                                                              )
-                                                          )
-                                                      ),
-                                                      p.Container(
-                                                          width: 100,
-                                                          height: height/6.3,
-                                                          decoration: p.BoxDecoration(
-                                                              border: p.Border.all(color: PdfColors.black)
-                                                          ),
-
-                                                          child: p.Padding(
-                                                              padding: p.EdgeInsets.only(right: 10),
-                                                              child: p.Column(
-                                                                  crossAxisAlignment: p.CrossAxisAlignment.end,
-                                                                  children: [
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("1200"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("500"),
-                                                                    ),
-                                                                    p.Padding(
-                                                                      padding: p.EdgeInsets.only(top: 8),
-                                                                      child:  p.Text("400"),
-                                                                    ),
-
-                                                                    p.Row(
-                                                                        mainAxisAlignment: p.MainAxisAlignment.end,
-                                                                        children: [
-                                                                          p.Padding(
-                                                                            padding: p.EdgeInsets.only(top: 10),
-                                                                            child:  p.Text("2100"),
-                                                                          ),
-                                                                        ]
-                                                                    ),
-                                                                    p.Row(
-                                                                        mainAxisAlignment: p.MainAxisAlignment.end,
-                                                                        children: [
-                                                                          p.Padding(
-                                                                            padding: p.EdgeInsets.only(top: 10),
-                                                                            child:  p.Text("9500"),
-                                                                          ),
-                                                                        ]
-                                                                    )
-                                                                  ]
-                                                              )
-                                                          )
-                                                      ),
-                                                    ]
-                                                ),
-
-
-                                              ),
-                                              p.SizedBox(height: height/75.6),
-                                              p.Text("9500"),
-                                              p.SizedBox(height: 5),
-                                              p.Text("Nine Thousand Five Hundred"),
-                                              p.SizedBox(height: 15),
-                                              p.Row(
-                                                  mainAxisAlignment: p.MainAxisAlignment.spaceAround,
-                                                  children: [
-                                                    p.SizedBox(
-                                                      width: width/1.8,
-                                                      child:  p.Column(
-                                                          children: [
-                                                            p.Text("Employer Signature"),
-                                                            p.SizedBox(height: 15),
-                                                            p.Divider()
-                                                          ]
-                                                      ),
-                                                    ),
-                                                    p.SizedBox(
-                                                      width: width/1.8,
-                                                      child:  p.Column(
-                                                          children: [
-                                                            p.Text("Employee Signature"),
-                                                            p.SizedBox(height: 15),
-                                                            p.Divider()
-                                                          ]
-                                                      ),
-                                                    ),
-
-                                                  ]
-                                              ),
-                                              p.SizedBox(height: 15),
-                                              p.Text("This is system generated payslip"),
-
-
-
-
-                                            ]))));
-
-                                       //some space beneath image
-
-//add all other data which may be in the form of list
-//use a loop to create pdf widget and add it to list
-//one by one
-
-
-//pdf document
-                                        final pdf = p.Document();
-                                        pdf.addPage(
-                                          p.MultiPage(
-                                            margin: p.EdgeInsets.zero,
-                                            pageFormat: PdfPageFormat.a4,
-                                            build: (context) => widgets,//here goes the widgets list
-                                          ),
-                                        );
-                                        Printing.layoutPdf(
-                                          onLayout: (PdfPageFormat format) async => pdf.save(),
-                                        );
-
-
+                              child: SingleChildScrollView(
+                                physics: const ScrollPhysics(),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  // physics: NeverScrollableScrollPhysics(),
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          page = "Home";
+                                        });
                                       },
-                                      child: Container(
-                                          width: width/0.972,
-                                          height: height/7.56,
-
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            color: Color(0xff0873C4),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding:  EdgeInsets.only(left: width/30,top:8,bottom: 5),
-                                                    child: Text("Download Payroll",style: GoogleFonts.poppins(
-                                                        color: Colors.white,
-                                                        fontSize: 23,
-                                                        fontWeight: FontWeight.w700
-
-                                                    ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:  EdgeInsets.only(left: width/30),
-                                                    child: Text("September Month ",style: GoogleFonts.poppins(
-                                                        color: Colors.white,
-                                                        fontSize: width/22.5,
-                                                        fontWeight: FontWeight.w600
-
-                                                    ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Padding(
-                                                padding:  EdgeInsets.only(right: width/30),
-                                                child: Icon(Icons.download,color: Colors.white,size: 40,),
-                                              )
-                                            ],
-                                          )
+                                      child: Text(
+                                        "Payroll",
+                                        style: GoogleFonts.poppins(
+                                            color: Colors
+                                                .blueAccent,
+                                            fontSize:
+                                            width / 21.77777778,
+                                            fontWeight:
+                                            FontWeight
+                                                .w600),
                                       ),
                                     ),
-                                  ),
-                              
 
-                                ],
+                                    SizedBox(
+                                      height: height /
+                                          92.125,
+                                    ),
+
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "${DateFormat.yMMMd().format(
+                                              DateTime.now())}",
+                                          style: GoogleFonts.poppins(
+                                              color: Colors
+                                                  .grey
+                                                  .shade700,
+                                              fontSize:
+                                              width / 26.13333333,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w500),
+                                        ),
+                                        SizedBox(
+                                            width: width /
+                                                33.33),
+                                        Container(
+                                          height:
+                                          height /
+                                              49.133,
+                                          width: width /
+                                              260,
+                                          color: Colors
+                                              .grey,
+                                        ),
+                                        SizedBox(
+                                            width: width /
+                                                33.33),
+                                        Text(
+                                          day,
+                                          style: GoogleFonts.poppins(
+                                              color: Colors
+                                                  .grey
+                                                  .shade700,
+                                              fontSize:
+                                              width / 26.13333333,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w500),
+                                        ),
+                                      ],
+                                    ),
+
+                                    /// date/day
+
+                                    SizedBox(
+                                        height: height /
+                                            36.85),
+
+                                    Divider(
+                                      color:
+                                      Colors.black,
+                                      thickness: 0.5,
+                                    ),
+                                    SizedBox(height: height / 50.04,),
+                                    StreamBuilder<QuerySnapshot>(
+                                      stream: _firestore2db.collection("Staffs").doc(staffid).collection("Payroll_Reports").orderBy("timestamp").snapshots(),
+                                      builder: (context, payrolsnap) {
+                                        if (payrolsnap.hasData == null) {
+                                          return Center(
+                                              child: CircularProgressIndicator());
+                                        }
+                                        if (!payrolsnap.hasData) {
+                                          return Center(
+                                              child: CircularProgressIndicator());
+                                        }
+                                        return ListView.builder(
+
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: payrolsnap.data!.docs
+                                              .length,
+                                          itemBuilder: (context, index) {
+                                            var patrolldata = payrolsnap.data!
+                                                .docs[index];
+
+                                            return
+                                              Material(
+                                                elevation: 5,
+                                                borderRadius: BorderRadius
+                                                    .circular(15),
+                                                child: GestureDetector(
+                                                  onTap: () async {
+                                                    payrollreports(
+                                                        patrolldata.id);
+                                                  },
+                                                  child: Container(
+                                                      width: width / 0.972,
+                                                      height: height / 9.0,
+
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius
+                                                            .circular(15),
+                                                        color: Color(
+                                                            0xff0873C4),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment
+                                                            .spaceBetween,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                    left: width /
+                                                                        30,
+                                                                    top: 8,
+                                                                    bottom: 5),
+                                                                child: Text(
+                                                                  "Download Payroll",
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize: 23,
+                                                                      fontWeight: FontWeight
+                                                                          .w700
+
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                    left: width /
+                                                                        30),
+                                                                child: Text(
+                                                                  patrolldata['month']
+                                                                      .toString(),
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize: width /
+                                                                          22.5,
+                                                                      fontWeight: FontWeight
+                                                                          .w600
+
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .only(
+                                                                right: width /
+                                                                    30),
+                                                            child: Icon(
+                                                              Icons.download,
+                                                              color: Colors
+                                                                  .white,
+                                                              size: 40,),
+                                                          )
+                                                        ],
+                                                      )
+                                                  ),
+                                                ),
+                                              );
+                                          },);
+                                      },)
+
+
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         )
-                                : page == "Leave"
+                            : page == "Leave"
                             ? Padding(
                           padding:
                           EdgeInsets.only(
@@ -5515,7 +5465,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             color: Colors
                                                 .blueAccent,
                                             fontSize:
-                                            width/21.77777778,
+                                            width / 21.77777778,
                                             fontWeight:
                                             FontWeight
                                                 .w600),
@@ -5530,13 +5480,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     Row(
                                       children: [
                                         Text(
-                                          "${DateFormat.yMMMd().format(DateTime.now())}",
+                                          "${DateFormat.yMMMd().format(
+                                              DateTime.now())}",
                                           style: GoogleFonts.poppins(
                                               color: Colors
                                                   .grey
                                                   .shade700,
                                               fontSize:
-                                              width/26.13333333,
+                                              width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w500),
@@ -5563,7 +5514,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                   .grey
                                                   .shade700,
                                               fontSize:
-                                              width/26.13333333,
+                                              width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w500),
@@ -5610,7 +5561,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 .poppins(
                                               color: Colors
                                                   .black,
-                                              fontSize: width/28,
+                                              fontSize: width / 28,
                                               fontWeight:
                                               FontWeight
                                                   .w500,
@@ -5687,7 +5638,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 .poppins(
                                               color: Colors
                                                   .black,
-                                              fontSize: width/28,
+                                              fontSize: width / 28,
                                               fontWeight:
                                               FontWeight
                                                   .w500,
@@ -5698,7 +5649,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                             decoration:
                                             InputDecoration(
                                                 contentPadding: EdgeInsets
-                                                    .only(top: 15),
+                                                    .only(top:height/50.4),
                                                 suffixIcon: Icon(
                                                     Icons.calendar_month,
                                                     color: Colors.black),
@@ -5709,7 +5660,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                     .poppins(
                                                   color: Colors
                                                       .black,
-                                                  fontSize: width/28,
+                                                  fontSize: width / 28,
                                                   fontWeight:
                                                   FontWeight
                                                       .w500,
@@ -5732,12 +5683,12 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                     Row(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                                           child: Text(
                                             "Reason",
                                             style: GoogleFonts.poppins(
                                                 color: Colors.black,
-                                                fontSize: width/28,
+                                                fontSize: width / 28,
                                                 fontWeight:
                                                 FontWeight.w600),
                                           ),
@@ -5779,7 +5730,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                                 color: Colors
                                                     .grey
                                                     .shade700,
-                                                fontSize: width/28,
+                                                fontSize: width / 28,
                                                 fontWeight:
                                                 FontWeight
                                                     .w500,
@@ -5795,18 +5746,21 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                                     SizedBox(height: height / 49.133),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center,
                                       children: [
                                         GestureDetector(
-                                          onTap: (){
-                                            if(leavetype!="Leave Type"&&homecoller.text!=""&&duedate.text !=""){
+                                          onTap: () {
+                                            if (leavetype != "Leave Type" &&
+                                                homecoller.text != "" &&
+                                                duedate.text != "") {
                                               submitleave();
                                               submitleavepopup();
                                             }
-                                            else{
+                                            else {
                                               ErrorHomeworkdialog();
                                             }
-                                            },
+                                          },
                                           child: Container(
                                             height: height / 16.37,
                                             width: width / 2.3636,
@@ -5856,7 +5810,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                           color: Colors
                                               .blueAccent,
                                           fontSize:
-                                          width/21.77777778,
+                                          width / 21.77777778,
                                           fontWeight:
                                           FontWeight
                                               .w600),
@@ -5872,7 +5826,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                               .poppins(
                                               color: Colors
                                                   .black,
-                                              fontSize: width/26.13333333,
+                                              fontSize: width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w600),
@@ -5888,105 +5842,169 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                               .poppins(
                                               color: Colors
                                                   .black,
-                                              fontSize: width/26.13333333,
+                                              fontSize: width / 26.13333333,
                                               fontWeight:
                                               FontWeight
                                                   .w600),
                                         ),
                                       ],
                                     ),
-                                    StreamBuilder(stream: _firestore2db.collection("Staffs").doc(staffid).collection('Leave').orderBy("timestamp",descending: true).snapshots(),
-                                        builder: (context,snap){
+                                    StreamBuilder(
+                                        stream: _firestore2db.collection(
+                                            "Staffs").doc(staffid).collection(
+                                            'Leave')
+                                            .orderBy(
+                                            "timestamp", descending: true)
+                                            .snapshots(),
+                                        builder: (context, snap) {
+                                          if (!snap.hasData) {
+                                            return const Center(
+                                              child: CircularProgressIndicator(),);
+                                          }
+                                          if (snap.hasData == null) {
+                                            return const Center(
+                                              child: CircularProgressIndicator(),);
+                                          }
 
-                                      if(!snap.hasData){
-                                        return const Center(child: CircularProgressIndicator(),);
-                                      }
-                                      if(snap.hasData==null){
-                                        return const Center(child: CircularProgressIndicator(),);
-                                      }
+                                          return ListView.builder(
+                                              physics: NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount: snap.data!.docs.length,
+                                              itemBuilder: (context, index) {
+                                                return GestureDetector(
+                                                    onTap: () {
+                                                      ltpdialog(
+                                                          snap.data!
+                                                              .docs[index]["type"],
+                                                          snap.data!
+                                                              .docs[index]["date"],
+                                                          snap.data!
+                                                              .docs[index]["time"],
+                                                          snap.data!
+                                                              .docs[index]["leaveon"],
+                                                          snap.data!
+                                                              .docs[index]["reason"],
+                                                          snap.data!
+                                                              .docs[index]["status"],
+                                                          snap.data!.docs[index]
+                                                              .id
+                                                      );
+                                                    },
+                                                    child: Column(
+                                                      children: [
+                                                        ListTile(
+                                                          title: Text(snap.data!
+                                                              .docs[index]["type"],
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: width /
+                                                                    26.13333333,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                          ),
+                                                          subtitle: Text(
+                                                            snap.data!
+                                                                .docs[index]["date"],
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                                color: Colors
+                                                                    .grey,
+                                                                fontSize: width /
+                                                                    40.13333333,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600),),
+                                                          trailing: Container(
+                                                            decoration: BoxDecoration(
+                                                                color: snap
+                                                                    .data!
+                                                                    .docs[index]["status"]
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                    "approved"
+                                                                    ? Colors
+                                                                    .green
+                                                                    :
+                                                                snap.data!
+                                                                    .docs[index]["status"]
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                    "pending"
+                                                                    ? Colors
+                                                                    .orange
+                                                                    :
+                                                                snap.data!
+                                                                    .docs[index]["status"]
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                    "denied"
+                                                                    ? Colors.red
+                                                                    :
+                                                                Colors
+                                                                    .blueAccent,
+                                                                borderRadius: BorderRadius
+                                                                    .circular(8)
+                                                            ),
+                                                            padding: EdgeInsets
+                                                                .symmetric(
 
-                                      return ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: snap.data!.docs.length,
-                                          itemBuilder: (context,index){
-                                        return GestureDetector(
-                                          onTap: (){
-                                            ltpdialog(snap.data!.docs[index]["type"],snap.data!.docs[index]["date"],snap.data!.docs[index]["time"],snap.data!.docs[index]["leaveon"],
-                                                snap.data!.docs[index]["reason"],snap.data!.docs[index]["status"],snap.data!.docs[index].id
-                                            );
-                                          },
-                                          child: Column(
-                                            children: [
-                                              ListTile(
-                                                title: Text(snap.data!.docs[index]["type"],style: GoogleFonts
-                                                    .poppins(
-                                                    color: Colors
-                                                        .black,
-                                                    fontSize: width/26.13333333,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600),
-                                                ),
-                                                subtitle: Text(snap.data!.docs[index]["date"],style: GoogleFonts.poppins(
-                                                    color: Colors
-                                                        .grey,
-                                                    fontSize: width/40.13333333,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600),),
-                                                trailing: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: snap.data!.docs[index]["status"].toString().toLowerCase()=="approved"?Colors.green:
-                                                    snap.data!.docs[index]["status"].toString().toLowerCase()=="pending"? Colors.orange:
-                                                    snap.data!.docs[index]["status"].toString().toLowerCase()=="denied"? Colors.red:
-                                                    Colors.blueAccent,
-                                                    borderRadius: BorderRadius.circular(8)
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(
+                                                                vertical: height /
+                                                                    216,
+                                                                horizontal: width /
+                                                                    102.85
+                                                            ),
+                                                            child: Text(
+                                                              snap.data!
+                                                                  .docs[index]["status"],
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: width /
+                                                                      28.13333333,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: width / 1.2,
+                                                          child: Divider(
+                                                            thickness: 2,
+                                                            color: Colors
+                                                                .black54,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
+                                                );
+                                              });
+                                        }),
+                                    SizedBox(height: height / 7.56,)
 
-                                                    vertical: height/216,
-                                                    horizontal: width/102.85
-                                                  ),
-                                                  child: Text(snap.data!.docs[index]["status"],style: GoogleFonts.poppins(
-                                                      color: Colors.white,
-                                                      fontSize: width/26.13333333,
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w600),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: width/1.2,
-                                                child: Divider(
-                                                  thickness: 2,
-                                                  color: Colors.black54,
-                                                ),
-                                              )
-                                            ],
-                                          )
-                                        );
-
-                                      });
-                                    }),
-                                    SizedBox(height: height/7.56,)
-
-                            
 
                                   ],
                                 ),
                               ),
                             ),
                           ),
-                        ) : page == "CheckIn"? Today_Presents_Page(staffname,staffregno)
+                        ) : page == "CheckIn" ? Today_Presents_Page(
+                            staffname, staffregno,staffid)
                             : Container()
                     ),
                   ),
 
-                  page=="Home Works"  ||    page=="Time Table" || page=="CheckIn"|| page=="Leave"|| page=="Messages"?  SizedBox() :
+                  page == "Home Works" || page == "Time Table" ||
+                      page == "CheckIn" || page == "Leave" || page == "Messages"
+                      ? SizedBox()
+                      :
                   Padding(
-                    padding:  EdgeInsets.only(left: width/13.33,right: width/13.333),
+                    padding: EdgeInsets.only(
+                        left: width / 13.33, right: width / 13.333),
                     child: Container(
                       height: height / 14.28,
                       width: width / 1.1,
@@ -6000,11 +6018,13 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                           ],
                           borderRadius: BorderRadius.circular(12)),
                       child: Padding(
-                        padding:  EdgeInsets.only(top:height/94.5,bottom: height/189),
+                        padding: EdgeInsets.only(
+                            top: height / 94.5, bottom: height / 189),
                         child: TextField(
 
                           decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(top: height/50.4),
+                              contentPadding: EdgeInsets.only(
+                                  top: height / 50.4),
                               enabledBorder:
                               OutlineInputBorder(borderSide: BorderSide.none),
                               focusedBorder:
@@ -6012,7 +6032,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                               prefixIcon: Icon(Icons.search_rounded
                               ),
                               suffixIcon: InkWell(
-                                  onTap: (){
+                                  onTap: () {
                                     setState(() {
                                       Searchcontroller.clear();
                                       page = "Home";
@@ -6021,63 +6041,66 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                   child: Icon(Icons.cancel)),
                               hintText: "Search",
                               hintStyle: GoogleFonts.poppins(
-                                  color: Colors.grey.shade900, fontSize:width/22.5)),
+                                  color: Colors.grey.shade900,
+                                  fontSize: width / 22.5)),
 
-                          onSubmitted: (_){
-                            if(Searchcontroller.text=="Attendance"){
+                          onSubmitted: (_) {
+                            if (Searchcontroller.text == "Attendance") {
                               setState(() {
                                 page = "Attendance";
                               });
                             }
-                            if(Searchcontroller.text=="Attendance"){
+                            if (Searchcontroller.text == "Attendance") {
                               setState(() {
                                 page = "Attendance";
                               });
                             }
-                            if(Searchcontroller.text=="Home Works"){
+                            if (Searchcontroller.text == "Home Works") {
                               setState(() {
                                 page = "Home Works";
                               });
                             }
-                            if(Searchcontroller.text=="Behaviour"){
+                            if (Searchcontroller.text == "Behaviour") {
                               setState(() {
                                 page = "Behaviour";
                               });
                             }
-                            if(Searchcontroller.text=="Circulars"){
+                            if (Searchcontroller.text == "Circulars") {
                               setState(() {
                                 page = "Circulars";
                               });
                             }
-                            if(Searchcontroller.text=="Time Table"){
+                            if (Searchcontroller.text == "Time Table") {
                               setState(() {
                                 page = "Time Table";
                               });
                             }
-                            if(Searchcontroller.text=="Messages"){
+                            if (Searchcontroller.text == "Messages") {
                               setState(() {
                                 page = "Messages";
                               });
                             }
-                            if(Searchcontroller.text.contains('Home')){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>Root_Page() ,));
+                            if (Searchcontroller.text.contains('Home')) {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => Root_Page(),));
                             }
-                            if(Searchcontroller.text.contains('Message')){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>Root_Page() ,));
+                            if (Searchcontroller.text.contains('Message')) {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => Root_Page(),));
                             }
-                            if(Searchcontroller.text.contains('Exams')){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>Root_Page() ,));
+                            if (Searchcontroller.text.contains('Exams')) {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => Root_Page(),));
                             }
-                            if(Searchcontroller.text.contains('Profile')){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>Root_Page() ,));
+                            if (Searchcontroller.text.contains('Profile')) {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => Root_Page(),));
                             }
-
-
                           },
-                          onChanged: (val){
-                            if(Searchcontroller.text==""){
-                              setState((){
-                                search=false;
+                          onChanged: (val) {
+                            if (Searchcontroller.text == "") {
+                              setState(() {
+                                search = false;
                                 Searchcontroller.clear();
                               });
                               print(search);
@@ -6085,10 +6108,10 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                               });
                             }
-                            else{
-                              setState((){
-                                search=true;
-                                Searchcontroller.text=val;
+                            else {
+                              setState(() {
+                                search = true;
+                                Searchcontroller.text = val;
                               });
                               setState(() {
 
@@ -6120,16 +6143,16 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
   File? _pickedFile4;
   File? _pickedFile5;
 
-  TextEditingController leavedes= new TextEditingController();
+  TextEditingController leavedes = new TextEditingController();
   var _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   Random _rnd = Random();
 
-  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  String getRandomString(int length) =>
+      String.fromCharCodes(Iterable.generate(
+          length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-  submitleave(){
-
-    if(docid=="") {
+  submitleave() {
+    if (docid == "") {
       String docid = getRandomString(16);
       _firestore2db.collection("Staffs").doc(staffid).collection('Leave').doc(
           docid).set({
@@ -6173,7 +6196,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         "regno": staffregno,
       });
     }
-    else{
+    else {
       _firestore2db.collection("Staffs").doc(staffid).collection('Leave').doc(
           docid).update({
         "type": leavetype,
@@ -6216,35 +6239,36 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         "regno": staffregno,
       });
     }
-
   }
 
   submitleavepopup() {
-    double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return AwesomeDialog(
-      width: width/0.87111111,
+      width: width / 0.87111111,
       context: context,
       dialogType: DialogType.success,
       animType: AnimType.rightSlide,
       title: 'Leave applied successfully',
 
 
-
       btnOkOnPress: () {
         setState(() {
-          leavetype="Leave Type";
+          leavetype = "Leave Type";
           homecoller.clear();
           topic.clear();
 
           duedate.clear();
         });
       },
-    )..show();
-
+    )
+      ..show();
   }
 
-  croppimage()async{
-    if(_pickedFile==null) {
+  croppimage() async {
+    if (_pickedFile == null) {
       ImagePicker _picker = ImagePicker();
       await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
         if (xFile != null) {
@@ -6253,9 +6277,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
           });
         }
       });
-
     }
-    else if(_pickedFile2==null) {
+    else if (_pickedFile2 == null) {
       ImagePicker _picker = ImagePicker();
       await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
         if (xFile != null) {
@@ -6265,7 +6288,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         }
       });
     }
-    else if(_pickedFile3==null) {
+    else if (_pickedFile3 == null) {
       ImagePicker _picker = ImagePicker();
       await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
         if (xFile != null) {
@@ -6275,7 +6298,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         }
       });
     }
-    else if(_pickedFile4==null) {
+    else if (_pickedFile4 == null) {
       ImagePicker _picker = ImagePicker();
       await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
         if (xFile != null) {
@@ -6285,7 +6308,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         }
       });
     }
-    else  if(_pickedFile5==null) {
+    else if (_pickedFile5 == null) {
       ImagePicker _picker = ImagePicker();
       await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
         if (xFile != null) {
@@ -6295,7 +6318,6 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         }
       });
     }
-
   }
 
   addattachment() async {
@@ -6566,31 +6588,36 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       });
     }
   }
+
   final homecontroller = Get.put(HomeController());
 
 
-
   attendaceupload() async {
-    var document2 = await _firestore2db.collection("Attendance").doc("${_typeAheadControllerclass.text}${_typeAheadControllersection.text}").collection("${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}").get();
-    if(document2.docs.length>0){
+    var document2 = await _firestore2db.collection("Attendance")
+        .doc(
+        "${_typeAheadControllerclass.text}${_typeAheadControllersection.text}")
+        .collection("${DateTime
+        .now()
+        .day}-${DateTime
+        .now()
+        .month}-${DateTime
+        .now()
+        .year}")
+        .get();
+    if (document2.docs.length > 0) {
       Alreadymarked();
     }
     else {
       Successdialog();
-      var document = await _firestore2db.collection("Students").orderBy("timestamp").get();
+      var document = await _firestore2db.collection("Students").orderBy(
+          "timestamp").get();
       for (int i = 0; i < document.docs.length; i++) {
         if (document.docs[i]["admitclass"] == _typeAheadControllerclass.text &&
             document.docs[i]["section"] == _typeAheadControllersection.text) {
           _firestore2db.collection("Attendance").doc(
               "${_typeAheadControllerclass.text}${_typeAheadControllersection
                   .text}").
-          collection("${DateTime
-              .now()
-              .day}-${DateTime
-              .now()
-              .month}-${DateTime
-              .now()
-              .year}").doc().set({
+          collection("${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}").doc().set({
             "stname": document.docs[i]["stname"],
             "regno": document.docs[i]["regno"],
             "stdocid": document.docs[i].id,
@@ -6609,17 +6636,9 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                 .year}")
                 .set({
               "Attendance": "Present",
-              "Date": "${DateTime
-                  .now()
-                  .day}-${DateTime
-                  .now()
-                  .month}-${DateTime
-                  .now()
-                  .year}",
-              "timesatmp": DateTime
-                  .now()
-                  .millisecondsSinceEpoch,
-              "month":cmonth
+              "Date": "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+              "timesatmp": DateTime.now().millisecondsSinceEpoch,
+              "month": cmonth
             });
           }
           if (present[i] == false) {
@@ -6644,7 +6663,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
               "timesatmp": DateTime
                   .now()
                   .millisecondsSinceEpoch,
-              "month":cmonth
+              "month": cmonth
             });
             _firestore2db.collection("Students")
                 .doc(document.docs[i].id)
@@ -6655,58 +6674,67 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
           if (present[i] == true) {
             homecontroller.sendPushMessage(document.docs[i]["token"],
                 "Attendance marked as Present for ${document
-                    .docs[i]["stname"]} today", "Attendance Update","Attendance");
+                    .docs[i]["stname"]} today", "Attendance Update",
+                "Attendance");
           }
           if (present[i] == false) {
             homecontroller.sendPushMessage(document.docs[i]["token"],
                 "Attendance marked as Absent for ${document
-                    .docs[i]["stname"]} today", "Attendance Update","Attendance");
+                    .docs[i]["stname"]} today", "Attendance Update",
+                "Attendance");
           }
         }
       }
     }
-
   }
+
   demo() {
-    double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return AwesomeDialog(
-      width: width/0.87111111,
+      width: width / 0.87111111,
       context: context,
       dialogType: DialogType.warning,
       animType: AnimType.rightSlide,
       title: 'Are you sure want to exit',
 
 
-      btnCancelOnPress: (){
+      btnCancelOnPress: () {
 
       },
       btnOkOnPress: () {
         SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       },
-    )..show();
-
+    )
+      ..show();
   }
+
   demo2() {
+    double width=MediaQuery.of(context).size.width;
     return AwesomeDialog(
-      width: 450,
+      width: width/0.8,
       context: context,
       dialogType: DialogType.warning,
       animType: AnimType.rightSlide,
       title: 'Are you sure want to exit',
 
 
-      btnCancelOnPress: (){
+      btnCancelOnPress: () {
 
       },
       btnOkOnPress: () {
         Navigator.of(context).pop();
       },
     );
-
   }
+
   Successdialog() {
+
+    double width=MediaQuery.of(context).size.width;
     return AwesomeDialog(
-      width: 450,
+      width:  width/0.8,
       context: context,
 
       dialogType: DialogType.success,
@@ -6719,13 +6747,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       btnOkOnPress: () {
         checkattendance();
         setState(() {
-          page="Home";
+          page = "Home";
         });
-       // Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       },
     )
       ..show();
   }
+
   Alreadymarked() {
     return AwesomeDialog(
       width: 450,
@@ -6741,16 +6770,19 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       btnOkOnPress: () {
         checkattendance();
         setState(() {
-          page="Home";
+          page = "Home";
         });
-       // Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       },
     )
       ..show();
   }
 
   Errordialog() {
-    double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return AwesomeDialog(
       width: width / 0.87111111,
       context: context,
@@ -6788,8 +6820,15 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
     setState(() {
       marked = false;
     });
-    var document = await _firestore2db.collection("Attendance").doc("${dropdownValue4}${dropdownValue5}").
-    collection("${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}").get();
+    var document = await _firestore2db.collection("Attendance").doc(
+        "${dropdownValue4}${dropdownValue5}").
+    collection("${DateTime
+        .now()
+        .day}-${DateTime
+        .now()
+        .month}-${DateTime
+        .now()
+        .year}").get();
     if (document.docs.length > 0) {
       setState(() {
         marked = true;
@@ -6806,11 +6845,14 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
   dynamic currentTime = DateFormat.jm().format(DateTime.now());
 
   SuccessHomeworkdialog() {
-    double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return AwesomeDialog(
       dismissOnTouchOutside: false,
 
-      width: width/0.87111111,
+      width: width / 0.87111111,
       context: context,
       dialogType: DialogType.success,
       animType: AnimType.rightSlide,
@@ -6820,27 +6862,27 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
           .text} ${_typeAheadControllersection.text} ',
       btnOkOnPress: () {
         setState(() {
-          _pickedFile=null;
-          _pickedFile2=null;
-          _pickedFile3=null;
-          _pickedFile4=null;
-          _pickedFile5=null;
-          imageurl1="";
-          imageurl2="";
-          imageurl3="";
-          imageurl4="";
-          imageurl5="";
+          _pickedFile = null;
+          _pickedFile2 = null;
+          _pickedFile3 = null;
+          _pickedFile4 = null;
+          _pickedFile5 = null;
+          imageurl1 = "";
+          imageurl2 = "";
+          imageurl3 = "";
+          imageurl4 = "";
+          imageurl5 = "";
           homecoller.clear();
           topic.clear();
           page = "Home";
           _typeAheadControllerclass.clear();
           _typeAheadControllersection.clear();
-           dropdownValue4 = "Class";
-           dropdownValue5 = "Section";
+          dropdownValue4 = "Class";
+          dropdownValue5 = "Section";
           duedate.clear();
           homecoller.clear();
           topic.clear();
-          subject="Subject";
+          subject = "Subject";
         });
       },
     )
@@ -6848,9 +6890,12 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
   }
 
   ErrorHomeworkdialog() {
-    double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return AwesomeDialog(
-      width: width/0.87111111,
+      width: width / 0.87111111,
       context: context,
       dialogType: DialogType.error,
       animType: AnimType.rightSlide,
@@ -6865,263 +6910,353 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       ..show();
   }
 
-  String imageurl1="";
-  String imageurl2="";
-  String imageurl3="";
-  String imageurl4="";
-  String imageurl5="";
+  String imageurl1 = "";
+  String imageurl2 = "";
+  String imageurl3 = "";
+  String imageurl4 = "";
+  String imageurl5 = "";
   int status = 0;
 
-  List teachertable=["","","","","","","",""];
+  List teachertable = ["", "", "", "", "", "", "", ""];
+
   timetablelogic() async {
     setState(() {
-      teachertable=["","","","","","","",""];
+      teachertable = ["", "", "", "", "", "", "", ""];
     });
 
-      var document= await _firestore2db.collection("Staffs").doc(staffid).collection('Timetable').where("day", isEqualTo: day).get();
-      setState(() {
-      if(day=="Monday"){
-      for(int i=0;i<document.docs.length;i++){
-
-          if(document.docs[i]["period"]==0){
-            teachertable.replaceRange(0,1,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+    var document = await _firestore2db.collection("Staffs").doc(staffid)
+        .collection('Timetable').where("day", isEqualTo: day)
+        .get();
+    setState(() {
+      if (day == "Monday") {
+        for (int i = 0; i < document.docs.length; i++) {
+          if (document.docs[i]["period"] == 0) {
+            teachertable.replaceRange(0, 1, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==1){
-            teachertable.replaceRange(1,2,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 1) {
+            teachertable.replaceRange(1, 2, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==2){
-            teachertable.replaceRange(2,3,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 2) {
+            teachertable.replaceRange(2, 3, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==3){
-            teachertable.replaceRange(3,4,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 3) {
+            teachertable.replaceRange(3, 4, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==4){
-            teachertable.replaceRange(4,5,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 4) {
+            teachertable.replaceRange(4, 5, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==5){
-            teachertable.replaceRange(5,6,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 5) {
+            teachertable.replaceRange(5, 6, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==6){
-            teachertable.replaceRange(6,7,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 6) {
+            teachertable.replaceRange(6, 7, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==7){
-            teachertable.replaceRange(7,8,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 7) {
+            teachertable.replaceRange(7, 8, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-
         }
-      for(int j=0;j<teachertable.length;j++){
-        if(teachertable[j]==""){
-          teachertable.replaceRange(j, j+1, ["Free Period"]);
-        }
-      }
-      }
-      if(day=="Tuesday"){
-      for(int i=0;i<document.docs.length;i++){
-
-          if(document.docs[i]["period"]==8){
-            teachertable.replaceRange(0,1,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+        for (int j = 0; j < teachertable.length; j++) {
+          if (teachertable[j] == "") {
+            teachertable.replaceRange(j, j + 1, ["Free Period"]);
           }
-          else if(document.docs[i]["period"]==9){
-            teachertable.replaceRange(1,2,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==10){
-            teachertable.replaceRange(2,3,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==11){
-            teachertable.replaceRange(3,4,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==12){
-            teachertable.replaceRange(4,5,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==13){
-            teachertable.replaceRange(5,6,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==14){
-            teachertable.replaceRange(6,7,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==15){
-            teachertable.replaceRange(7,8,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-
-
-        }
-      for(int j=0;j<teachertable.length;j++){
-        if(teachertable[j]==""){
-          teachertable.replaceRange(j, j+1, ["Free Period"]);
         }
       }
-      }
-      if(day=="Wednesday"){
-      for(int i=0;i<document.docs.length;i++){
-
-          if(document.docs[i]["period"]==16){
-            teachertable.replaceRange(0,1,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+      if (day == "Tuesday") {
+        for (int i = 0; i < document.docs.length; i++) {
+          if (document.docs[i]["period"] == 8) {
+            teachertable.replaceRange(0, 1, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==17){
-            teachertable.replaceRange(1,2,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 9) {
+            teachertable.replaceRange(1, 2, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==18){
-            teachertable.replaceRange(2,3,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 10) {
+            teachertable.replaceRange(2, 3, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==19){
-            teachertable.replaceRange(3,4,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 11) {
+            teachertable.replaceRange(3, 4, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==20){
-            teachertable.replaceRange(4,5,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 12) {
+            teachertable.replaceRange(4, 5, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==21){
-            teachertable.replaceRange(5,6,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 13) {
+            teachertable.replaceRange(5, 6, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==22){
-            teachertable.replaceRange(6,7,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 14) {
+            teachertable.replaceRange(6, 7, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==23){
-            teachertable.replaceRange(7,8,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 15) {
+            teachertable.replaceRange(7, 8, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-
-
         }
-      for(int j=0;j<teachertable.length;j++){
-        if(teachertable[j]==""){
-          teachertable.replaceRange(j, j+1, ["Free Period"]);
-        }
-      }
-      }
-      if(day=="Thursday"){
-      for(int i=0;i<document.docs.length;i++){
-
-          if(document.docs[i]["period"]==24){
-            teachertable.replaceRange(0,1,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+        for (int j = 0; j < teachertable.length; j++) {
+          if (teachertable[j] == "") {
+            teachertable.replaceRange(j, j + 1, ["Free Period"]);
           }
-          else if(document.docs[i]["period"]==25){
-            teachertable.replaceRange(1,2,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==26){
-            teachertable.replaceRange(2,3,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==27){
-            teachertable.replaceRange(3,4,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==28){
-            teachertable.replaceRange(4,5,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==29){
-            teachertable.replaceRange(5,6,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==30){
-            teachertable.replaceRange(6,7,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==31){
-            teachertable.replaceRange(7,8,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-
-
-        }
-      for(int j=0;j<teachertable.length;j++){
-        if(teachertable[j]==""){
-          teachertable.replaceRange(j, j+1, ["Free Period"]);
         }
       }
-      }
-      if(day=="Friday"){
-      for(int i=0;i<document.docs.length;i++){
-
-          if(document.docs[i]["period"]==32){
-            teachertable.replaceRange(0,1,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+      if (day == "Wednesday") {
+        for (int i = 0; i < document.docs.length; i++) {
+          if (document.docs[i]["period"] == 16) {
+            teachertable.replaceRange(0, 1, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==33){
-            teachertable.replaceRange(1,2,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 17) {
+            teachertable.replaceRange(1, 2, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==34){
-            teachertable.replaceRange(2,3,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 18) {
+            teachertable.replaceRange(2, 3, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==35){
-            teachertable.replaceRange(3,4,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 19) {
+            teachertable.replaceRange(3, 4, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==36){
-            teachertable.replaceRange(4,5,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 20) {
+            teachertable.replaceRange(4, 5, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==37){
-            teachertable.replaceRange(5,6,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 21) {
+            teachertable.replaceRange(5, 6, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==38){
-            teachertable.replaceRange(6,7,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 22) {
+            teachertable.replaceRange(6, 7, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-          else if(document.docs[i]["period"]==39){
-            teachertable.replaceRange(7,8,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+          else if (document.docs[i]["period"] == 23) {
+            teachertable.replaceRange(7, 8, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
           }
-
-
         }
-      for(int j=0;j<teachertable.length;j++){
-        if(teachertable[j]==""){
-          teachertable.replaceRange(j, j+1, ["Free Period"]);
-        }
-      }
-      }
-      if(day=="Saturday"){
-      for(int i=0;i<document.docs.length;i++){
-
-          if(document.docs[i]["period"]==40){
-            teachertable.replaceRange(0,1,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
+        for (int j = 0; j < teachertable.length; j++) {
+          if (teachertable[j] == "") {
+            teachertable.replaceRange(j, j + 1, ["Free Period"]);
           }
-          else if(document.docs[i]["period"]==41){
-            teachertable.replaceRange(1,2,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==42){
-            teachertable.replaceRange(2,3,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==43){
-            teachertable.replaceRange(3,4,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==44){
-            teachertable.replaceRange(4,5,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==45){
-            teachertable.replaceRange(5,6,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==46){
-            teachertable.replaceRange(6,7,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-          else if(document.docs[i]["period"]==47){
-            teachertable.replaceRange(7,8,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-          }
-
-
-
-        }
-      for(int j=0;j<teachertable.length;j++){
-        if(teachertable[j]==""){
-          teachertable.replaceRange(j, j+1, ["Free Period"]);
         }
       }
+      if (day == "Thursday") {
+        for (int i = 0; i < document.docs.length; i++) {
+          if (document.docs[i]["period"] == 24) {
+            teachertable.replaceRange(0, 1, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 25) {
+            teachertable.replaceRange(1, 2, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 26) {
+            teachertable.replaceRange(2, 3, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 27) {
+            teachertable.replaceRange(3, 4, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 28) {
+            teachertable.replaceRange(4, 5, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 29) {
+            teachertable.replaceRange(5, 6, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 30) {
+            teachertable.replaceRange(6, 7, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 31) {
+            teachertable.replaceRange(7, 8, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+        }
+        for (int j = 0; j < teachertable.length; j++) {
+          if (teachertable[j] == "") {
+            teachertable.replaceRange(j, j + 1, ["Free Period"]);
+          }
+        }
       }
-      });
-      print(teachertable);
+      if (day == "Friday") {
+        for (int i = 0; i < document.docs.length; i++) {
+          if (document.docs[i]["period"] == 32) {
+            teachertable.replaceRange(0, 1, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 33) {
+            teachertable.replaceRange(1, 2, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 34) {
+            teachertable.replaceRange(2, 3, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 35) {
+            teachertable.replaceRange(3, 4, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 36) {
+            teachertable.replaceRange(4, 5, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 37) {
+            teachertable.replaceRange(5, 6, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 38) {
+            teachertable.replaceRange(6, 7, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 39) {
+            teachertable.replaceRange(7, 8, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+        }
+        for (int j = 0; j < teachertable.length; j++) {
+          if (teachertable[j] == "") {
+            teachertable.replaceRange(j, j + 1, ["Free Period"]);
+          }
+        }
+      }
+      if (day == "Saturday") {
+        for (int i = 0; i < document.docs.length; i++) {
+          if (document.docs[i]["period"] == 40) {
+            teachertable.replaceRange(0, 1, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 41) {
+            teachertable.replaceRange(1, 2, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 42) {
+            teachertable.replaceRange(2, 3, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 43) {
+            teachertable.replaceRange(3, 4, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 44) {
+            teachertable.replaceRange(4, 5, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 45) {
+            teachertable.replaceRange(5, 6, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 46) {
+            teachertable.replaceRange(6, 7, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+          else if (document.docs[i]["period"] == 47) {
+            teachertable.replaceRange(7, 8, [
+              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+            ]);
+          }
+        }
+        for (int j = 0; j < teachertable.length; j++) {
+          if (teachertable[j] == "") {
+            teachertable.replaceRange(j, j + 1, ["Free Period"]);
+          }
+        }
+      }
+    });
+    print(teachertable);
 
     ///9360464167
+    /// gowtham no:7708806812
 
     print("replace Timetableeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-    for(int j=0;j< teachertable.length;j++){
-      if(teachertable[j]=="Free Period"){
-        print( teachertable[j]);
+    for (int j = 0; j < teachertable.length; j++) {
+      if (teachertable[j] == "Free Period") {
+        print(teachertable[j]);
         print("free period itemmm list --------------------------------------");
         // teachertable.replaceRange(i,j,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-        var _staffdocument=await _firestore2db.collection("Staffs").doc(staffid).collection("Subtitution").get();
+        var _staffdocument = await _firestore2db.collection("Staffs").doc(
+            staffid).collection("Subtitution").get();
         print("document lengthhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
         print(_staffdocument.docs.length);
-        for(int i=0;i<_staffdocument.docs.length;i++){
-          if(day==_staffdocument.docs[i]['day']){
-           var removeindex= (int.parse(_staffdocument.docs[i]['period'].toString()).remainder(8));
-            print((int.parse(_staffdocument.docs[i]['period'].toString()).remainder(8)));
-            print("final Loop valu+++++++++++++++++++++++++++++++++++++++++++++++++ ");
+        for (int i = 0; i < _staffdocument.docs.length; i++) {
+          if (day == _staffdocument.docs[i]['day']) {
+            var removeindex = (int.parse(
+                _staffdocument.docs[i]['period'].toString()).remainder(8));
+            print((int.parse(_staffdocument.docs[i]['period'].toString())
+                .remainder(8)));
+            print(
+                "final Loop valu+++++++++++++++++++++++++++++++++++++++++++++++++ ");
             print("i value==========${i}");
             print("j value==========${j}");
             print(removeindex);
-             // teachertable.removeAt(removeindex);
-             print(teachertable[removeindex]);
-           teachertable.replaceRange(removeindex, removeindex+1, ["${_staffdocument.docs[i]['class']}${_staffdocument.docs[i]['section']}"]);
-            print("final Loop enddddddd+++++++++++++++++++++++++++++++++++++++++++++++++ ");
+            // teachertable.removeAt(removeindex);
+            print(teachertable[removeindex]);
+            teachertable.replaceRange(removeindex, removeindex + 1, [
+              "${_staffdocument.docs[i]['class']}${_staffdocument
+                  .docs[i]['section']}"
+            ]);
+            print(
+                "final Loop enddddddd+++++++++++++++++++++++++++++++++++++++++++++++++ ");
           }
 
           print(_staffdocument.docs[i]['period']);
@@ -7133,12 +7268,11 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
     setState(() {
 
     });
-
   }
 
   add() async {
     int status = 1;
-    if(_pickedFile!=null) {
+    if (_pickedFile != null) {
       var ref = _firebaseStorage2.ref().child('ListImages').child(
           "${_pickedFile!.path}.jpg");
 
@@ -7155,7 +7289,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         print(imageurl1);
       }
     }
-    if(_pickedFile2!=null) {
+    if (_pickedFile2 != null) {
       var ref = _firebaseStorage2.ref().child('ListImages').child(
           "${_pickedFile2!.path}.jpg");
 
@@ -7172,7 +7306,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         print(imageurl2);
       }
     }
-    if(_pickedFile3!=null) {
+    if (_pickedFile3 != null) {
       var ref = _firebaseStorage2.ref().child('ListImages').child(
           "${_pickedFile3!.path}.jpg");
 
@@ -7189,7 +7323,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         print(imageurl3);
       }
     }
-    if(_pickedFile4!=null) {
+    if (_pickedFile4 != null) {
       var ref = _firebaseStorage2.ref().child('ListImages').child(
           "${_pickedFile4!.path}.jpg");
 
@@ -7206,7 +7340,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         print(imageurl4);
       }
     }
-    if(_pickedFile5!=null) {
+    if (_pickedFile5 != null) {
       var ref = _firebaseStorage2.ref().child('ListImages').child(
           "${_pickedFile5!.path}.jpg");
 
@@ -7217,7 +7351,6 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
 
       if (status == 1) {
-
         imageurl5 = await uploadTask2.ref.getDownloadURL();
 
 
@@ -7225,21 +7358,48 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
     }
 
-    print( "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}");
+    print("${DateTime
+        .now()
+        .day}-${DateTime
+        .now()
+        .month}-${DateTime
+        .now()
+        .year}");
     print(homecoller.text);
     print(topic.text);
     print("+Des++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    _firestore2db.collection("homeworks").doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
-    collection(_typeAheadControllerclass.text).doc(_typeAheadControllersection.text).
+    _firestore2db.collection("homeworks").doc("${DateTime
+        .now()
+        .day}${DateTime
+        .now()
+        .month}${DateTime
+        .now()
+        .year}").
+    collection(_typeAheadControllerclass.text).doc(
+        _typeAheadControllersection.text).
     collection("class HomeWorks").doc().set({
       "class": _typeAheadControllerclass.text,
       "section": _typeAheadControllersection.text,
-      "date": "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
-      "Assignedondate":"${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
-      "Duedate":duedate.text,
+      "date": "${DateTime
+          .now()
+          .day}-${DateTime
+          .now()
+          .month}-${DateTime
+          .now()
+          .year}",
+      "Assignedondate": "${DateTime
+          .now()
+          .day}-${DateTime
+          .now()
+          .month}-${DateTime
+          .now()
+          .year}",
+      "Duedate": duedate.text,
       "des": homecoller.text,
       "topic": topic.text,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "timestamp": DateTime
+          .now()
+          .millisecondsSinceEpoch,
       "Time": "${DateFormat('hh:mm a').format(DateTime.now())}",
       "statffname": staffname,
       "statffregno": staffregno,
@@ -7250,41 +7410,43 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       "imageurl3": imageurl3,
       "imageurl4": imageurl4,
       "imageurl5": imageurl5,
-      "submited":[]
+      "submited": []
     });
-    
-    
-    var studentdata=await _firestore2db.collection("Students").
-    where("admitclass",isEqualTo: _typeAheadControllerclass.text).where("section",isEqualTo: _typeAheadControllersection.text).get();
 
-    for(int i=0;i<studentdata.docs.length;i++){
-      sendPushMessage( studentdata.docs[i]['token'],  "New Assignment has been assigned for ${subject}","Assignment Update","Assignment");
+
+    var studentdata = await _firestore2db.collection("Students").
+    where("admitclass", isEqualTo: _typeAheadControllerclass.text).where(
+        "section", isEqualTo: _typeAheadControllersection.text).get();
+
+    for (int i = 0; i < studentdata.docs.length; i++) {
+      sendPushMessage(studentdata.docs[i]['token'],
+          "New Assignment has been assigned for ${subject}",
+          "Assignment Update", "Assignment");
     }
 
-    
-    
 
-    
     _typeAheadControllerclass.clear();
     _typeAheadControllersection.clear();
     duedate.clear();
     homecoller.clear();
     topic.clear();
-    subject="Subject";
+    subject = "Subject";
     setState(() {
       dropdownValue4 = "Class";
       dropdownValue5 = "Section";
-       _pickedFile=null;
-       _pickedFile2=null;
-      _pickedFile3=null;
-       _pickedFile4=null;
-       _pickedFile5=null;
+      _pickedFile = null;
+      _pickedFile2 = null;
+      _pickedFile3 = null;
+      _pickedFile4 = null;
+      _pickedFile5 = null;
     });
   }
-  TextEditingController editreq= new TextEditingController();
+
+  TextEditingController editreq = new TextEditingController();
 
 
-  void sendPushMessage(String token, String body, String title,String Page) async {
+  void sendPushMessage(String token, String body, String title,
+      String Page) async {
     try {
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -7295,7 +7457,11 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         },
         body: jsonEncode(
           <String, dynamic>{
-            'notification': <String, dynamic>{'body': body, 'title': title,  "page":Page},
+            'notification': <String, dynamic>{
+              'body': body,
+              'title': title,
+              "page": Page
+            },
             'priority': 'high',
             'data': <String, dynamic>{
               'click_action': 'FLUTTER_NOTIFICATION_CLICK',
@@ -7311,143 +7477,36 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       print("error push notification");
     }
   }
-  
-  
+
+
   showedit() {
     return showDialog(
-      context: context,
-      builder: (context) {
-        double height = MediaQuery
-            .of(context)
-            .size
-            .height;
-        double width = MediaQuery
-            .of(context)
-            .size
-            .width;
-        return AlertDialog(
-          content: Container(
-            height: height/2.23714286,
-            width: width/1.03157895,
-            child: Column(
-              children: [
-                Text("Request Edit to Admin",style: GoogleFonts.poppins(
-
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: width/15.68),),
-                Lottie.asset("assets/profile.json"),
-                Container(
-                  padding: EdgeInsets.only(
-                      left: width / 36, right: width / 36),
-                  height: height / 10.74,
-                  width: width / 1.563,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                          color: Colors.grey.shade300),
-                      borderRadius:
-                      BorderRadius.circular(10)),
-                  child: TextField(
-                    controller: editreq,
-
-
-                    style: GoogleFonts
-                        .poppins(
-                      color: Colors
-                          .black,
-                      fontSize: width/28,
-                      fontWeight:
-                      FontWeight
-                          .w500,
-                    ),
-
-                    maxLines: 5,
-                    minLines: 1,
-                    decoration:
-                    InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 15),
-
-                        hintText: "Enter what you want to change",
-                        hintStyle:
-                        GoogleFonts
-                            .poppins(
-                          color: Colors
-                              .black,
-                          fontSize: width/28,
-                          fontWeight:
-                          FontWeight
-                              .w500,
-                        ),
-                        border:
-                        InputBorder
-                            .none),
-
-
-                  ),
-
-
-                ),
-
-
-
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Request Admin'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      }
-    );
-  }
-  ltpdialog(type,date,time,leaveon,reason,status,id) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        double height = MediaQuery
-            .of(context)
-            .size
-            .height;
-        double width = MediaQuery
-            .of(context)
-            .size
-            .width;
-        return AlertDialog(
-          title: Text(type,style: GoogleFonts.poppins(
-
-              color: Colors.black,
-              fontWeight: FontWeight.w800,
-              fontSize: width/15.68)),
-          content: Container(
-
-            width: width/1.03157895,
-            child: SingleChildScrollView(
+        context: context,
+        builder: (context) {
+          double height = MediaQuery
+              .of(context)
+              .size
+              .height;
+          double width = MediaQuery
+              .of(context)
+              .size
+              .width;
+          return AlertDialog(
+            content: Container(
+              height: height / 2.23714286,
+              width: width / 1.03157895,
               child: Column(
                 children: [
-                  Text("Applied: ${date} | ${time} \nLeave on : ${leaveon} ",style: GoogleFonts.poppins(
+                  Text("Request Edit to Admin", style: GoogleFonts.poppins(
 
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
-                      fontSize: width/25.68),
-                  textAlign: TextAlign.center,),
-                  SizedBox(height: height/75.6,),
-                  Text("Reason",style: GoogleFonts.poppins(
-
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: width/25.68),
-                    textAlign: TextAlign.center,),
-                  SizedBox(height: height/75.6,),
+                      fontSize: width / 15.68),),
+                  Lottie.asset("assets/profile.json"),
                   Container(
                     padding: EdgeInsets.only(
                         left: width / 36, right: width / 36),
-
+                    height: height / 10.74,
                     width: width / 1.563,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -7455,80 +7514,186 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                             color: Colors.grey.shade300),
                         borderRadius:
                         BorderRadius.circular(10)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(reason,style: GoogleFonts.poppins(
+                    child: TextField(
+                      controller: editreq,
 
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: width/30.68),),
-                    )
+
+                      style: GoogleFonts
+                          .poppins(
+                        color: Colors
+                            .black,
+                        fontSize: width / 28,
+                        fontWeight:
+                        FontWeight
+                            .w500,
+                      ),
+
+                      maxLines: 5,
+                      minLines: 1,
+                      decoration:
+                      InputDecoration(
+                          contentPadding: EdgeInsets.only(top:height/50.4),
+
+                          hintText: "Enter what you want to change",
+                          hintStyle:
+                          GoogleFonts
+                              .poppins(
+                            color: Colors
+                                .black,
+                            fontSize: width / 28,
+                            fontWeight:
+                            FontWeight
+                                .w500,
+                          ),
+                          border:
+                          InputBorder
+                              .none),
+
+
+                    ),
 
 
                   ),
-                  status=="Pending"?     Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      status=="Pending"?   TextButton(
-                        child: const Text('Revoke'),
-                        onPressed: () {
-                          _firestore2db.collection("Staffs").doc(staffid).collection('Leave').doc(id).update({
-                            "status":"Revoked"
-                          });
-                          Navigator.of(context).pop();
-                          revokedshow();
-
-                        },
-                      ) : SizedBox(),
-                      status=="Pending"?  TextButton(
-                        child: const Text('Edit'),
-                        onPressed: () {
-                          Future.delayed(Duration(seconds: 1),(){
-                            setdata(type,leaveon,reason,id);
-                          });
-                          Navigator.of(context).pop();
-
-
-                        },
-                      ) : SizedBox(),
-                      TextButton(
-                        child: const Text('OK'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ) : SizedBox()
-
 
 
                 ],
               ),
             ),
-          ),
-          actions: [
-            status=="Pending"? SizedBox(): TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-
-        );
-      }
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Request Admin'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
     );
   }
 
-  String docid="";
-  setdata(leavetype2,duedate2,reason,id){
-    setState(() {
-      leavetype=leavetype2;
-      duedate.text=duedate2;
-      homecoller.text=reason;
-      docid=id;
-    });
+  ltpdialog(type, date, time, leaveon, reason, status, id) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          double height = MediaQuery
+              .of(context)
+              .size
+              .height;
+          double width = MediaQuery
+              .of(context)
+              .size
+              .width;
+          return AlertDialog(
+            title: Text(type, style: GoogleFonts.poppins(
 
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+                fontSize: width / 15.68)),
+            content: Container(
+
+              width: width / 1.03157895,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text("Applied: ${date} | ${time} \nLeave on : ${leaveon} ",
+                      style: GoogleFonts.poppins(
+
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: width / 25.68),
+                      textAlign: TextAlign.center,),
+                    SizedBox(height: height / 75.6,),
+                    Text("Reason", style: GoogleFonts.poppins(
+
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: width / 25.68),
+                      textAlign: TextAlign.center,),
+                    SizedBox(height: height / 75.6,),
+                    Container(
+                        padding: EdgeInsets.only(
+                            left: width / 36, right: width / 36),
+
+                        width: width / 1.563,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                color: Colors.grey.shade300),
+                            borderRadius:
+                            BorderRadius.circular(10)),
+                        child: Padding(
+                                            padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+                          child: Text(reason, style: GoogleFonts.poppins(
+
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: width / 30.68),),
+                        )
+
+
+                    ),
+                    status == "Pending" ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        status == "Pending" ? TextButton(
+                          child: const Text('Revoke'),
+                          onPressed: () {
+                            _firestore2db.collection("Staffs").doc(staffid)
+                                .collection('Leave').doc(id)
+                                .update({
+                              "status": "Revoked"
+                            });
+                            Navigator.of(context).pop();
+                            revokedshow();
+                          },
+                        ) : SizedBox(),
+                        status == "Pending" ? TextButton(
+                          child: const Text('Edit'),
+                          onPressed: () {
+                            Future.delayed(Duration(seconds: 1), () {
+                              setdata(type, leaveon, reason, id);
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        ) : SizedBox(),
+                        TextButton(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ) : SizedBox()
+
+
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              status == "Pending" ? SizedBox() : TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+
+          );
+        }
+    );
+  }
+
+  String docid = "";
+
+  setdata(leavetype2, duedate2, reason, id) {
+    setState(() {
+      leavetype = leavetype2;
+      duedate.text = duedate2;
+      homecoller.text = reason;
+      docid = id;
+    });
   }
 
   updaetremarks(id, value, remarks) {
@@ -7576,7 +7741,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                 title: Text(
                   'Give Feedback for ${name}', style: GoogleFonts.poppins(
                     color: Colors.black,
-                    fontSize: width/21.77777778,
+                    fontSize: width / 21.77777778,
                     fontWeight: FontWeight.w700
 
                 ),),
@@ -7606,7 +7771,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                   .poppins(
                                 color: Colors
                                     .black,
-                                fontSize: width/28,
+                                fontSize: width / 28,
                                 fontWeight:
                                 FontWeight
                                     .w500,
@@ -7616,7 +7781,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                               minLines: 1,
                               decoration:
                               InputDecoration(
-                                  contentPadding: EdgeInsets.only(top: 15),
+                                  contentPadding: EdgeInsets.only(top:height/50.4),
 
                                   hintText:
                                   remark,
@@ -7625,7 +7790,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                                       .poppins(
                                     color: Colors
                                         .black,
-                                    fontSize: width/28,
+                                    fontSize: width / 28,
                                     fontWeight:
                                     FontWeight
                                         .w500,
@@ -7643,7 +7808,7 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
 
                         ],
                       ),
-                      SizedBox(height: height/78.3),
+                      SizedBox(height: height / 78.3),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -7665,7 +7830,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                               isExpanded: true,
                               style: TextStyle(
                                   color: Color(0xff3D8CF8),
-                                  fontSize: width/23.05882353, fontWeight: FontWeight.w700),
+                                  fontSize: width / 23.05882353,
+                                  fontWeight: FontWeight.w700),
                               underline: Container(
                                 color: Color(0xff3D8CF8),
                               ),
@@ -7717,14 +7883,19 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
     showToast() {
     }
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Builder(builder: (_) {
       if (chatMap['type'] == "text") {
         return
           Padding(
-            padding: const EdgeInsets.all(3.0),
+            padding:  EdgeInsets.symmetric(
+              vertical: height/252,
+              horizontal: width/120
+            ),
             child: Container(
                 width: size.width,
-                alignment:  chatMap['sender']==staffname?Alignment.centerRight: Alignment.centerLeft,
+                alignment: chatMap['sender'] == staffname ? Alignment
+                    .centerRight : Alignment.centerLeft,
                 child:
                 GestureDetector(
                   onLongPress: () {
@@ -7733,7 +7904,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                           title: Text('Are you sure delete this message'),
                           actions: [
                             TextButton(onPressed: () {
-                              _firestore2db.collection('${dropdownValue4}${dropdownValue5}chat')
+                              _firestore2db.collection(
+                                  '${dropdownValue4}${dropdownValue5}chat')
                                   .doc(id)
                                   .delete();
                               Navigator.pop(context);
@@ -7748,13 +7920,19 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                       margin: EdgeInsets.symmetric(
                           vertical: 5, horizontal: 0),
                       decoration: BoxDecoration(
-                        color:  chatMap['sender']==staffname? Colors.white: Color(0xff0271C5),
-                        border: Border.all(color: chatMap['sender']==staffname? Color(0xff010029)
-                            .withOpacity(0.65) : Color(0xff0271C5)),
+                        color: chatMap['sender'] == staffname
+                            ? Colors.white
+                            : Color(0xff0271C5),
+                        border: Border.all(
+                            color: chatMap['sender'] == staffname ? Color(
+                                0xff010029)
+                                .withOpacity(0.65) : Color(0xff0271C5)),
                         borderRadius: BorderRadius.only(topLeft: Radius
                             .circular(15),
-                          bottomLeft: chatMap['sender']==staffname? Radius.circular(15) : Radius.circular(0),
-                          bottomRight: chatMap['sender']==staffname? Radius.circular(0) : Radius.circular(15),
+                          bottomLeft: chatMap['sender'] == staffname ? Radius
+                              .circular(15) : Radius.circular(0),
+                          bottomRight: chatMap['sender'] == staffname ? Radius
+                              .circular(0) : Radius.circular(15),
                           topRight: Radius.circular(15),),
                       ),
                       child: Column(
@@ -7762,9 +7940,10 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
                           Text(
                             chatMap['message'],
                             style: GoogleFonts.montserrat(
-                              fontSize: width/30.15384615,
+                              fontSize: width / 30.15384615,
                               fontWeight: FontWeight.w500,
-                              color: chatMap['sender']==staffname? Colors.black : Colors.white,
+                              color: chatMap['sender'] == staffname ? Colors
+                                  .black : Colors.white,
                             ),
                           ),
                         ],
@@ -7778,7 +7957,8 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
       }
     });
   }
-  TextEditingController _message= new TextEditingController();
+
+  TextEditingController _message = new TextEditingController();
 
 
   void onSendMessage() async {
@@ -7787,15 +7967,24 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
         "message": _message.text,
         "type": "text",
         "time": FieldValue.serverTimestamp(),
-        "submittime":"${DateFormat('hh:mm a').format(DateTime.now())}",
-        "sender":staffname,
-        "submitdate":"${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}",
+        "submittime": "${DateFormat('hh:mm a').format(DateTime.now())}",
+        "sender": staffname,
+        "submitdate": "${DateTime
+            .now()
+            .year}-${DateTime
+            .now()
+            .month}-${DateTime
+            .now()
+            .day}",
       };
-      var document = await _firestore2db.collection("Students").orderBy("timestamp").get();
+      var document = await _firestore2db.collection("Students").orderBy(
+          "timestamp").get();
       for (int i = 0; i < document.docs.length; i++) {
         if (document.docs[i]["admitclass"] == _typeAheadControllerclass.text &&
             document.docs[i]["section"] == _typeAheadControllersection.text) {
-          homecontroller.sendPushMessage(document.docs[i]["token"], _message.text, "New message alert","Message");
+          homecontroller.sendPushMessage(
+              document.docs[i]["token"], _message.text, "New message alert",
+              "Message");
         }
       }
 
@@ -7807,13 +7996,498 @@ class _FrontpageState extends State<Frontpage> with SingleTickerProviderStateMix
     }
   }
 
+  String totalearning = "";
+
+  payrollreports(documentid) async {
+    double height = MediaQuery
+        .of(context)
+        .size
+        .height;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
+
+
+    var datadocument = await _firestore2db.collection("Staffs").doc(staffid)
+        .collection("Payroll_Reports").doc(documentid)
+        .get();
+
+    totalearning = (double.parse(datadocument["basic"].toString()) +
+        double.parse(datadocument["hra"].toString()) +
+        double.parse(datadocument["da"].toString()) +
+        double.parse(datadocument["other"].toString())
+    ).toString();
+
+    List<p.Widget> widgets = [];
+    var fontsemipoppoins = await PdfGoogleFonts.poppinsSemiBold();
+
+
+    widgets.add(p.Padding(
+        padding: const p.EdgeInsets.only(top: 90),
+        child: p.Container(
+            height: 600,
+            child: p.Column(
+
+                children: [
+                  p.Text("Payslip", style: p.TextStyle(fontSize: 20)),
+                  p.SizedBox(height: 3),
+                  p.Text("RAVEN ENGLISH SCHOOL"),
+                  p.SizedBox(height: 3),
+                  p.Text("ANNANJI,THENI - 625531"),
+                  p.SizedBox(height: 8),
+                  p.Row(
+                      mainAxisAlignment: p.MainAxisAlignment.center, children: [
+                    p.Container(
+                        child: p.Column(
+                            crossAxisAlignment: p.CrossAxisAlignment.start,
+                            mainAxisAlignment: p.MainAxisAlignment.start,
+                            children: [
+
+                              p.SizedBox(height: 5),
+                              p.Row(children: [
+                                p.Container(
+                                  width: 110,
+                                  height: 20,
+
+                                  child: p.Text("Date of Joining:",
+                                      style: const p.TextStyle(
+                                          color: PdfColors.black)),
+                                ),
+                                p.Container(
+                                  width: 140,
+                                  height: 20,
+                                  child: p.Text(": ${staffdateofjoin}",
+                                      style: const p.TextStyle(
+                                          color: PdfColors.black)),
+                                ),
+                              ]),
+
+                              p.SizedBox(height: 5),
+                              p.Row(children: [
+                                p.Container(
+                                  width: 110,
+                                  height: 20,
+                                  child: p.Text("Worked Days",
+                                      style: const p.TextStyle(
+                                          color: PdfColors.black)),
+                                ),
+                                p.Container(
+                                  width: 140,
+                                  height: 20,
+                                  child: p.Text(": ${datadocument['workedDays']
+                                      .toString()}",
+                                      style: const p.TextStyle(
+                                          color: PdfColors.black)),
+                                )
+                              ]),
+                            ])),
+                    p.SizedBox(width: width / 273.2),
+                    p.Container(
+                        child: p.Column(
+                            crossAxisAlignment: p.CrossAxisAlignment.start,
+                            mainAxisAlignment: p.MainAxisAlignment.start,
+                            children: [
+                              p.Row(
+                                  crossAxisAlignment: p.CrossAxisAlignment
+                                      .start,
+                                  children: [
+                                    p.Container(
+                                      width: 120,
+                                      height: 20,
+                                      child: p.Text("Employee Name",
+                                          style: const p.TextStyle(
+                                              color: PdfColors.black)),
+                                    ),
+                                    p.Container(
+                                      width: 140,
+                                      height: 20,
+                                      child: p.Text(": ${staffname}",
+                                          style: const p.TextStyle(
+                                              color: PdfColors.black)),
+                                    )
+                                  ]),
+                              p.SizedBox(height: 5),
+                              p.Row(children: [
+                                p.Container(
+                                  width: 120,
+                                  height: 20,
+                                  child: p.Text("Designation",
+                                      style: const p.TextStyle(
+                                          color: PdfColors.black)),
+                                ),
+                                p.Container(
+                                  width: 140,
+                                  height: 20,
+                                  child: p.Text(": ${staffdesignation.toString()} ",
+                                      style: const p.TextStyle(
+                                          color: PdfColors.black)),
+                                )
+                              ]),
+
+                            ])),
+                  ]),
+                  p.SizedBox(height: 5),
+
+                  p.Container(
+                    child: p.Row(
+                        mainAxisAlignment: p.MainAxisAlignment.center,
+                        children: [
+                          p.Container(
+                              width: 380,
+                              height: 30,
+                              decoration: p.BoxDecoration(
+                                  color: PdfColor.fromHex("0271C5"),
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+                              child: p.Center(
+                                  child: p.Text("Earnings", style: p.TextStyle(
+                                    color: PdfColors.white,
+                                  ))
+                              )
+                          ),
+                          p.Container(
+                              width: 100,
+                              height: 30,
+                              decoration: p.BoxDecoration(
+                                  color: PdfColor.fromHex("0271C5"),
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+
+                              child: p.Center(
+                                  child: p.Text("Amount", style: p.TextStyle(
+                                    color: PdfColors.white,
+                                  ))
+                              )
+                          ),
+                        ]
+                    ),
+
+
+                  ),
+                  p.Container(
+                    child: p.Row(
+                        crossAxisAlignment: p.CrossAxisAlignment.start,
+                        mainAxisAlignment: p.MainAxisAlignment.center,
+                        children: [
+                          p.Container(
+                              width: 380,
+                              height: height / 6.3,
+                              decoration: p.BoxDecoration(
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+                              child:
+                              p.Padding(
+                                  padding: p.EdgeInsets.only(
+                                      left: width / 36.0),
+                                  child: p.Column(
+                                      crossAxisAlignment: p.CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("Basic Pay"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("DA"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("House Rent Allowance"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("Other Allowance"),
+                                        ),
+                                        p.Row(
+                                            mainAxisAlignment: p
+                                                .MainAxisAlignment.end,
+                                            children: [
+                                              p.Padding(
+                                                padding: p.EdgeInsets.only(
+                                                    right: 8, top: 10),
+                                                child: p.Text("Total Earnings"),
+                                              ),
+                                            ]
+                                        )
+                                      ]
+                                  )
+                              )
+                          ),
+                          p.Container(
+                              width: 100,
+                              height: height / 6.3,
+                              decoration: p.BoxDecoration(
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+
+                              child: p.Padding(
+                                  padding: p.EdgeInsets.only(right: 10),
+                                  child: p.Column(
+                                      crossAxisAlignment: p.CrossAxisAlignment
+                                          .end,
+                                      children: [
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("${datadocument['basic']
+                                              .toString()}"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("${datadocument['da']
+                                              .toString()}"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("${datadocument['hra']
+                                              .toString()}"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("${datadocument['other']
+                                              .toString()}"),
+                                        ),
+                                        p.Row(
+                                            mainAxisAlignment: p
+                                                .MainAxisAlignment.end,
+                                            children: [
+                                              p.Padding(
+                                                padding: p.EdgeInsets.only(
+                                                    top: 10),
+                                                child: p.Text(
+                                                    "${datadocument['gross'].toString()}"),
+                                              ),
+                                            ]
+                                        )
+                                      ]
+                                  )
+                              )
+                          ),
+                        ]
+                    ),
+
+
+                  ),
+
+                  p.SizedBox(height: height / 75.6),
+
+                  p.Container(
+                    child: p.Row(
+                        mainAxisAlignment: p.MainAxisAlignment.center,
+                        children: [
+                          p.Container(
+                              width: 380,
+                              height: 30,
+                              decoration: p.BoxDecoration(
+                                  color: PdfColor.fromHex("0271C5"),
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+                              child: p.Center(
+                                  child: p.Text(
+                                      "Deductions", style: p.TextStyle(
+                                    color: PdfColors.white,
+                                  ))
+                              )
+                          ),
+                          p.Container(
+                              width: 100,
+                              height: 30,
+                              decoration: p.BoxDecoration(
+                                  color: PdfColor.fromHex("0271C5"),
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+
+                              child: p.Center(
+                                  child: p.Text("Amount", style: p.TextStyle(
+                                    color: PdfColors.white,
+                                  ))
+                              )
+                          ),
+                        ]
+                    ),
+
+
+                  ),
+                  p.Container(
+                    child: p.Row(
+                        crossAxisAlignment: p.CrossAxisAlignment.start,
+                        mainAxisAlignment: p.MainAxisAlignment.center,
+                        children: [
+                          p.Container(
+                              width: 380,
+                              height: height / 6.3,
+                              decoration: p.BoxDecoration(
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+                              child:
+                              p.Padding(
+                                  padding: p.EdgeInsets.only(
+                                      left: width / 36.0),
+                                  child: p.Column(
+                                      crossAxisAlignment: p.CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("Provident Fund "),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("Professional Tax "),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("Loan"),
+                                        ),
+
+                                        p.Row(
+                                            mainAxisAlignment: p
+                                                .MainAxisAlignment.end,
+                                            children: [
+                                              p.Padding(
+                                                padding: p.EdgeInsets.only(
+                                                    right: 8, top: 10),
+                                                child: p.Text(
+                                                    "Total Deductions"),
+                                              ),
+                                            ]
+                                        ),
+                                        p.Row(
+                                            mainAxisAlignment: p
+                                                .MainAxisAlignment.end,
+                                            children: [
+                                              p.Padding(
+                                                padding: p.EdgeInsets.only(
+                                                    right: 8, top: 10),
+                                                child: p.Text("Net Pay"),
+                                              ),
+                                            ]
+                                        )
+                                      ]
+                                  )
+                              )
+                          ),
+                          p.Container(
+                              width: 100,
+                              height: height / 6.3,
+                              decoration: p.BoxDecoration(
+                                  border: p.Border.all(color: PdfColors.black)
+                              ),
+
+                              child: p.Padding(
+                                  padding: p.EdgeInsets.only(right: 10),
+                                  child: p.Column(
+                                      crossAxisAlignment: p.CrossAxisAlignment
+                                          .end,
+                                      children: [
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("${"0"}"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("${"0"}"),
+                                        ),
+                                        p.Padding(
+                                          padding: p.EdgeInsets.only(top: 8),
+                                          child: p.Text("${"0"}"),
+                                        ),
+
+                                        p.Row(
+                                            mainAxisAlignment: p
+                                                .MainAxisAlignment.end,
+                                            children: [
+                                              p.Padding(
+                                                padding: p.EdgeInsets.only(
+                                                    top: 10),
+                                                child: p.Text("${""}"),
+                                              ),
+                                            ]
+                                        ),
+                                        p.Row(
+                                            mainAxisAlignment: p
+                                                .MainAxisAlignment.end,
+                                            children: [
+                                              p.Padding(
+                                                padding: p.EdgeInsets.only(
+                                                    top: 10),
+                                                child: p.Text("${"0"}"),
+                                              ),
+                                            ]
+                                        )
+                                      ]
+                                  )
+                              )
+                          ),
+                        ]
+                    ),
+
+
+                  ),
+                  p.SizedBox(height: height / 75.6),
+                  p.Text("${""}"),
+                  p.SizedBox(height: 5),
+                  p.Text(""),
+                  p.SizedBox(height: 15),
+                  p.Row(
+                      mainAxisAlignment: p.MainAxisAlignment.spaceAround,
+                      children: [
+                        p.SizedBox(
+                          width: width / 1.8,
+                          child: p.Column(
+                              children: [
+                                p.Text("Employer Signature"),
+                                p.SizedBox(height: 20, width: 100,
+                                    child: p.Text("${""}")
+                                ),
+                                p.Divider()
+                              ]
+                          ),
+                        ),
+                        p.SizedBox(
+                          width: width / 1.8,
+                          child: p.Column(
+                              children: [
+                                p.Text("Employee Signature"),
+                                p.SizedBox(height: 20,
+                                    width: 100,
+                                    child: p.Text("${""}")),
+                                p.Divider()
+                              ]
+                          ),
+                        ),
+
+                      ]
+                  ),
+                  p.SizedBox(height: 15),
+                  p.Text("This is system generated payslip"),
+
+
+                ]))));
+
+
+    final pdf = p.Document();
+    pdf.addPage(
+      p.MultiPage(
+        margin: p.EdgeInsets.zero,
+        pageFormat: PdfPageFormat.a4,
+        build: (context) => widgets, //here goes the widgets list
+      ),
+    );
+    Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
+  }
+
 
 }
 
 
-
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseStorage _firebaseStorage2= FirebaseStorage.instanceFor(app: _secondaryApp);
+FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(
+    app: _secondaryApp);
+FirebaseStorage _firebaseStorage2 = FirebaseStorage.instanceFor(
+    app: _secondaryApp);
 FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);

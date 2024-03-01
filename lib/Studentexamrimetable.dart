@@ -173,7 +173,7 @@ class _StudentExamTimeState extends State<StudentExamTime> {
 
                                 return
                                      StreamBuilder(stream:_firestore2db.collection("Students").doc(widget.userdocid).collection("Exams").
-                                     doc(snap.data!.docs[index].id).collection("Timetable").orderBy("timestamp2",descending: true).snapshots(),
+                                     doc(snap.data!.docs[index].id).collection("Timetable").orderBy("timestamp2",).snapshots(),
                                          builder: (context, snapshot2) {
                                            if(!snapshot2.hasData){
                                              return Center(

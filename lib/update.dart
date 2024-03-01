@@ -42,7 +42,7 @@ class _UpdateState extends State<Update> {
                       Image.asset("assets/calendar.png"),
                       Text("Attendance",style: GoogleFonts.poppins(
                           color: Colors.black,
-                          fontSize: 14,
+                          fontSize: width/25.714,
                           fontWeight: FontWeight.w500
                       ),),
                     ],
@@ -63,7 +63,7 @@ class _UpdateState extends State<Update> {
                       Image.asset("assets/edit.png"),
                       Text("Home Works",style: GoogleFonts.poppins(
                           color: Colors.black,
-                          fontSize: 14,
+                          fontSize: width/25.714,
                           fontWeight: FontWeight.w500
                       ),),
                     ],
@@ -86,7 +86,7 @@ class _UpdateState extends State<Update> {
                       Image.asset("assets/user.png"),
                       Text("Behaviour",style: GoogleFonts.poppins(
                           color: Colors.black,
-                          fontSize: 14,
+                          fontSize: width/25.714,
                           fontWeight: FontWeight.w500
                       ),),
                     ],
@@ -112,7 +112,7 @@ class _UpdateState extends State<Update> {
                     Image.asset("assets/important.png"),
                     Text("Circulars",style: GoogleFonts.poppins(
                         color: Colors.black,
-                        fontSize: 14,
+                        fontSize: width/25.714,
                         fontWeight: FontWeight.w500
                     ),),
                   ],
@@ -131,7 +131,7 @@ class _UpdateState extends State<Update> {
                     Image.asset("assets/time.png"),
                     Text("Time Table",style: GoogleFonts.poppins(
                         color: Colors.black,
-                        fontSize: 14,
+                        fontSize: width/25.714,
                         fontWeight: FontWeight.w500
                     ),),
                   ],
@@ -151,7 +151,7 @@ class _UpdateState extends State<Update> {
                     Image.asset("assets/message.png"),
                     Text("Messages",style: GoogleFonts.poppins(
                         color: Colors.black,
-                        fontSize: 14,
+                        fontSize: width/25.714,
                         fontWeight: FontWeight.w500
                     ),),
                   ],

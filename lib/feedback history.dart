@@ -34,6 +34,9 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
   List<String> feedback = ["Outstanding", "Excellent", "Good","Satisfactory", "Focus Needed"];
   TextEditingController remarkscon = new TextEditingController();
   TextEditingController remarkscon1 = new TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery
@@ -166,7 +169,7 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                                 minLines: 1,
                                 decoration:
                                 InputDecoration(
-                                    contentPadding: EdgeInsets.only(top: 15),
+                                    contentPadding: EdgeInsets.only(top: height/50.4),
 
                                     hintText:
                                     "",
@@ -366,7 +369,7 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                                                       .black,
                                                   textStyle: TextStyle(overflow: TextOverflow.ellipsis),
                                                   fontSize:
-                                                  15,
+                                                  width/24,
                                                   fontWeight:
                                                   FontWeight
                                                       .w600),
@@ -635,152 +638,156 @@ Navigator.of(context).pop();
         return
           AlertDialog(
             content: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height:height/75.6,),
-                  Text(
-                    'Edit the Student Feedback', style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize:width/25,
-                      fontWeight: FontWeight.w700
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height:height/75.6,),
+                    Text(
+                      'Edit the Student Feedback', style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize:width/25,
+                        fontWeight: FontWeight.w700
 
-                  ),),
-                  SizedBox(height:height/75.6,),
-                  Text(
-                    'Feedback Status', style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize:width/25,
-                      fontWeight: FontWeight.w700
+                    ),),
+                    SizedBox(height:height/75.6,),
+                    Text(
+                      'Feedback Status', style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize:width/25,
+                        fontWeight: FontWeight.w700
 
-                  ),),
-                  SizedBox(height:height/75.6,),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300,
-                      ),
-                      borderRadius: BorderRadius.circular(5)
-                    ),
-                    child: DropdownButton2<String>(
-                      value: dropdownvalueweditvalue,
-                      isExpanded: true,
-                      style: TextStyle(
-                          color: Color(0xff3D8CF8),
-                          fontSize:width/24, fontWeight: FontWeight.w700),
-                      underline: Container(
-                        color: Color(0xff3D8CF8),
-                      ),
-                      onChanged: (String? value) {
-                        // This is called when the user selects an item.
-                        setState(() {
-                          dropdownvalueweditvalue = value!;
-                        });
-                      },
-                      items:
-                      feedback.map<DropdownMenuItem<String>>(
-                              (String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                    ),
-                  ),
-                  SizedBox(height:height/75.6,),
-                  Text(
-                    'Remarks', style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize:width/25,
-                      fontWeight: FontWeight.w700
-
-                  ),),
-                  SizedBox(height:height/75.6,),
-                  Padding(
-                    padding:  EdgeInsets.symmetric(
-                      horizontal: width/45,
-                      vertical: height/94.5
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          left: width / 36, right: width / 36),
-                      height: height / 4.74,
-                      width: width / 1.3,
+                    ),),
+                    SizedBox(height:height/75.6,),
+                    Container(
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              color: Colors.grey.shade300),
-                          borderRadius:
-                          BorderRadius.circular(10)),
-                      child: TextField(
-                        controller: remarkscon1,
+                        border: Border.all(color: Colors.grey.shade300,
+                        ),
+                        borderRadius: BorderRadius.circular(5)
+                      ),
+                      child: DropdownButton2<String>(
+                        value: dropdownvalueweditvalue,
+                        isExpanded: true,
+                        style: TextStyle(
+                            color: Color(0xff3D8CF8),
+                            fontSize:width/24, fontWeight: FontWeight.w700),
+                        underline: Container(
+                          color: Color(0xff3D8CF8),
+                        ),
+                        onChanged: (String? value) {
+                          // This is called when the user selects an item.
+                          setState(() {
+                            dropdownvalueweditvalue = value!;
+                          });
+                        },
+                        items:
+                        feedback.map<DropdownMenuItem<String>>(
+                                (String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                      ),
+                    ),
+                    SizedBox(height:height/75.6,),
+                    Text(
+                      'Remarks', style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize:width/25,
+                        fontWeight: FontWeight.w700
 
+                    ),),
+                    SizedBox(height:height/75.6,),
+                    Padding(
+                      padding:  EdgeInsets.symmetric(
+                        horizontal: width/45,
+                        vertical: height/94.5
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: width / 36, right: width / 36),
+                        height: height / 4.74,
+                        width: width / 1.3,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                color: Colors.grey.shade300),
+                            borderRadius:
+                            BorderRadius.circular(10)),
+                        child: TextFormField(
+                          controller: remarkscon1,
+                          style: GoogleFonts
+                              .poppins(
+                            color: Colors
+                                .black,
+                            fontSize:width/25.714,
+                            fontWeight:
+                            FontWeight
+                                .w500,
+                          ),
 
-                        style: GoogleFonts
-                            .poppins(
-                          color: Colors
-                              .black,
-                          fontSize:width/25.714,
-                          fontWeight:
-                          FontWeight
-                              .w500,
+                          maxLines: 5,
+                          minLines: 1,
+                          decoration:
+                          InputDecoration(
+                              contentPadding: EdgeInsets.only(top: height/50.4),
+
+                              hintText:
+                              "",
+                              hintStyle:
+                              GoogleFonts
+                                  .poppins(
+                                color: Colors
+                                    .black,
+                                fontSize:width/25.714,
+                                fontWeight:
+                                FontWeight
+                                    .w500,
+                              ),
+                              border:
+                              InputBorder
+                                  .none),
+                          validator: (value) => value!.isEmpty ? 'Field is required' : null,
+
                         ),
 
-                        maxLines: 5,
-                        minLines: 1,
-                        decoration:
-                        InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 15),
-
-                            hintText:
-                            "",
-                            hintStyle:
-                            GoogleFonts
-                                .poppins(
-                              color: Colors
-                                  .black,
-                              fontSize:width/25.714,
-                              fontWeight:
-                              FontWeight
-                                  .w500,
-                            ),
-                            border:
-                            InputBorder
-                                .none),
-
 
                       ),
-
-
                     ),
-                  ),
-                  SizedBox(height: height/18.9,),
-                  GestureDetector(
-                    onTap: (){
-                      updateremarks(docid);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          left: width / 36, right: width / 36),
-                      height: height / 14.74,
-                      width: width / 2.363,
-                      decoration: BoxDecoration(
-                          color: Color(0xff3D8CF8),
-                          border: Border.all(
-                              color: Colors.grey.shade300),
-                          borderRadius:
-                          BorderRadius.circular(10)),
-                      child: Center(
-                        child: Text("Submit", style: TextStyle(
-                            color: Colors.white,
-                            fontSize:width/18, fontWeight: FontWeight.w700),),
+                    SizedBox(height: height/18.9,),
+                    GestureDetector(
+                      onTap: (){
+                        if (_formKey.currentState!.validate()){
+                          updateremarks(docid);
+                        }
+
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: width / 36, right: width / 36),
+                        height: height / 14.74,
+                        width: width / 2.363,
+                        decoration: BoxDecoration(
+                            color: Color(0xff3D8CF8),
+                            border: Border.all(
+                                color: Colors.grey.shade300),
+                            borderRadius:
+                            BorderRadius.circular(10)),
+                        child: Center(
+                          child: Text("Submit", style: TextStyle(
+                              color: Colors.white,
+                              fontSize:width/18, fontWeight: FontWeight.w700),),
+                        ),
+
                       ),
-
                     ),
-                  ),
-                  SizedBox(height: height/18.9,),
+                    SizedBox(height: height/18.9,),
 
-                ],
+                  ],
+                ),
               ),
             ),
           );

@@ -92,7 +92,7 @@ class _Statff_Leave_PageState extends State<Statff_Leave_Page> {
                       ),
                       SizedBox(width:width/36.0,),
                       Text("Today Attendance",style: GoogleFonts.montserrat(
-                          fontSize: 18,
+                          fontSize: width/20,
                           fontWeight: FontWeight.w700,color: Colors.white),)
                     ],
                   ),
@@ -109,7 +109,7 @@ class _Statff_Leave_PageState extends State<Statff_Leave_Page> {
                     ),
                   ),
 
-                  const SizedBox(height: 5,),
+                   SizedBox(height: height/151.2,),
 
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +119,7 @@ class _Statff_Leave_PageState extends State<Statff_Leave_Page> {
                         child: Text(
                           staffname, style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 22,
+                            fontSize: width/16.3636,
                             fontWeight: FontWeight.bold
 
                         ),),
@@ -138,8 +138,12 @@ class _Statff_Leave_PageState extends State<Statff_Leave_Page> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Today - ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 18),),
+                    padding:  EdgeInsets.symmetric(
+
+                      horizontal: width/45,
+                      vertical: height/94.5
+                    ),
+                    child: Text("Today - ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.w700,fontSize: width/20),),
                   ),
                   
                 ],
@@ -167,7 +171,7 @@ class _Statff_Leave_PageState extends State<Statff_Leave_Page> {
             ),
           ),
 
-          SizedBox(height: 20,),
+          SizedBox(height: height/37.8,),
 
           GestureDetector(
             onTap: (){
@@ -240,8 +244,9 @@ class _Statff_Leave_PageState extends State<Statff_Leave_Page> {
   }
 
   staffSuccessdialog(){
+    double width=MediaQuery.of(context).size.width;
     return AwesomeDialog(
-      width: 450,
+      width: width/0.8,
       context: context,
       dialogType: DialogType.success,
       animType: AnimType.rightSlide,
@@ -272,8 +277,11 @@ class _Statff_Leave_PageState extends State<Statff_Leave_Page> {
   }
 
   staffleaveSuccessdialog(){
+
+    double width=MediaQuery.of(context).size.width;
+
     return AwesomeDialog(
-      width: 450,
+      width: width/0.8,
       context: context,
       dialogType: DialogType.success,
       animType: AnimType.rightSlide,

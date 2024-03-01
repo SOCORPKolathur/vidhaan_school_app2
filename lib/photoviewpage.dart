@@ -110,15 +110,15 @@ class _PhotoViewPageState extends State<PhotoViewPage> {
           controller: dd,
           children: [
             widget.img1!=""?CachedNetworkImage(imageUrl:widget.img1.toString(),placeholder: (context, url) => Container(
-                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): SizedBox(),
+                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): Center(child: Text("No Data")),
             widget.img2!=""? CachedNetworkImage(imageUrl:widget.img2.toString(),placeholder: (context, url) => Container(
-    width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): SizedBox(),
+                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): Center(child: Text("No Data")),
             widget.img3!=""? CachedNetworkImage(imageUrl:widget.img3.toString(),placeholder: (context, url) => Container(
-                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): SizedBox(),
+                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): Center(child: Text("No Data")),
             widget.img4!=""? CachedNetworkImage(imageUrl:widget.img4.toString(),placeholder: (context, url) => Container(
-                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): SizedBox(),
+                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): Center(child: Text("No Data")),
             widget.img5!=""?CachedNetworkImage(imageUrl:widget.img5.toString(),placeholder: (context, url) => Container(
-                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): SizedBox(),
+                width:width/3.60,height:height/7.56,child: Lottie.asset("assets/Loadingvi.json")),): Center(child: Text("No Data")),
 
           ],
         ),

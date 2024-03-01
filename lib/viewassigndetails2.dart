@@ -224,7 +224,7 @@ class _Assignmentsdetails2State extends State<Assignmentsdetails2> {
             Text("Error",
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: width/25.714,
                   fontWeight: FontWeight.w600
               ),)
           ],
@@ -238,7 +238,7 @@ class _Assignmentsdetails2State extends State<Assignmentsdetails2> {
               Text("Sorry Attachments are Empty !.....",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: width/25.714,
                     fontWeight: FontWeight.w600
                 ),),
           Lottie.asset("assets/error animation.json",height: height/5.04,width: width/2.4,fit: BoxFit.cover)

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:face_camera/face_camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -38,6 +39,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -45,7 +47,7 @@ void main() async {
     name: 'SecondaryApp',
     options: SecondaryFirebaseOptions.currentPlatform,
   );
-
+  await FaceCamera.initialize();
   //initialize background
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -69,8 +71,6 @@ class _MyAppState extends State<MyApp> {
     print("Init Stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     usertypecheckfunction();
     setupInteractedMessage();
-
-
     // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     //   print("Notification Data: ${message.data}");
     //   print("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
@@ -307,7 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
               duration: Duration(milliseconds: 500),
               from: 500,
               child: Padding(
-                padding: const EdgeInsets.only(left: 0.0,right: 0,top: 300),
+                padding:  EdgeInsets.only(top: height/2.52),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -369,7 +369,7 @@ class _MyHomePageState extends State<MyHomePage> {
               duration: Duration(milliseconds: 400),
               from: 500,
               child: Padding(
-                padding: const EdgeInsets.only(left: 0.0,right: 0,top: 450),
+                padding:  EdgeInsets.only(top: height/1.89),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -619,21 +619,21 @@ class _MyHomePage1State extends State<MyHomePage1> {
         child: DropdownButtonHideUnderline(
           child: DropdownButton2<String>(
             isExpanded: true,
-            hint: const Row(
+            hint:  Row(
               children: [
                 Icon(
                   Icons.list,
-                  size: 16,
+                  size: width/22.5,
                   color: Colors.black,
                 ),
                 SizedBox(
-                  width: 4,
+                  width: width/90,
                 ),
                 Expanded(
                   child: Text(
                     'Select Item',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: width/25.714,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -647,8 +647,8 @@ class _MyHomePage1State extends State<MyHomePage1> {
               value: item,
               child: Text(
                 item,
-                style: const TextStyle(
-                  fontSize: 14,
+                style:  TextStyle(
+                  fontSize: width/25.714,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -695,7 +695,7 @@ class _MyHomePage1State extends State<MyHomePage1> {
               ),
             ),
             menuItemStyleData:  MenuItemStyleData(
-              height: 40,
+              height: height/18.9,
               padding: EdgeInsets.only(left: width/25.714, right: width/25.714),
             ),
           ),

@@ -87,7 +87,7 @@ class _StudentExamState extends State<StudentExam> {
                   "Exams",
                   style: GoogleFonts.poppins(
                       color:Color(0xff0873C4),
-                      fontSize: 18,
+                      fontSize: width/20,
                       fontWeight:
                       FontWeight.w600),
                 ),
@@ -100,7 +100,7 @@ class _StudentExamState extends State<StudentExam> {
                     style: GoogleFonts.poppins(
                         color: Colors
                             .grey.shade700,
-                        fontSize: 15,
+                        fontSize: width/24,
                         fontWeight:
                         FontWeight.w500),
                   ),
@@ -116,7 +116,7 @@ class _StudentExamState extends State<StudentExam> {
                     style: GoogleFonts.poppins(
                         color: Colors
                             .grey.shade700,
-                        fontSize: 15,
+                        fontSize: width/24,
                         fontWeight:
                         FontWeight.w500),
                   ),
@@ -188,20 +188,20 @@ class _StudentExamState extends State<StudentExam> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(left: 12.0,top:8,bottom: 5),
+                                              padding:  EdgeInsets.only(left: width/30,top:height/94.5,bottom: height/151.2),
                                               child: Text(snap.data!.docs[index]["name"],style: GoogleFonts.poppins(
                                                   color: Colors.white,
-                                                  fontSize: 25,
+                                                  fontSize: width/14.4,
                                                   fontWeight: FontWeight.w700
 
                                               ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(left: 12.0),
+                                              padding:  EdgeInsets.only(left: width/30),
                                               child: Text("View",style: GoogleFonts.poppins(
                                                   color: Colors.white,
-                                                  fontSize: 20,
+                                                  fontSize: width/18,
                                                   fontWeight: FontWeight.w600
 
                                               ),
@@ -210,8 +210,8 @@ class _StudentExamState extends State<StudentExam> {
                                           ],
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 12.0),
-                                          child: Icon(Icons.text_snippet_rounded,color: Colors.white,size: 40,),
+                                          padding:  EdgeInsets.only(right: width/30),
+                                          child: Icon(Icons.text_snippet_rounded,color: Colors.white,size: width/9,),
                                         )
                                       ],
                                     )
@@ -221,8 +221,6 @@ class _StudentExamState extends State<StudentExam> {
                           );
                         });
                   })
-
-
 
 
             ],

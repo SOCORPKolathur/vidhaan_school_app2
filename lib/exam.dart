@@ -37,7 +37,7 @@ class _ExamsState extends State<Exams> {
                 "Exams",
                 style: GoogleFonts.poppins(
                     color:Color(0xff0873C4),
-                    fontSize: 18,
+                    fontSize: width/20,
                     fontWeight:
                     FontWeight.w600),
               ),
@@ -100,7 +100,7 @@ class _ExamsState extends State<Exams> {
                     itemCount: snap.data!.docs.length,
                     itemBuilder: (context,index){
                   return Padding(
-                    padding:  EdgeInsets.only(bottom: 8),
+                    padding:  EdgeInsets.only(bottom: height/94.5),
                     child: Material(
                       elevation:5,
                       borderRadius: BorderRadius.circular(15),

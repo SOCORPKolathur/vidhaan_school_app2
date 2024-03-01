@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';
-import 'package:rive/rive.dart';
+
 
 class Rivefile extends StatefulWidget {
   const Rivefile({Key? key}) : super(key: key);

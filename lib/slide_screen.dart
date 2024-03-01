@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vidhaan_school_app/account_page.dart';
+
+
+
 class Slidepage extends StatefulWidget {
   const Slidepage({Key? key}) : super(key: key);
 
@@ -36,7 +39,7 @@ class _SlidepageState extends State<Slidepage> {
               style: GoogleFonts.montserrat(
 
               color: Colors.black,
-              fontWeight: FontWeight.w700,fontSize: 30
+              fontWeight: FontWeight.w700,fontSize: width/12
 
 
             ),),
@@ -45,7 +48,7 @@ class _SlidepageState extends State<Slidepage> {
             Text("To Your Desire",style: GoogleFonts.montserrat(
 
                 color: Colors.grey,
-                fontWeight: FontWeight.w500,fontSize: 18
+                fontWeight: FontWeight.w500,fontSize: width/20
 
 
             ),),

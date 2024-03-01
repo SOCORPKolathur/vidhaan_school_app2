@@ -37,7 +37,7 @@ class _MarkDetailsState extends State<MarkDetails> {
               padding:  EdgeInsets.only(left:width/45 ),
               child: Text("Subject Marks Details",style: GoogleFonts.poppins(
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: width/18,
                   fontWeight: FontWeight.w700
 
               ),),
@@ -63,7 +63,7 @@ class _MarkDetailsState extends State<MarkDetails> {
                         child:
                         Text("Subject : ${widget.Subjectname}",style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 15,
+                            fontSize: width/24,
                             fontWeight: FontWeight.w700
 
                         ),),
@@ -83,7 +83,7 @@ class _MarkDetailsState extends State<MarkDetails> {
                       child: Center(
                         child: Text("Class : ${widget.Class}",style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 15,
+                            fontSize: width/24,
                             fontWeight: FontWeight.w700
 
                         ),),
@@ -112,7 +112,7 @@ class _MarkDetailsState extends State<MarkDetails> {
                       child: Center(
                         child: Text("Student Name",style: GoogleFonts.poppins(
                             color: Colors.black,
-                            fontSize: 15,
+                            fontSize: width/24,
                             fontWeight: FontWeight.w700
 
                         ),),
@@ -132,7 +132,7 @@ class _MarkDetailsState extends State<MarkDetails> {
                       child: Center(
                         child: Text("Mark/Total Mark",style: GoogleFonts.poppins(
                             color: Colors.black,
-                            fontSize: 15,
+                            fontSize: width/24,
                             fontWeight: FontWeight.w700
 
                         ),),

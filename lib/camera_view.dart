@@ -170,56 +170,65 @@ class _CameraViewState extends State<CameraView> {
     ),
   );
 
-  Widget _zoomControl() => Positioned(
-    bottom: 16,
-    left: 0,
-    right: 0,
-    child: Align(
-      alignment: Alignment.bottomCenter,
-      child: SizedBox(
-        width: 250,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Slider(
-                value: _currentZoomLevel,
-                min: _minAvailableZoom,
-                max: _maxAvailableZoom,
-                activeColor: Colors.white,
-                inactiveColor: Colors.white30,
-                onChanged: (value) async {
-                  setState(() {
-                    _currentZoomLevel = value;
-                  });
-                  await _controller?.setZoomLevel(value);
-                },
+  Widget _zoomControl() {
+    double height=MediaQuery.of(context).size.height;
+    double width=MediaQuery.of(context).size.width;
+    return Positioned(
+      bottom: 16,
+      left: 0,
+      right: 0,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: SizedBox(
+          width: 250,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Slider(
+                  value: _currentZoomLevel,
+                  min: _minAvailableZoom,
+                  max: _maxAvailableZoom,
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.white30,
+                  onChanged: (value) async {
+                    setState(() {
+                      _currentZoomLevel = value;
+                    });
+                    await _controller?.setZoomLevel(value);
+                  },
+                ),
               ),
-            ),
-            Container(
-              width: 50,
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    '${_currentZoomLevel.toStringAsFixed(1)}x',
-                    style: TextStyle(color: Colors.white),
+              Container(
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+                  child: Center(
+                    child: Text(
+                      '${_currentZoomLevel.toStringAsFixed(1)}x',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
-  Widget _exposureControl() => Positioned(
+
+  Widget _exposureControl() {
+    double height=MediaQuery.of(context).size.height;
+    double width=MediaQuery.of(context).size.width;
+    return
+  Positioned(
     top: 40,
     right: 8,
     child: ConstrainedBox(
@@ -234,7 +243,7 @@ class _CameraViewState extends State<CameraView> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+           padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
             child: Center(
               child: Text(
                 '${_currentExposureOffset.toStringAsFixed(1)}x',
@@ -267,6 +276,7 @@ class _CameraViewState extends State<CameraView> {
       ]),
     ),
   );
+  }
 
   Future _startLiveFeed() async {
     final camera = _cameras[_cameraIndex];

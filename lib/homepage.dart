@@ -333,7 +333,7 @@ class _HomepageState extends State<Homepage> {
                   gap: 8,
                   color: Colors.white,
                   activeColor: Color(0xff0873C4),
-                  iconSize: 26,
+                  iconSize: width/13.846,
                   tabBackgroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(
                       horizontal: width / 36, vertical: height / 151.2),

@@ -35,7 +35,6 @@ class _OtppageState extends State<Otppage> {
   bool isSelected = false;
 
 
-
   String _deviceId =" ";
   String _deviceIdorg =" ";
 
@@ -96,7 +95,38 @@ class _OtppageState extends State<Otppage> {
         verificationCompleted:(PhoneAuthCredential credential)async{
           await _firebaseauth2db.signInWithCredential(credential).then((value)async{
             if(value.user!=null){
-              print("Valied Otp");
+            if(widget.nameController=="Teacher"){
+
+            _firestore2db.collection("Staffs").doc(widget.staffid).update({
+            "userid":_firebaseauth2db.currentUser!.uid,
+            "token":usertoken
+            });
+            _firestore2db.collection('deviceid').doc(_firebaseauth2db.currentUser!.uid).set({
+            "id":_firebaseauth2db.currentUser!.uid,
+            "type":"Teacher",
+            });
+            print("++++++++++++++++++++++++Push Successful");
+            Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context)=> Homepage()),(Route<dynamic> route) => false);
+
+            }
+
+            if(widget.nameController=="Student"){
+            _firestore2db.collection("Students").doc(widget.staffid).update({
+            "studentid":_firebaseauth2db.currentUser!.uid,
+            "token":usertoken
+            });
+            _firestore2db.collection('deviceid').doc(_firebaseauth2db.currentUser!.uid).set({
+            "id":_firebaseauth2db.currentUser!.uid,
+            "type":"Student",
+            });
+            print("++++++++++++++++++++++++Push Successful");
+            Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context)=> Student_landing_Page("",false)),(Route<dynamic> route) => false);
+            }
+
+            print("Valied Otp");
+
             }
           });
         },
@@ -196,11 +226,7 @@ class _OtppageState extends State<Otppage> {
 
                   SizedBox(height:height*4/122.83),
 
-/*
-                  OtpTextField(
-                    numberOfFields: 6,
-                    borderColor: Color(0xFF512DA8),
-                  ),*/
+
                   Padding(
                     padding:  EdgeInsets.symmetric(
                       vertical: height/94.5,
@@ -318,12 +344,7 @@ class _OtppageState extends State<Otppage> {
                                 smsCode: otp)).then((value) => {
                           if(value.user!=null){
 
-                            print("User not null+++++++++++++++++++++++"),
                             if(widget.nameController=="Teacher"){
-
-                              print("Teacher login+++++++++++++++++++++++"),
-                              print(_firebaseauth2db.currentUser!.uid),
-                              print(usertoken),
                               _firestore2db.collection("Staffs").doc(widget.staffid).update({
                                 "userid":_firebaseauth2db.currentUser!.uid,
                                 "token":usertoken
@@ -335,6 +356,7 @@ class _OtppageState extends State<Otppage> {
                         print("++++++++++++++++++++++++Push Successful"),
                               Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(builder: (context)=> Homepage()),(Route<dynamic> route) => false),
+
                             },
 
                             if(widget.nameController=="Student"){

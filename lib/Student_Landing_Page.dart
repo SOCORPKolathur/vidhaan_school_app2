@@ -15,11 +15,13 @@ import 'package:lottie/lottie.dart';
 import 'package:pdf/pdf.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pinput/pinput.dart';
+import 'package:vidhaan_school_app/Report%20Card%20Print.dart';
 import 'Notifications.dart';
 import 'Profileview.dart';
 import 'StudentAttendance_Page.dart';
 import 'Student_Profile.dart';
 import 'StudentsExam.dart';
+import 'Studnet_Notification_Page.dart';
 import 'account_page.dart';
 import 'assignmentsdetailsst.dart';
 import 'package:pdf/widgets.dart' as p;
@@ -45,6 +47,7 @@ class _Student_landing_PageState extends State<Student_landing_Page> {
   String Studentimg = '';
   String Studentclass = '';
   String Studentsec = '';
+  int notifycount=0;
 bool Loading=false;
 
   studentdetails() async {
@@ -56,8 +59,7 @@ bool Loading=false;
         setState(() {
           Studentid = document.docs[i].id;
         });
-        print("Student:${Studentid}");
-        print(Studentid);
+
       }
       if (Studentid.isNotEmpty) {
         var studentdocument = await _firestore2db
@@ -73,7 +75,6 @@ bool Loading=false;
         setState(() {
           Studentname = values[0]!;
         });
-        print(values[0]);
         setState(() {
           Studentlastname=stuvalue['stlastname'];
           Studentregno = stuvalue['regno'];
@@ -86,8 +87,29 @@ bool Loading=false;
 
       }
     };
+    _firestore2db.collection("Students")
+        .doc(Studentid).collection("Notification").where(
+        "readstatus", isEqualTo: false).snapshots()
+        .listen((event) {
+      setState(() {
+        notifycount = event.docs.length;
+      });
+    });
 
+  }
 
+  notificatouncountdisaapersfun()async{
+    var Notificationdocument = await _firestore2db.collection("Students")
+        .doc(Studentid).collection("Notification").get();
+    for(int i=0;i<Notificationdocument.docs.length;i++){
+      _firestore2db.collection("Students")
+          .doc(Studentid).collection("Notification").doc(Notificationdocument.docs[i].id).update({
+        "readstatus":true,
+      });
+    }
+    setState(() {
+
+    });
   }
 
   Date() {
@@ -108,8 +130,6 @@ bool Loading=false;
           .day;
     });
 
-    print(day);
-    print(currentDate);
   }
 
   String getMonth(int currentMonthIndex) {
@@ -146,12 +166,9 @@ bool Loading=false;
       setState(() {
         page=widget.navigation!;
       });
-    print(widget.navigation);
-      print(widget.naviagtiontcheck);
     }
-    print("init functiopn entereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     studentdetails();
-
+    getAdmin();
     Date();
     gettimetable();
     // TODO: implement initState
@@ -165,8 +182,7 @@ bool Loading=false;
   double Circlularprogrossvalue=0;
 
   studentattendancestatus() async {
-    print("Enter fffffffffffffffffffffffffffffffffffffffffffff");
-    print(Studentid);
+
     setState((){
       Totalvalue=0;
       presentvalue=0;
@@ -174,7 +190,7 @@ bool Loading=false;
       Percentagevalue=0;
       Circlularprogrossvalue=0;
     });
-    print("studentattendancestatuslllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
+
     var document= await _firestore2db.collection("Students").doc(Studentid).
     collection('Attendance').get();
     setState(() {
@@ -206,14 +222,7 @@ bool Loading=false;
       Percentagevalue=(((presentvalue/Totalvalue)*100));
       Circlularprogrossvalue=(((presentvalue/Totalvalue)*100)/100);
     });
-    print("Presnt value000000000000000000000000$presentdayvalue");
-    print("Absnet valeuooooooooooooooooooooo$absentdayvalue");
 
-    print("Attenge value-------------------------------------------");
-    print(Circlularprogrossvalue);
-    print(Totalvalue);
-    print(Percentagevalue);
-    print("22222222222222222222222222222222-------------------------------------------");
 
   }
 
@@ -273,15 +282,16 @@ bool Loading=false;
       BuildContext context, id) {
     showToast() {
     }
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Builder(builder: (_) {
       if (chatMap['type'] == "text") {
         return
           Padding(
-            padding: const EdgeInsets.all(3.0),
+            padding:  EdgeInsets.symmetric(
+                vertical: height/252,
+                horizontal: width/120
+            ),
             child: Container(
                 width: size.width,
                 alignment: chatMap['sender'] == Studentname ? Alignment.centerRight : Alignment.centerLeft,
@@ -307,9 +317,10 @@ bool Loading=false;
                   },
                   child: Container(
                       padding: EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 14),
+                          vertical: height/94.5, horizontal: width/25.714),
+
                       margin: EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 0),
+                          vertical: height/151.2,),
                       decoration: BoxDecoration(
                         color: chatMap['sender'] == Studentname
                             ? Colors.white
@@ -927,47 +938,72 @@ bool Loading=false;
                                     ),
                                   ),
 
-
-                                  Row(
+                                  Stack(
                                     children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context, MaterialPageRoute(
-                                            builder: (context) =>
-                                                Notifications(),));
-                                        },
-                                        child: Container(
-                                            margin: EdgeInsets.only(
-                                                right: width / 50),
-                                            height: height / 20.47,
-                                            width: width / 10.333,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                BorderRadius.circular(6)),
-                                            child:
-                                            Icon(Icons.notifications_none,
-                                                color: Color(0xff2C79F1))),
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                             // notificatouncountdisaapersfun();
+                                              Navigator.push(
+                                                  context, MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Student_Notification_Page(
+                                                      Userdocid: Studentid,
+                                                    ),));
+                                            },
+                                            child: Container(
+                                                margin: EdgeInsets.only(
+                                                    right: width / 50),
+                                                height: height / 20.47,
+                                                width: width / 10.333,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(6)),
+                                                child:
+                                                Icon(Icons.notifications_none,
+                                                    color: Color(0xff2C79F1))),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              key.currentState!.openEndDrawer();
+                                            },
+                                            child: Container(
+                                                height: height / 20.47,
+                                                width: width / 10.1,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color:
+                                                        Colors.white,
+                                                        width: width / 180),
+                                                    borderRadius:
+                                                    BorderRadius
+                                                        .circular(5)),
+                                                child: Icon(
+                                                    Icons.menu_sharp,
+                                                    color: Colors.white)),
+                                          ),
+                                        ],
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          key.currentState!.openEndDrawer();
-                                        },
+                                      notifycount==0?
+                                      SizedBox():
+                                      Positioned(
+                                        left:width/18,
+                                        top: 0,
                                         child: Container(
-                                            height: height / 20.47,
-                                            width: width / 10.1,
+                                            height: height / 40.8,
+                                            width: width / 20,
                                             decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color:
-                                                    Colors.white,
-                                                    width: width / 180),
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(5)),
-                                            child: Icon(
-                                                Icons.menu_sharp,
-                                                color: Colors.white)),
+                                                color:Colors.red,
+                                                borderRadius: BorderRadius.circular(100)
+                                            ),
+                                            child:
+                                            Center(child: Text(notifycount.toString(),
+                                                style:GoogleFonts.poppins(
+                                                    fontSize:width/31,
+                                                    fontWeight:FontWeight.w700,color:Colors.white)))
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -1646,7 +1682,7 @@ bool Loading=false;
                                                               bottom: height /
                                                                   94.5),
                                                           child: Text(
-                                                            " ",
+                                                            "Groups",
                                                             style: GoogleFonts
                                                                 .poppins(
                                                                 color: Colors
@@ -2002,8 +2038,8 @@ bool Loading=false;
                                                 setState(() {
                                                   Hmselected = 1;
                                                   studentassingid = "Pending";
-                                                  currentdate = "";
-                                                  // currentdate="${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}";
+                                                  //currentdate = "";
+                                                   currentdate="${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}";
                                                 });
                                               },
                                               child: Container(
@@ -2050,13 +2086,7 @@ bool Loading=false;
                                                   Hmselected = 2;
                                                   studentassingid = "Completed";
                                                   //currentdate="";
-                                                  currentdate = "${DateTime
-                                                      .now()
-                                                      .day - 1}${DateTime
-                                                      .now()
-                                                      .month}${DateTime
-                                                      .now()
-                                                      .year}";
+                                                  currentdate = "${DateTime.now().day - 1}${DateTime.now().month}${DateTime.now().year}";
                                                 });
                                               },
                                               child: Container(
@@ -2107,7 +2137,6 @@ bool Loading=false;
                                                     setState(() {
                                                       Hmselected = 4;
                                                       studentassingid = "All";
-                                                      currentdate = "";
                                                     });
                                                   },
                                                   child: Container(
@@ -2216,11 +2245,699 @@ bool Loading=false;
                                         ),
 
                                         SizedBox(height: height / 36.85),
-
+                                        studentassingid == "All"?
                                         StreamBuilder(
-                                          stream: _firestore2db.collection(
-                                              "homeworks").doc(
-                                              currentdate.toString()).
+                                          stream: _firestore2db.collection("homeworks").snapshots(),
+                                          builder: (context, snap) {
+                                            if (snap.hasData == null) {
+                                              return Center(
+                                                child: CircularProgressIndicator(),);
+                                            }
+                                            if (!snap.hasData) {
+                                              return Center(
+                                                child: CircularProgressIndicator(),);
+                                            }
+
+                                            return ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              itemCount: snap.data!.docs.length,
+                                              itemBuilder: (context, index) {
+                                                var subjecthomeworkall = snap.data!.docs[index];
+
+                                                return
+                                                  StreamBuilder(
+                                                    stream: _firestore2db.collection("homeworks").doc(subjecthomeworkall.id.toString()).
+                                                    collection(
+                                                        value['admitclass'].toString())
+                                                        .doc(value['section'].toString()).
+                                                    collection("class HomeWorks").orderBy(
+                                                        "timestamp", descending: true)
+                                                        .snapshots(),
+                                                    builder: (context, snapshot2) {
+                                                      if (snapshot2.hasData == null) {
+                                                        return Center(
+                                                          child: CircularProgressIndicator(),);
+                                                      }
+                                                      if (!snapshot2.hasData) {
+                                                        return Center(
+                                                          child: CircularProgressIndicator(),);
+                                                      }
+
+                                                      return ListView.builder(
+                                                        shrinkWrap: true,
+                                                        physics: NeverScrollableScrollPhysics(),
+                                                        itemCount: snapshot2.data!.docs
+                                                            .length,
+                                                        itemBuilder: (context, index) {
+                                                          var subjecthomework = snapshot2
+                                                              .data!.docs[index];
+
+                                                          if(Searchcontroller.text=="") {
+                                                            return Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: height /
+                                                                      94.5),
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(10),
+                                                                    border: Border
+                                                                        .all(
+                                                                        color: Color(
+                                                                            0xff999999))),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                      children: [
+
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                          children: [
+
+                                                                            SizedBox(
+                                                                                height: height /
+                                                                                    75.6),
+
+                                                                            ///subject Title
+                                                                            Padding(
+                                                                              padding:
+                                                                              EdgeInsets
+                                                                                  .only(
+                                                                                  left: width /
+                                                                                      24),
+                                                                              child: SizedBox(
+                                                                                width: width /
+                                                                                    1.636,
+                                                                                child: Text(
+                                                                                  "${subjecthomework['subject']} - ${subjecthomework['statffname']}",
+                                                                                  style: GoogleFonts
+                                                                                      .poppins(
+                                                                                      color: Colors
+                                                                                          .black,
+                                                                                      fontWeight:
+                                                                                      FontWeight
+                                                                                          .w700,
+                                                                                      fontSize: width /
+                                                                                          22.5),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+
+                                                                            ///subject Description
+                                                                            Padding(
+                                                                              padding:
+                                                                              EdgeInsets
+                                                                                  .only(
+                                                                                  left: width /
+                                                                                      24),
+                                                                              child: SizedBox(
+                                                                                height: height /
+                                                                                    21.6,
+                                                                                width: width /
+                                                                                    1.636,
+                                                                                child: Row(
+                                                                                  crossAxisAlignment:
+                                                                                  CrossAxisAlignment
+                                                                                      .center,
+                                                                                  children: [
+                                                                                    Container(
+                                                                                      width: width /
+                                                                                          1.636,
+                                                                                      child: Text(
+                                                                                        subjecthomework['topic'],
+                                                                                        textAlign:
+                                                                                        TextAlign
+                                                                                            .left,
+                                                                                        style:
+                                                                                        GoogleFonts
+                                                                                            .poppins(
+                                                                                            color: Colors
+                                                                                                .black,
+                                                                                            fontSize: width /
+                                                                                                30),
+                                                                                        overflow: TextOverflow
+                                                                                            .ellipsis,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+
+                                                                            ///Subject assign date and time
+
+                                                                          ],
+                                                                        ),
+
+                                                                        Padding(
+                                                                          padding: EdgeInsets
+                                                                              .only(
+                                                                              right: width /
+                                                                                  45),
+                                                                          child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment
+                                                                                .spaceEvenly,
+                                                                            children: [
+
+                                                                              subjecthomework['submited']
+                                                                                  .contains(
+                                                                                  value['regno'])
+                                                                                  ?
+
+                                                                              InkWell(
+                                                                                onTap: () {
+                                                                                  Navigator
+                                                                                      .of(
+                                                                                      context)
+                                                                                      .push(
+                                                                                      MaterialPageRoute(
+                                                                                          builder: (
+                                                                                              context) =>
+                                                                                              AssigmentsST(
+                                                                                                  subjecthomework
+                                                                                                      .id,
+                                                                                                  Studentclass,
+                                                                                                  Studentsec,
+                                                                                                  Studentname,
+                                                                                                  Studentregno,
+                                                                                                  currentdate
+                                                                                                      .toString(),
+                                                                                                  "Completed"))
+                                                                                  );
+                                                                                },
+                                                                                child: Container(
+                                                                                    height: height /
+                                                                                        21,
+                                                                                    width: width /
+                                                                                        3.8,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: Colors
+                                                                                          .green,
+                                                                                      border: Border
+                                                                                          .all(
+                                                                                        color: Colors
+                                                                                            .green,
+                                                                                      ),
+                                                                                      borderRadius:
+                                                                                      BorderRadius
+                                                                                          .circular(
+                                                                                          10),
+                                                                                    ),
+                                                                                    child: Center(
+                                                                                      child: Text(
+                                                                                        "Completed",
+                                                                                        style: GoogleFonts
+                                                                                            .poppins(
+                                                                                            color: Colors
+                                                                                                .white,
+                                                                                            fontWeight:
+                                                                                            FontWeight
+                                                                                                .w700,
+                                                                                            fontSize: width /
+                                                                                                27.69),
+                                                                                      ),
+                                                                                    )),
+                                                                              )
+                                                                                  : InkWell(
+                                                                                onTap: () {
+                                                                                  Navigator
+                                                                                      .of(
+                                                                                      context)
+                                                                                      .push(
+                                                                                      MaterialPageRoute(
+                                                                                          builder: (
+                                                                                              context) =>
+                                                                                              AssigmentsST(
+                                                                                                  subjecthomework
+                                                                                                      .id,
+                                                                                                  Studentclass,
+                                                                                                  Studentsec,
+                                                                                                  Studentname,
+                                                                                                  Studentregno,
+                                                                                                  currentdate
+                                                                                                      .toString(),
+                                                                                                  "View"))
+                                                                                  );
+                                                                                },
+                                                                                child: Container(
+                                                                                    height: height /
+                                                                                        21,
+                                                                                    width: width /
+                                                                                        4,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: Color(
+                                                                                          0xff0873C4),
+                                                                                      border: Border
+                                                                                          .all(
+                                                                                        color: Color(
+                                                                                            0xff0873C4),
+                                                                                      ),
+                                                                                      borderRadius:
+                                                                                      BorderRadius
+                                                                                          .circular(
+                                                                                          10),
+                                                                                    ),
+                                                                                    child: Center(
+                                                                                      child: Text(
+                                                                                        "View",
+                                                                                        style: GoogleFonts
+                                                                                            .poppins(
+                                                                                            color: Colors
+                                                                                                .white,
+                                                                                            fontWeight:
+                                                                                            FontWeight
+                                                                                                .w700,
+                                                                                            fontSize: width /
+                                                                                                27.69),
+                                                                                      ),
+                                                                                    )),
+                                                                              ),
+
+
+                                                                              // SizedBox(height: height/50.4),
+                                                                              //
+                                                                              // InkWell(
+                                                                              //   onTap: (){
+                                                                              //     Navigator.of(context).push(
+                                                                              //         MaterialPageRoute(builder: (context)=>AssigmentsST(subjecthomework.id,Studentclass,Studentsec,Studentname,Studentregno,currentdate.toString()))
+                                                                              //     );
+                                                                              //
+                                                                              //   },
+                                                                              //   child: Container(
+                                                                              //       height: height/21,
+                                                                              //       width: width/4,
+                                                                              //       decoration: BoxDecoration(
+                                                                              //         color:  Colors.green,
+                                                                              //         border: Border.all(
+                                                                              //           color:  Colors.green,
+                                                                              //         ),
+                                                                              //         borderRadius:
+                                                                              //         BorderRadius
+                                                                              //             .circular(10),
+                                                                              //       ),
+                                                                              //       child: Center(
+                                                                              //         child: Text(
+                                                                              //           "Completed",
+                                                                              //           style: GoogleFonts.poppins(
+                                                                              //               color: Colors.white,
+                                                                              //               fontWeight:
+                                                                              //               FontWeight
+                                                                              //                   .w700,
+                                                                              //               fontSize: width/27.69),
+                                                                              //         ),
+                                                                              //       )),
+                                                                              // ),
+
+
+                                                                            ],
+                                                                          ),
+                                                                        ),
+
+                                                                      ],
+                                                                    ),
+                                                                    Padding(
+                                                                      padding:
+                                                                      EdgeInsets
+                                                                          .only(
+                                                                          left: width /
+                                                                              24),
+                                                                      child: Row(
+
+                                                                        children: [
+                                                                          Text(
+                                                                            "Due Date: ${subjecthomework['Duedate']}",
+                                                                            style: GoogleFonts
+                                                                                .poppins(
+                                                                                color: Color(
+                                                                                    0xffA294A1),
+                                                                                fontWeight:
+                                                                                FontWeight
+                                                                                    .w500,
+                                                                                fontSize: width /
+                                                                                    30.5),
+                                                                          ),
+                                                                          SizedBox(
+                                                                              width: width /
+                                                                                  3.8),
+                                                                          Text(
+                                                                            "Time: ${subjecthomework['Time']}",
+                                                                            style: GoogleFonts
+                                                                                .poppins(
+                                                                                color: Color(
+                                                                                    0xffA294A1),
+                                                                                fontWeight:
+                                                                                FontWeight
+                                                                                    .w500,
+                                                                                fontSize: width /
+                                                                                    30.5),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }
+
+
+                                                          else {
+
+                                                            if (subjecthomework['subject'].toString().toLowerCase().contains(Searchcontroller.text.toLowerCase()) ||
+                                                                subjecthomework['statffname'].toString().toLowerCase().contains(Searchcontroller.text.toLowerCase()) ||
+                                                                subjecthomework['topic'].toString().toLowerCase().contains(Searchcontroller.text.toLowerCase())) {
+                                                              return
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical: height /
+                                                                          94.5),
+                                                                  child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(10),
+                                                                        border: Border
+                                                                            .all(
+                                                                            color: Color(
+                                                                                0xff999999))),
+                                                                    child: Column(
+                                                                      children: [
+                                                                        Row(
+                                                                          mainAxisAlignment: MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                          children: [
+
+                                                                            Column(
+                                                                              crossAxisAlignment:
+                                                                              CrossAxisAlignment
+                                                                                  .start,
+                                                                              children: [
+
+                                                                                SizedBox(
+                                                                                    height: height /
+                                                                                        75.6),
+
+                                                                                ///subject Title
+                                                                                Padding(
+                                                                                  padding:
+                                                                                  EdgeInsets
+                                                                                      .only(
+                                                                                      left: width /
+                                                                                          24),
+                                                                                  child: SizedBox(
+                                                                                    width: width /
+                                                                                        1.636,
+                                                                                    child: Text(
+                                                                                      "${subjecthomework['subject']} - ${subjecthomework['statffname']}",
+                                                                                      style: GoogleFonts
+                                                                                          .poppins(
+                                                                                          color: Colors
+                                                                                              .black,
+                                                                                          fontWeight:
+                                                                                          FontWeight
+                                                                                              .w700,
+                                                                                          fontSize: width /
+                                                                                              22.5),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+
+                                                                                ///subject Description
+                                                                                Padding(
+                                                                                  padding:
+                                                                                  EdgeInsets
+                                                                                      .only(
+                                                                                      left: width /
+                                                                                          24),
+                                                                                  child: SizedBox(
+                                                                                    height: height /
+                                                                                        21.6,
+                                                                                    width: width /
+                                                                                        1.636,
+                                                                                    child: Row(
+                                                                                      crossAxisAlignment:
+                                                                                      CrossAxisAlignment
+                                                                                          .center,
+                                                                                      children: [
+                                                                                        Container(
+                                                                                          width: width /
+                                                                                              1.636,
+                                                                                          child: Text(
+                                                                                            subjecthomework['topic'],
+                                                                                            textAlign:
+                                                                                            TextAlign
+                                                                                                .left,
+                                                                                            style:
+                                                                                            GoogleFonts
+                                                                                                .poppins(
+                                                                                                color: Colors
+                                                                                                    .black,
+                                                                                                fontSize: width /
+                                                                                                    30),
+                                                                                            overflow: TextOverflow
+                                                                                                .ellipsis,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+
+                                                                                ///Subject assign date and time
+
+                                                                              ],
+                                                                            ),
+
+                                                                            Padding(
+                                                                              padding: EdgeInsets
+                                                                                  .only(
+                                                                                  right: width /
+                                                                                      45),
+                                                                              child: Column(
+                                                                                mainAxisAlignment: MainAxisAlignment
+                                                                                    .spaceEvenly,
+                                                                                children: [
+
+                                                                                  subjecthomework['submited']
+                                                                                      .contains(
+                                                                                      value['regno'])
+                                                                                      ?
+
+                                                                                  InkWell(
+                                                                                    onTap: () {
+                                                                                      Navigator
+                                                                                          .of(
+                                                                                          context)
+                                                                                          .push(
+                                                                                          MaterialPageRoute(
+                                                                                              builder: (
+                                                                                                  context) =>
+                                                                                                  AssigmentsST(
+                                                                                                      subjecthomework
+                                                                                                          .id,
+                                                                                                      Studentclass,
+                                                                                                      Studentsec,
+                                                                                                      Studentname,
+                                                                                                      Studentregno,
+                                                                                                      currentdate
+                                                                                                          .toString(),
+                                                                                                      "Completed"))
+                                                                                      );
+                                                                                    },
+                                                                                    child: Container(
+                                                                                        height: height /
+                                                                                            21,
+                                                                                        width: width /
+                                                                                            3.8,
+                                                                                        decoration: BoxDecoration(
+                                                                                          color: Colors
+                                                                                              .green,
+                                                                                          border: Border
+                                                                                              .all(
+                                                                                            color: Colors
+                                                                                                .green,
+                                                                                          ),
+                                                                                          borderRadius:
+                                                                                          BorderRadius
+                                                                                              .circular(
+                                                                                              10),
+                                                                                        ),
+                                                                                        child: Center(
+                                                                                          child: Text(
+                                                                                            "Completed",
+                                                                                            style: GoogleFonts
+                                                                                                .poppins(
+                                                                                                color: Colors
+                                                                                                    .white,
+                                                                                                fontWeight:
+                                                                                                FontWeight
+                                                                                                    .w700,
+                                                                                                fontSize: width /
+                                                                                                    27.69),
+                                                                                          ),
+                                                                                        )),
+                                                                                  )
+                                                                                      : InkWell(
+                                                                                    onTap: () {
+                                                                                      Navigator
+                                                                                          .of(
+                                                                                          context)
+                                                                                          .push(
+                                                                                          MaterialPageRoute(
+                                                                                              builder: (
+                                                                                                  context) =>
+                                                                                                  AssigmentsST(
+                                                                                                      subjecthomework
+                                                                                                          .id,
+                                                                                                      Studentclass,
+                                                                                                      Studentsec,
+                                                                                                      Studentname,
+                                                                                                      Studentregno,
+                                                                                                      currentdate
+                                                                                                          .toString(),
+                                                                                                      "View"))
+                                                                                      );
+                                                                                    },
+                                                                                    child: Container(
+                                                                                        height: height /
+                                                                                            21,
+                                                                                        width: width /
+                                                                                            4,
+                                                                                        decoration: BoxDecoration(
+                                                                                          color: Color(
+                                                                                              0xff0873C4),
+                                                                                          border: Border
+                                                                                              .all(
+                                                                                            color: Color(
+                                                                                                0xff0873C4),
+                                                                                          ),
+                                                                                          borderRadius:
+                                                                                          BorderRadius
+                                                                                              .circular(
+                                                                                              10),
+                                                                                        ),
+                                                                                        child: Center(
+                                                                                          child: Text(
+                                                                                            "View",
+                                                                                            style: GoogleFonts
+                                                                                                .poppins(
+                                                                                                color: Colors
+                                                                                                    .white,
+                                                                                                fontWeight:
+                                                                                                FontWeight
+                                                                                                    .w700,
+                                                                                                fontSize: width /
+                                                                                                    27.69),
+                                                                                          ),
+                                                                                        )),
+                                                                                  ),
+
+
+                                                                                  // SizedBox(height: height/50.4),
+                                                                                  //
+                                                                                  // InkWell(
+                                                                                  //   onTap: (){
+                                                                                  //     Navigator.of(context).push(
+                                                                                  //         MaterialPageRoute(builder: (context)=>AssigmentsST(subjecthomework.id,Studentclass,Studentsec,Studentname,Studentregno,currentdate.toString()))
+                                                                                  //     );
+                                                                                  //
+                                                                                  //   },
+                                                                                  //   child: Container(
+                                                                                  //       height: height/21,
+                                                                                  //       width: width/4,
+                                                                                  //       decoration: BoxDecoration(
+                                                                                  //         color:  Colors.green,
+                                                                                  //         border: Border.all(
+                                                                                  //           color:  Colors.green,
+                                                                                  //         ),
+                                                                                  //         borderRadius:
+                                                                                  //         BorderRadius
+                                                                                  //             .circular(10),
+                                                                                  //       ),
+                                                                                  //       child: Center(
+                                                                                  //         child: Text(
+                                                                                  //           "Completed",
+                                                                                  //           style: GoogleFonts.poppins(
+                                                                                  //               color: Colors.white,
+                                                                                  //               fontWeight:
+                                                                                  //               FontWeight
+                                                                                  //                   .w700,
+                                                                                  //               fontSize: width/27.69),
+                                                                                  //         ),
+                                                                                  //       )),
+                                                                                  // ),
+
+
+                                                                                ],
+                                                                              ),
+                                                                            ),
+
+                                                                          ],
+                                                                        ),
+                                                                        Padding(
+                                                                          padding:
+                                                                          EdgeInsets
+                                                                              .only(
+                                                                              left: width /
+                                                                                  24),
+                                                                          child: Row(
+
+                                                                            children: [
+                                                                              Text(
+                                                                                "Due Date: ${subjecthomework['Duedate']}",
+                                                                                style: GoogleFonts
+                                                                                    .poppins(
+                                                                                    color: Color(
+                                                                                        0xffA294A1),
+                                                                                    fontWeight:
+                                                                                    FontWeight
+                                                                                        .w500,
+                                                                                    fontSize: width /
+                                                                                        30.5),
+                                                                              ),
+                                                                              SizedBox(
+                                                                                  width: width /
+                                                                                      3.8),
+                                                                              Text(
+                                                                                "Time: ${subjecthomework['Time']}",
+                                                                                style: GoogleFonts
+                                                                                    .poppins(
+                                                                                    color: Color(
+                                                                                        0xffA294A1),
+                                                                                    fontWeight:
+                                                                                    FontWeight
+                                                                                        .w500,
+                                                                                    fontSize: width /
+                                                                                        30.5),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                            }
+                                                            else{
+                                                              return SizedBox();
+                                                            }
+                                                          }
+
+                                                        },);
+                                                    },);
+
+                                              },);
+                                          },):
+                                        StreamBuilder(
+                                          stream: _firestore2db.collection("homeworks").doc(currentdate.toString()).
                                           collection(
                                               value['admitclass'].toString())
                                               .doc(value['section'].toString()).
@@ -2246,327 +2963,8 @@ bool Loading=false;
                                                     .data!.docs[index];
 
                                                 if(Searchcontroller.text=="") {
-                                                  if (studentassingid ==
-                                                      "All") {
-                                                    return
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                            vertical: height /
-                                                                94.5),
-                                                        child: Container(
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                              border: Border
-                                                                  .all(
-                                                                  color: Color(
-                                                                      0xff999999))),
-                                                          child: Column(
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment
-                                                                    .spaceBetween,
-                                                                children: [
-
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                    children: [
-
-                                                                      SizedBox(
-                                                                          height: height /
-                                                                              75.6),
-
-                                                                      ///subject Title
-                                                                      Padding(
-                                                                        padding:
-                                                                        EdgeInsets
-                                                                            .only(
-                                                                            left: width /
-                                                                                24),
-                                                                        child: SizedBox(
-                                                                          width: width /
-                                                                              1.636,
-                                                                          child: Text(
-                                                                            "${subjecthomework['subject']} - ${subjecthomework['statffname']}",
-                                                                            style: GoogleFonts
-                                                                                .poppins(
-                                                                                color: Colors
-                                                                                    .black,
-                                                                                fontWeight:
-                                                                                FontWeight
-                                                                                    .w700,
-                                                                                fontSize: width /
-                                                                                    22.5),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-
-                                                                      ///subject Description
-                                                                      Padding(
-                                                                        padding:
-                                                                        EdgeInsets
-                                                                            .only(
-                                                                            left: width /
-                                                                                24),
-                                                                        child: SizedBox(
-                                                                          height: height /
-                                                                              21.6,
-                                                                          width: width /
-                                                                              1.636,
-                                                                          child: Row(
-                                                                            crossAxisAlignment:
-                                                                            CrossAxisAlignment
-                                                                                .center,
-                                                                            children: [
-                                                                              Container(
-                                                                                width: width /
-                                                                                    1.636,
-                                                                                child: Text(
-                                                                                  subjecthomework['topic'],
-                                                                                  textAlign:
-                                                                                  TextAlign
-                                                                                      .left,
-                                                                                  style:
-                                                                                  GoogleFonts
-                                                                                      .poppins(
-                                                                                      color: Colors
-                                                                                          .black,
-                                                                                      fontSize: width /
-                                                                                          30),
-                                                                                  overflow: TextOverflow
-                                                                                      .ellipsis,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-
-                                                                      ///Subject assign date and time
-
-                                                                    ],
-                                                                  ),
-
-                                                                  Padding(
-                                                                    padding: EdgeInsets
-                                                                        .only(
-                                                                        right: width /
-                                                                            45),
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment
-                                                                          .spaceEvenly,
-                                                                      children: [
-
-                                                                        subjecthomework['submited']
-                                                                            .contains(
-                                                                            value['regno'])
-                                                                            ?
-
-                                                                        InkWell(
-                                                                          onTap: () {
-                                                                            Navigator
-                                                                                .of(
-                                                                                context)
-                                                                                .push(
-                                                                                MaterialPageRoute(
-                                                                                    builder: (
-                                                                                        context) =>
-                                                                                        AssigmentsST(
-                                                                                            subjecthomework
-                                                                                                .id,
-                                                                                            Studentclass,
-                                                                                            Studentsec,
-                                                                                            Studentname,
-                                                                                            Studentregno,
-                                                                                            currentdate
-                                                                                                .toString(),
-                                                                                            "Completed"))
-                                                                            );
-                                                                          },
-                                                                          child: Container(
-                                                                              height: height /
-                                                                                  21,
-                                                                              width: width /
-                                                                                  3.8,
-                                                                              decoration: BoxDecoration(
-                                                                                color: Colors
-                                                                                    .green,
-                                                                                border: Border
-                                                                                    .all(
-                                                                                  color: Colors
-                                                                                      .green,
-                                                                                ),
-                                                                                borderRadius:
-                                                                                BorderRadius
-                                                                                    .circular(
-                                                                                    10),
-                                                                              ),
-                                                                              child: Center(
-                                                                                child: Text(
-                                                                                  "Completed",
-                                                                                  style: GoogleFonts
-                                                                                      .poppins(
-                                                                                      color: Colors
-                                                                                          .white,
-                                                                                      fontWeight:
-                                                                                      FontWeight
-                                                                                          .w700,
-                                                                                      fontSize: width /
-                                                                                          27.69),
-                                                                                ),
-                                                                              )),
-                                                                        )
-                                                                            : InkWell(
-                                                                          onTap: () {
-                                                                            Navigator
-                                                                                .of(
-                                                                                context)
-                                                                                .push(
-                                                                                MaterialPageRoute(
-                                                                                    builder: (
-                                                                                        context) =>
-                                                                                        AssigmentsST(
-                                                                                            subjecthomework
-                                                                                                .id,
-                                                                                            Studentclass,
-                                                                                            Studentsec,
-                                                                                            Studentname,
-                                                                                            Studentregno,
-                                                                                            currentdate
-                                                                                                .toString(),
-                                                                                            "View"))
-                                                                            );
-                                                                          },
-                                                                          child: Container(
-                                                                              height: height /
-                                                                                  21,
-                                                                              width: width /
-                                                                                  4,
-                                                                              decoration: BoxDecoration(
-                                                                                color: Color(
-                                                                                    0xff0873C4),
-                                                                                border: Border
-                                                                                    .all(
-                                                                                  color: Color(
-                                                                                      0xff0873C4),
-                                                                                ),
-                                                                                borderRadius:
-                                                                                BorderRadius
-                                                                                    .circular(
-                                                                                    10),
-                                                                              ),
-                                                                              child: Center(
-                                                                                child: Text(
-                                                                                  "View",
-                                                                                  style: GoogleFonts
-                                                                                      .poppins(
-                                                                                      color: Colors
-                                                                                          .white,
-                                                                                      fontWeight:
-                                                                                      FontWeight
-                                                                                          .w700,
-                                                                                      fontSize: width /
-                                                                                          27.69),
-                                                                                ),
-                                                                              )),
-                                                                        ),
-
-
-                                                                        // SizedBox(height: height/50.4),
-                                                                        //
-                                                                        // InkWell(
-                                                                        //   onTap: (){
-                                                                        //     Navigator.of(context).push(
-                                                                        //         MaterialPageRoute(builder: (context)=>AssigmentsST(subjecthomework.id,Studentclass,Studentsec,Studentname,Studentregno,currentdate.toString()))
-                                                                        //     );
-                                                                        //
-                                                                        //   },
-                                                                        //   child: Container(
-                                                                        //       height: height/21,
-                                                                        //       width: width/4,
-                                                                        //       decoration: BoxDecoration(
-                                                                        //         color:  Colors.green,
-                                                                        //         border: Border.all(
-                                                                        //           color:  Colors.green,
-                                                                        //         ),
-                                                                        //         borderRadius:
-                                                                        //         BorderRadius
-                                                                        //             .circular(10),
-                                                                        //       ),
-                                                                        //       child: Center(
-                                                                        //         child: Text(
-                                                                        //           "Completed",
-                                                                        //           style: GoogleFonts.poppins(
-                                                                        //               color: Colors.white,
-                                                                        //               fontWeight:
-                                                                        //               FontWeight
-                                                                        //                   .w700,
-                                                                        //               fontSize: width/27.69),
-                                                                        //         ),
-                                                                        //       )),
-                                                                        // ),
-
-
-                                                                      ],
-                                                                    ),
-                                                                  ),
-
-                                                                ],
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                EdgeInsets
-                                                                    .only(
-                                                                    left: width /
-                                                                        24),
-                                                                child: Row(
-
-                                                                  children: [
-                                                                    Text(
-                                                                      "Due Date: ${subjecthomework['Duedate']}",
-                                                                      style: GoogleFonts
-                                                                          .poppins(
-                                                                          color: Color(
-                                                                              0xffA294A1),
-                                                                          fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                          fontSize: width /
-                                                                              30.5),
-                                                                    ),
-                                                                    SizedBox(
-                                                                        width: width /
-                                                                            3.8),
-                                                                    Text(
-                                                                      "Time: ${subjecthomework['Time']}",
-                                                                      style: GoogleFonts
-                                                                          .poppins(
-                                                                          color: Color(
-                                                                              0xffA294A1),
-                                                                          fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                          fontSize: width /
-                                                                              30.5),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                  }
-
-                                                  if (studentassingid ==
-                                                      "Completed" &&
-                                                      subjecthomework['submited']
-                                                          .contains(
-                                                          value['regno'])) {
+                                                  if (studentassingid == "Completed" &&
+                                                      subjecthomework['submited'].contains(value['regno'])) {
                                                     return
                                                       Padding(
                                                         padding: EdgeInsets
@@ -2819,11 +3217,7 @@ bool Loading=false;
                                                       );
                                                   }
 
-                                                  if (studentassingid ==
-                                                      "Pending" &&
-                                                      !subjecthomework['submited']
-                                                          .contains(
-                                                          value['regno'])) {
+                                                  if (studentassingid == "Pending" && !subjecthomework['submited'].contains(value['regno'])) {
                                                     return
                                                       Padding(
                                                         padding: EdgeInsets
@@ -5561,8 +5955,11 @@ bool Loading=false;
                                     borderRadius: BorderRadius.circular(12),
                                     child: GestureDetector(
                                       onTap: () async {
-
-                                        PdfPrint("Raven English School","ANNANJI ,THENI - 625531");
+                                        List<ExamWithSubjectModel> document = await getStudentReport(Studentid,Studentclass,Studentsec);
+                                        List<ExamWithSubjectModel> exams = document;
+                                        var document2 = await _firestore2db.collection("Students").doc(Studentid).get();
+                                        Map<String,dynamic> ? value = document2.data();
+                                        generateProgressReportPdf(PdfPageFormat.a4, exams, value!,schoolName,schoolAddress,schoolLogo);
                                       },
                                       child: Container(
                                           width: width / 0.972,
@@ -5584,7 +5981,7 @@ bool Loading=false;
                                                   Padding(
                                                     padding: EdgeInsets.only(
                                                         left: width / 30,
-                                                        top: height / 94.5,
+                                                        top: height / 30.5,
                                                         bottom: height / 151.2),
                                                     child: Text(
                                                       "Download Reports",
@@ -5594,16 +5991,14 @@ bool Loading=false;
                                                           fontSize: width /
                                                               15.652,
                                                           fontWeight: FontWeight
-                                                              .w700
-
-                                                      ),
+                                                              .w700),
                                                     ),
                                                   ),
                                                   Padding(
                                                     padding: EdgeInsets.only(
                                                         left: width / 30),
                                                     child: Text(
-                                                      "Last Updated Today 1.34 AM",
+                                                      "",
                                                       style: GoogleFonts
                                                           .poppins(
                                                           color: Colors.white,
@@ -5879,7 +6274,7 @@ bool Loading=false;
                                   ),
 
                                   Text(
-                                    "Request Documents of the follwing",
+                                    "Request Documents of the following",
                                     style: GoogleFonts
                                         .poppins(
                                         color: Colors.black,
@@ -5900,7 +6295,7 @@ bool Loading=false;
                                           Padding(
                                             padding: EdgeInsets.only(
                                                 left: width / 72),
-                                            child: Text('Transfer CV',
+                                            child: Text('Transfer Certificate',
                                                 style: GoogleFonts.poppins(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: width / 25.714)),
@@ -5920,7 +6315,7 @@ bool Loading=false;
                                           Padding(
                                             padding: EdgeInsets.only(
                                                 left: width / 72),
-                                            child: Text('Bonifide CV',
+                                            child: Text('Bonafide Certificate',
                                                 style: GoogleFonts.poppins(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: width / 25.714)),
@@ -5940,7 +6335,7 @@ bool Loading=false;
                                           Padding(
                                             padding: EdgeInsets.only(
                                                 left: width / 72),
-                                            child: Text('Sports CV',
+                                            child: Text('Sports Certificate',
                                                 style: GoogleFonts.poppins(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: width / 25.714)),
@@ -5960,7 +6355,7 @@ bool Loading=false;
                                           Padding(
                                             padding: EdgeInsets.only(
                                                 left: width / 72),
-                                            child: Text('Competition CV',
+                                            child: Text('Competition Certificate',
                                                 style: GoogleFonts.poppins(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: width / 25.714)),
@@ -5969,84 +6364,21 @@ bool Loading=false;
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: height / 30.24),
-                                    child: Container(
-                                      width: width / 1.2,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
-                                        children: [
-                                          Text(
-                                            'Name', style: GoogleFonts.poppins(
-                                              color: const Color(0xff707070),
-                                              fontWeight: FontWeight.bold
-                                          ),),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: width / 0.947,
-                                    child: TextField(
-                                      controller: namecontroller,
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,
-
-                                          hintText: 'Enter Your Name'
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: height / 50.4),
-                                    child: Container(
-                                      width: width / 1.2,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
-                                        children: [
-                                          Text('Reg No',
-                                            style: GoogleFonts.poppins(
-                                                color: const Color(0xff707070),
-                                                fontWeight: FontWeight.bold
-                                            ),),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: width / 0.947,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                              10),
-                                          color: Colors.white,
-                                          border: Border.all(
-                                              color: Colors.black45)
-                                      ),
-                                      width: width / 1.2,
-                                      child: TextFormField(
-                                        controller: otpcontroller,
-                                        decoration: const InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: 'Regno'
+                                  SizedBox(height: height / 37.8),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+                                        child: Text(
+                                          "Requirement",
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.black,
+                                              fontSize: width / 28,
+                                              fontWeight:
+                                              FontWeight.w600),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: height / 50.4),
-                                    child: Container(
-                                      width: width / 0.947,
-                                      child: Text('Requirement',
-                                        style: GoogleFonts.poppins(
-                                            color: const Color(0xff707070),
-                                            fontWeight: FontWeight.bold
-                                        ),),
-                                    ),
+                                    ],
                                   ),
                                   Container(
                                     width: width / 0.947,
@@ -6066,7 +6398,7 @@ bool Loading=false;
                                           value: dropdownvalue,
                                           icon: Padding(
                                             padding: EdgeInsets.only(
-                                                left: width / 2.25),
+                                                left: width / 3.2),
                                             child: const Icon(
                                                 Icons.keyboard_arrow_down),
                                           ),
@@ -6088,11 +6420,88 @@ bool Loading=false;
                                       ),
                                     ),
                                   ),
+
+
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+                                        child: Text(
+                                          "Reason",
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.black,
+                                              fontSize: width / 28,
+                                              fontWeight:
+                                              FontWeight.w600),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  /// today homework
+
+
+                                  Center(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                          top: height / 157.8,
+                                          left: width / 20),
+                                      height: height / 6.685,
+                                      width: width / 1.0636,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: Colors.grey),
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              12)),
+                                      child: TextField(
+                                        controller: homecoller,
+                                        keyboardType:
+                                        TextInputType
+                                            .multiline,
+                                        maxLines: 5,
+                                        minLines: 1,
+                                        decoration:
+                                        InputDecoration(
+                                            hintText:
+                                            "",
+                                            hintStyle:
+                                            GoogleFonts
+                                                .poppins(
+                                              color: Colors
+                                                  .grey
+                                                  .shade700,
+                                              fontSize: width / 28,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w500,
+                                            ),
+                                            border:
+                                            InputBorder
+                                                .none),
+                                      ),
+                                    ),
+                                  ),
+
+                                  /// center container
+
+                                  SizedBox(height: height / 49.133),
                                   Padding(
                                     padding: EdgeInsets.only(
                                         top: height / 37.8),
-                                    child: GestureDetector(onTap: () {
-
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _firestore2db.collection("Requestdocumnets").doc().set({
+                                          "docname":dropdownvalue,
+                                          "reason":homecoller.text,
+                                          "stname":Studentname,
+                                          "regno":Studentregno,
+                                          "class":Studentclass,
+                                          "sec":Studentsec,
+                                          "id":Studentid,
+                                        });
+                                        requestsucess();
 
                                     },
                                       child: Row(
@@ -6238,7 +6647,10 @@ bool Loading=false;
                                                             children: [
                                                               Container(
                                                                 child: Padding(
-                                                                  padding: const EdgeInsets.all(3.0),
+                                                                  padding:  EdgeInsets.symmetric(
+                                                                    vertical: height/252,
+                                                                    horizontal: width/120
+                                                                  ),
                                                                   child: Container(
                                                                       width: size.width,
                                                                       alignment: snapshot.data!.docs[index]['sender'] == Studentname ? Alignment.centerRight : Alignment.centerLeft,
@@ -7467,13 +7879,15 @@ bool Loading=false;
 
   int i = 0;
 
-  String dropdownvalue = 'Transver CV';
+  String dropdownvalue = 'Transfer Certificate';
 
   // List of items in our dropdown menu
   var items = [
-    'Transver CV',
-    'Bonifide CV',
-    'Sports CV',
+    'Transfer Certificate',
+    'Bonafide Certificate',
+    'Sports Certificate',
+    'Competition Certificate',
+    'Others',
   ];
 
   TextEditingController namecontroller = TextEditingController();
@@ -8195,7 +8609,7 @@ bool Loading=false;
                         ),),
                         SizedBox(height: height / 75.6,),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                         padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
                           child: Container(
                             padding: EdgeInsets.only(
                                 left: width / 36, right: width / 36),
@@ -8439,10 +8853,7 @@ bool Loading=false;
 
 
   warningpayment() {
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double width = MediaQuery.of(context).size.width;
     return AwesomeDialog(
       width: width / 0.87111111,
       context: context,
@@ -8453,6 +8864,27 @@ bool Loading=false;
 
 
       btnOkOnPress: () {},
+    )
+      ..show();
+  }
+
+  requestsucess() {
+    double width = MediaQuery.of(context).size.width;
+    return AwesomeDialog(
+      width: width / 0.87111111,
+      context: context,
+      dialogType: DialogType.success,
+      animType: AnimType.rightSlide,
+      title: 'Requested Document Success',
+      desc: 'School Admin will contact you for further Process',
+
+
+      btnOkOnPress: () {
+        setState(() {
+          homecoller.clear();
+          page="Home";
+        });
+      },
     )
       ..show();
   }
@@ -8598,7 +9030,7 @@ bool Loading=false;
 
     }
     print(staffFeedbackList);
-    print("staffFeedbackList Vlues--------------------------------------");
+
 
 
 
@@ -9213,13 +9645,11 @@ bool Loading=false;
 
             p.SizedBox(height: 20),
 
-
-
           ]
       )
     );
 
-print("Goog Morning _________________________________________________________________");
+
 
    widgets.add(Contents);
     widgets.add(staffeedback);
@@ -9247,6 +9677,91 @@ print("Goog Morning ____________________________________________________________
     setState(() {
       Loading=false;
     });
+  }
+
+
+  getAdmin() async {
+    var admin = await _firestore2db.collection('Admin').get();
+
+    setState(() {
+      schoolName = admin.docs.first.get("schoolname");
+      schoolLogo = admin.docs.first.get("logo");
+      schoolAddress = admin.docs.first.get("area")+","+admin.docs.first.get("city")+"-"+admin.docs.first.get("pincode");
+    });
+  }
+
+  bool viewFullReport = false;
+  String schoolName = '';
+  String schoolAddress = '';
+  String schoolLogo = '';
+
+
+  Future<List<ExamWithSubjectModel>> getStudentReport(String Studentid,String Studentclass, String Studentsec) async {
+
+    List<ExamWithSubjectModel> examsList = [];
+    List subjectsList=[];
+    List examnameList=[];
+    int subjectcount = 0;
+
+    var studentdata=await _firestore2db.collection("ClassMaster").where("name",isEqualTo:Studentclass).get();
+    var examdata = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").get();
+
+    for(int i=0;i<studentdata.docs.length;i++){
+      var Sectiondata= await _firestore2db.collection("ClassMaster").doc(studentdata.docs[i].id).
+      collection("Sections").doc("${Studentclass}${Studentsec}").collection("Subjects").orderBy("timestamp").get();
+      //setState(() {
+      subjectcount=Sectiondata.docs.length;
+      //});
+      for(int j=0;j<Sectiondata.docs.length;j++){
+        //setState(() {
+        subjectsList.add(Sectiondata.docs[j]['name']);
+        //});
+      }
+    }
+
+
+
+    for(int i=0;i<examdata.docs.length;i++){
+      examnameList.add(examdata.docs[i]['name']);
+    }
+
+    examsList.clear();
+    for(int j = 0; j < examnameList.length; j++){
+      List<Subjects> subjects1 = [];
+      ExamWithSubjectModel exam = ExamWithSubjectModel(
+        examName: examnameList[j], subjects: [],
+      );
+      for(int i=0;i<subjectsList.length;i++) {
+        subjects1.add(
+          Subjects(
+            name: subjectsList[i],
+            mark: "",
+            totalMark: "",
+          ),
+        );
+      }
+      exam.subjects = subjects1;
+      examsList.add(exam);
+    }
+
+    var document = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").get();
+    for(int i =0; i < examsList.length; i++){
+      for(int j =0; j < examsList[i].subjects.length; j++){
+        for(int m = 0; m < document.docs.length; m++){
+          var document2 = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").doc(document.docs[m].id).collection("Timetable").get();
+          for (int n = 0; n < document2.docs.length; n++) {
+            if (document2.docs[n]['exam'] == examsList[i].examName) {
+              if (document2.docs[n]['name'] == examsList[i].subjects[j].name) {
+                examsList[i].subjects[j].mark = document2.docs[n]['mark'];
+                examsList[i].subjects[j].totalMark = document2.docs[n]['total'];
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return examsList;
   }
 
 

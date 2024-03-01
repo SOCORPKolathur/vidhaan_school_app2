@@ -37,7 +37,7 @@ class _Previous_Fees_details_PageState extends State<Previous_Fees_details_Page>
                     "${widget.Feesname}",
                     style: GoogleFonts.poppins(
                         color:Color(0xff0873C4),
-                        fontSize: 18,
+                        fontSize: width/20,
                         fontWeight:
                         FontWeight.w600),
                   ),

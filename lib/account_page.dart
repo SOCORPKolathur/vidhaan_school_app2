@@ -1,16 +1,13 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_login/flutter_login.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:vidhaan_school_app/otp_page.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 
 class Accountpage extends StatefulWidget {
   const Accountpage({Key? key}) : super(key: key);
@@ -58,7 +55,7 @@ class _AccountpageState extends State<Accountpage> {
       Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 190.0),
+            padding:  EdgeInsets.only(top: height/3.978),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -132,7 +129,8 @@ class _AccountpageState extends State<Accountpage> {
                       SizedBox(width: width/9.8,),
 
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:  EdgeInsets.symmetric(
+                            vertical: height/94.5,horizontal: width/45),
                         child: ActionChip(
                           disabledColor: Colors.transparent,
                           side: BorderSide(
@@ -153,7 +151,7 @@ class _AccountpageState extends State<Accountpage> {
                           ),
                           label:  Text('Student',style: GoogleFonts.poppins(
                             color: student? Colors.black: Colors.black,
-                            fontSize: 15,
+                            fontSize: width/24,
                             fontWeight: student? FontWeight.w500 :FontWeight.w500,
                             backgroundColor: Colors.transparent
                           ),),
@@ -169,7 +167,9 @@ class _AccountpageState extends State<Accountpage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:  EdgeInsets.symmetric(
+                          vertical: height/94.5,horizontal: width/45
+                        ),
                         child: ActionChip(
                           disabledColor: Colors.transparent,
                           side: BorderSide(
@@ -282,7 +282,7 @@ class _AccountpageState extends State<Accountpage> {
                   children: [
 
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding:  EdgeInsets.only(left: width/45),
                       child: Text("Vidhaan Educare Pvt Ltd",
                         style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w700,

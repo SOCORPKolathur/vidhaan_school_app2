@@ -16,11 +16,15 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:vidhaan_school_app/faceidstaff.dart';
+
+import 'View Staff Report/Staff_View_Reports.dart';
 
 class Today_Presents_Page extends StatefulWidget {
 String name;
 String regno;
-  Today_Presents_Page(this.name,this.regno);
+String staffid;
+  Today_Presents_Page(this.name,this.regno,this.staffid);
   @override
   State<Today_Presents_Page> createState() => _Today_Presents_PageState();
 }
@@ -136,7 +140,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
     double width = MediaQuery.of(context).size.width;
     return showDialog(context: context, builder:(context) {
       return Padding(
-        padding: const EdgeInsets.only(top: 180.0,bottom: 180),
+        padding:  EdgeInsets.only(top: height/4.2,bottom: height/4.2),
         child: AlertDialog(
           content: Column(
             children: [
@@ -270,7 +274,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           "Class":section,
           "Date":"${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
           "checkIntime":DateFormat("h:mma").format(DateTime.now()),
-          "checkOuttime":"",
+          "checkOuttime":DateFormat("h:mma").format(DateTime.now()),
           "timstamp":DateTime.now().millisecondsSinceEpoch,
 
 
@@ -289,7 +293,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           "Class":section,
           "Date":"${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
           "checkIntime":DateFormat("h:mma").format(DateTime.now()),
-          "checkOuttime":"",
+          "checkOuttime":DateFormat("h:mma").format(DateTime.now()),
           "timstamp":DateTime.now().millisecondsSinceEpoch,
         }
 
@@ -298,6 +302,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
 
   }
+
   Marktheattendancefun2() async {
     var document = await _firestore2db.collection("Staffs").doc(staffid).collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
@@ -320,11 +325,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           .year}").
       update(
           {
-
-
             "checkOuttime": DateFormat("h:mma").format(DateTime.now()),
-
-
           }
       );
 
@@ -350,6 +351,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
     }
 
   }
+
   checkinpopup(){
 
     double width = MediaQuery.of(context).size.width;
@@ -377,6 +379,9 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
   String staffimg="";
   int status=0;
 
+  bool checkin= false;
+  bool checkout= false;
+
 
   getstaffdetails() async {
 
@@ -398,28 +403,43 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
         collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
         setState(() {
-          staffname=staffvalue!['stname'];
-          staffregno=staffvalue['regno'];
-          staffimg=staffvalue['imgurl'];
+          staffname = staffvalue!['stname'];
+          staffregno = staffvalue['regno'];
+          staffimg = staffvalue['imgurl'];
+        });
           if(document2.docs.length>0){
-            status = 1;
-            showpopup();
+            setState(() {
+              checkin = true;
+            });
+            var document3 = await  _firestore2db.collection("Staffs").doc(staffid).
+            collection("Attendance").doc(document2.docs[0].id).get();
+            Map<String,dynamic>?val=document3.data();
+            if(val!["checkOuttime"]!="-"){
+              setState(() {
+                checkout=true;
+              });
+            }
           }
-          else {
-            if (staffvalue['faceid'] == true) {
+        setState(() {
+            if (staffvalue!['faceid'] == true) {
+
               status = 1;
             }
             else {
               status = 2;
             }
-          }
+          //}
+          print(staffvalue['faceid']);
+          print("Staff Face ============================================================");
         });
+        getbettingis();
       }
     };
 
 
 
     print("staffname stff id staff img");
+
     print(staffname);
     print(staffregno);
     print(staffimg);
@@ -449,6 +469,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
     });
     final faceDetector = FaceDetector(
       options: FaceDetectorOptions(
+        performanceMode: FaceDetectorMode.accurate,
       enableContours: true,
       enableLandmarks: true,
       enableTracking: true,
@@ -496,63 +517,63 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       setState(() {
         i=0;
       });
-      if(value!["leftEyePositionx"]<=leftEyePosition!.x+200&&value!["leftEyePositionx"]>=leftEyePosition!.x-150){
+      if(value!["leftEyePositionx"]<=leftEyePosition!.x+250&&value!["leftEyePositionx"]>=leftEyePosition!.x-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["rightEyePositionx"]<=rightEyePosition!.x+200&&value!["rightEyePositionx"]>=rightEyePosition!.x-150){
+      if(value!["rightEyePositionx"]<=rightEyePosition!.x+250&&value!["rightEyePositionx"]>=rightEyePosition!.x-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["bottommouthPositionx"]<=bottommouthPosition!.x+200&&value!["bottommouthPositionx"]>=bottommouthPosition!.x-150){
+      if(value!["bottommouthPositionx"]<=bottommouthPosition!.x+250&&value!["bottommouthPositionx"]>=bottommouthPosition!.x-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["rightmouthPositionx"]<=rightmouthPosition!.x+200&&value!["rightmouthPositionx"]>=rightmouthPosition!.x-150){
+      if(value!["rightmouthPositionx"]<=rightmouthPosition!.x+250&&value!["rightmouthPositionx"]>=rightmouthPosition!.x-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["leftmouthPositionx"]<=leftmouthPosition!.x+200&&value!["leftmouthPositionx"]>=leftmouthPosition!.x-150){
+      if(value!["leftmouthPositionx"]<=leftmouthPosition!.x+250&&value!["leftmouthPositionx"]>=leftmouthPosition!.x-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["nousePositionx"]<=nousePosition!.x+200&&value!["nousePositionx"]>=nousePosition!.x-150){
+      if(value!["nousePositionx"]<=nousePosition!.x+250&&value!["nousePositionx"]>=nousePosition!.x-250){
         setState(() {
           i=i+1;
         });
       }
 
-      if(value!["leftEyePositiony"]<=leftEyePosition!.y+200&&value!["leftEyePositiony"]>=leftEyePosition!.y-150){
+      if(value!["leftEyePositiony"]<=leftEyePosition!.y+250&&value!["leftEyePositiony"]>=leftEyePosition!.y-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["rightEyePositiony"]<=rightEyePosition!.y+200&&value!["rightEyePositiony"]>=rightEyePosition!.y-150){
+      if(value!["rightEyePositiony"]<=rightEyePosition!.y+250&&value!["rightEyePositiony"]>=rightEyePosition!.y-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["bottommouthPositiony"]<=bottommouthPosition!.y+200&&value!["bottommouthPositiony"]>=bottommouthPosition!.y-150){
+      if(value!["bottommouthPositiony"]<=bottommouthPosition!.y+250&&value!["bottommouthPositiony"]>=bottommouthPosition!.y-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["rightmouthPositiony"]<=rightmouthPosition!.y+200&&value!["rightmouthPositiony"]>=rightmouthPosition!.y-150){
+      if(value!["rightmouthPositiony"]<=rightmouthPosition!.y+250&&value!["rightmouthPositiony"]>=rightmouthPosition!.y-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["leftmouthPositiony"]<=leftmouthPosition!.y+200&&value!["leftmouthPositiony"]>=leftmouthPosition!.y-150){
+      if(value!["leftmouthPositiony"]<=leftmouthPosition!.y+250&&value!["leftmouthPositiony"]>=leftmouthPosition!.y-250){
         setState(() {
           i=i+1;
         });
       }
-      if(value!["nousePositiony"]<=nousePosition!.y+200&&value!["nousePositiony"]>=nousePosition!.y-150){
+      if(value!["nousePositiony"]<=nousePosition!.y+250&&value!["nousePositiony"]>=nousePosition!.y-250){
         setState(() {
           i=i+1;
         });
@@ -577,7 +598,8 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
   enroll() async {
     ImagePicker _picker = ImagePicker();
-    await _picker.pickImage(source: ImageSource.camera,preferredCameraDevice: CameraDevice.values[0]).then((xFile) {
+
+    await _picker.pickImage(source: ImageSource.camera,preferredCameraDevice: CameraDevice.front, ).then((xFile) {
       if (xFile != null) {
         setState(() {
           _pickedFile2 = File(xFile.path);
@@ -588,6 +610,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
     print(_pickedFile2!.path);
     print("Fun 2 Starteddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
     final faceDetector = FaceDetector(    options: FaceDetectorOptions(
+      performanceMode: FaceDetectorMode.accurate,
       enableContours: true,
       enableLandmarks: true,
       enableTracking: true,
@@ -667,19 +690,19 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       content: Column(
 
         children: [
-          SizedBox(height: 20,),
+          SizedBox(height: height/37.8,),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+             padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
             child: Text("Thanks,${staffname}",style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.w800,
-                fontSize: 25
+                fontSize: width/14.4
             ),),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
             child: Text("Your attendance is marked \nFor Today",style: GoogleFonts.montserrat(
               fontWeight: FontWeight.w700,
-              fontSize: 20,
+              fontSize: width/18,
             ),textAlign: TextAlign.center,),
           ),
           Lottie.asset("assets/done.json"),
@@ -697,17 +720,17 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
                 borderRadius: BorderRadius.circular(7),
                 color: Color(0xff0271C5),
               ),
-              child: Center(child: Text("OK",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 19),)),
+              child: Center(child: Text("OK",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.bold,fontSize: width/18.947),)),
             ),
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: height/37.8,),
           /*  GestureDetector(
             onTap: (){
               verfiy();
             },
             child: Container(
               height: 50,
-            width: 200,
+            width: 250,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
                 color: Color(0xff0271C5),
@@ -725,6 +748,9 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
     );
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -735,48 +761,65 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       Column(
 
         children: [
-          SizedBox(height: 20,),
+          SizedBox(height: height/37.8,),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Hi,${staffname}",style: GoogleFonts.montserrat(
+             padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+            child: Text("Hi ${staffname}",style: GoogleFonts.montserrat(
               fontWeight: FontWeight.w800,
-              fontSize: 25
+              fontSize: width/14.4
             ),),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+             padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
             child: Text("Mark your Daily Attendance \nFor Today Now",style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.w700,
-                fontSize: 20,
+                fontSize: width/18,
             ),textAlign: TextAlign.center,),
           ),
          Lottie.asset("assets/faceidd.json"),
-          SizedBox(height: height/15.12,),
+          SizedBox(height: height/25.12,),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               GestureDetector(
                 onTap: (){
-                  verfiy(1);
-
+                  //verfiy(1);
+                  if(checkin==false) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DemoFaceid2(1)));
+                  }
+                  else{
+                    alreadymarked();
+                  }
                 },
                 child: Container(
                   height: height/15.12,
-                width: 150,
+                width: width/2.4,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(7),
                     color: Color(0xff0271C5),
                   ),
                   child: Center(child: Text("Mark Check IN",style:
                   GoogleFonts.montserrat(color: Colors.white,
-                      fontWeight: FontWeight.bold,fontSize: 15),)),
+                      fontWeight: FontWeight.bold,fontSize: width/24),)),
                 ),
               ),
               GestureDetector(
                 onTap: (){
-                  verfiy(2);
-
+                  //verfiy(2);
+                  if(checkin==true) {
+                    if (checkout == false) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DemoFaceid2(2)));
+                    }
+                    else {
+                      alreadymarked();
+                    }
+                  }
+                  else{
+                    kindlycheckin();
+                  }
                 },
                 child: Container(
                   height: height/15.12,
@@ -787,26 +830,27 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
                   ),
                   child: Center(child: Text("Mark Check Out",style:
                   GoogleFonts.montserrat(color: Colors.white,
-                      fontWeight: FontWeight.bold,fontSize: 15),)),
+                      fontWeight: FontWeight.bold,fontSize: width/24),)),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20,),
-        /*  GestureDetector(
+          SizedBox(height: height/37.8,),
+         GestureDetector(
             onTap: (){
-              verfiy();
+              Navigator.push(context,MaterialPageRoute(builder: (context) => Staff_View_Reports(docid: widget.staffid),));
+
             },
             child: Container(
-              height: 50,
-            width: 200,
+              height: height/15.12,
+            width: width/1.125,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
                 color: Color(0xff0271C5),
               ),
-              child: Center(child: Text("Mark Now",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.bold),)),
+              child: Center(child: Text("View Reports",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.bold),)),
             ),
-          ),*/
+          ),
 
 
           
@@ -817,19 +861,19 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       Column(
 
         children: [
-          SizedBox(height: 20,),
+          SizedBox(height: height/37.8,),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Hi,${staffname}",style: GoogleFonts.montserrat(
+             padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+            child: Text("Hi ${staffname}",style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.w800,
-                fontSize: 25
+                fontSize: width/14.4
             ),),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Enroll your Face now to \nMark your Daily Attendance",style: GoogleFonts.montserrat(
+             padding:  EdgeInsets.symmetric(horizontal: width/45,vertical: height/94.5),
+            child: Text("Enroll your Face to \nMark your Daily Attendance",style: GoogleFonts.montserrat(
               fontWeight: FontWeight.w700,
-              fontSize: 20,
+              fontSize: width/18,
             ),textAlign: TextAlign.center,),
           ),
           Lottie.asset("assets/saveface.json"),
@@ -846,17 +890,17 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
                 borderRadius: BorderRadius.circular(7),
                 color: Color(0xff0271C5),
               ),
-              child: Center(child: Text("Enroll Face",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 19),)),
+              child: Center(child: Text("Enroll Face",style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.bold,fontSize: width/18.947),)),
             ),
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: height/37.8,),
           /*  GestureDetector(
             onTap: (){
               verfiy();
             },
             child: Container(
               height: 50,
-            width: 200,
+            width: 250,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
                 color: Color(0xff0271C5),
@@ -874,7 +918,24 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       Center(child: CircularProgressIndicator());
 
   }
+  getbettingis() async {
+    final docRef = _firestore2db.collection("Staffs").doc(staffid);
+    docRef.snapshots().listen(
+            (event) {
+          Map<String, dynamic>? value = event.data();
+          setState(() {
+            if (value!['faceid'] == true) {
 
+              status = 1;
+            }
+            else {
+              status = 2;
+            }
+          });
+        });
+
+
+  }
 
   showwwaring(){
     double width = MediaQuery.of(context).size.width;
@@ -894,7 +955,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
         ),
 
       btnOkOnPress: () {
-        enroll();
+       Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DemoFaceid()));
       },
       btnOkText: "Continue"
     )..show();
@@ -926,6 +987,44 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
 
   }
+  alreadymarked(){
+    double width = MediaQuery.of(context).size.width;
+    return AwesomeDialog(
+      width: width/0.8,
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.rightSlide,
+      title: 'Attendance Already Marked',
+
+
+
+      btnOkOnPress: () {
+
+      },
+      btnOkText: "Ok"
+    )..show();
+
+
+  }
+  kindlycheckin(){
+    double width = MediaQuery.of(context).size.width;
+    return AwesomeDialog(
+      width: width/0.8,
+      context: context,
+      dialogType: DialogType.error,
+      animType: AnimType.rightSlide,
+      title: 'Kindly Check IN Before Checking OUT',
+
+
+
+      btnOkOnPress: () {
+
+      },
+      btnOkText: "Ok"
+    )..show();
+
+
+  }
   showsucess(){
     double width = MediaQuery.of(context).size.width;
     return AwesomeDialog(
@@ -939,6 +1038,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       btnOkText: "Ok"
     )..show();
   }
+
   showmarked(){
     double width = MediaQuery.of(context).size.width;
     return AwesomeDialog(
