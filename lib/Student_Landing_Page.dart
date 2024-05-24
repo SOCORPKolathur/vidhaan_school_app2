@@ -27,10 +27,13 @@ import 'assignmentsdetailsst.dart';
 import 'package:pdf/widgets.dart' as p;
 import 'package:printing/printing.dart';
 
+import 'const_file.dart';
+
 class Student_landing_Page extends StatefulWidget {
   String?navigation;
   bool?naviagtiontcheck;
-  Student_landing_Page(this.navigation,this.naviagtiontcheck);
+  String schoolID;
+  Student_landing_Page(this.navigation,this.naviagtiontcheck,this.schoolID);
 
   @override
   State<Student_landing_Page> createState() => _Student_landing_PageState();
@@ -49,24 +52,23 @@ class _Student_landing_PageState extends State<Student_landing_Page> {
   String Studentsec = '';
   int notifycount=0;
 bool Loading=false;
-
+  late Constants constants;
   studentdetails() async {
     var document =
-    await _firestore2db.collection("Students").get();
-    for (int i = 0; i < document.docs.length; i++) {
-      if (document.docs[i]["studentid"] ==
-          _firebaseauth2db.currentUser!.uid) {
+    await constants.firestore2db?.collection("Students").get();
+    for (int i = 0; i < document!.docs.length; i++) {
+      if (document!.docs[i]["studentid"] ==
+          constants.firebaseAuth2db?.currentUser!.uid) {
         setState(() {
-          Studentid = document.docs[i].id;
+          Studentid = document!.docs[i].id;
         });
 
       }
       if (Studentid.isNotEmpty) {
-        var studentdocument = await _firestore2db
-            .collection("Students")
+        var studentdocument = await constants.firestore2db?.collection("Students")
             .doc(Studentid)
             .get();
-        Map<String, dynamic>? stuvalue = studentdocument.data();
+        Map<String, dynamic>? stuvalue = studentdocument!.data();
         final split = stuvalue!['stname'].split(' ');
         final Map<int, String> values = {
           for (int k = 0; k < split.length; k++)
@@ -87,23 +89,23 @@ bool Loading=false;
 
       }
     };
-    _firestore2db.collection("Students")
+    constants.firestore2db?.collection("Students")
         .doc(Studentid).collection("Notification").where(
         "readstatus", isEqualTo: false).snapshots()
         .listen((event) {
       setState(() {
-        notifycount = event.docs.length;
+        notifycount = event!.docs.length;
       });
     });
 
   }
 
   notificatouncountdisaapersfun()async{
-    var Notificationdocument = await _firestore2db.collection("Students")
+    var Notificationdocument = await constants.firestore2db?.collection("Students")
         .doc(Studentid).collection("Notification").get();
-    for(int i=0;i<Notificationdocument.docs.length;i++){
-      _firestore2db.collection("Students")
-          .doc(Studentid).collection("Notification").doc(Notificationdocument.docs[i].id).update({
+    for(int i=0;i<Notificationdocument!.docs.length;i++){
+      constants.firestore2db?.collection("Students")
+          .doc(Studentid).collection("Notification").doc(Notificationdocument!.docs[i].id).update({
         "readstatus":true,
       });
     }
@@ -162,11 +164,13 @@ bool Loading=false;
 
   @override
   void initState() {
+    constants = Constants(widget.schoolID);
     if(widget.navigation!=""&&widget.naviagtiontcheck!=false){
       setState(() {
         page=widget.navigation!;
       });
     }
+    
     studentdetails();
     getAdmin();
     Date();
@@ -191,30 +195,28 @@ bool Loading=false;
       Circlularprogrossvalue=0;
     });
 
-    var document= await _firestore2db.collection("Students").doc(Studentid).
+    var document= await constants.firestore2db?.collection("Students").doc(Studentid).
     collection('Attendance').get();
     setState(() {
-      Totalvalue=document.docs.length;
+      Totalvalue=document!.docs.length;
     });
-    var studentdocument = await _firestore2db
-        .collection("Students")
+    var studentdocument = await constants.firestore2db?.collection("Students")
         .doc(Studentid)
         .collection('Attendance')
         .where("Attendance", isEqualTo: "Present")
         .get();
     setState(() {
-      presentvalue = studentdocument.docs.length;
+      presentvalue = studentdocument!.docs.length;
     });
 
 
-    var studentdocument2 = await _firestore2db
-        .collection("Students")
+    var studentdocument2 = await constants.firestore2db?.collection("Students")
         .doc(Studentid)
         .collection('Attendance')
         .where("Attendance", isEqualTo: "Absent")
         .get();
     setState(() {
-      Absentvalue = studentdocument2.docs.length;
+      Absentvalue = studentdocument2!.docs.length;
     });
 
 
@@ -304,7 +306,7 @@ bool Loading=false;
                             title: Text('Are you sure delete this message'),
                             actions: [
                               TextButton(onPressed: () {
-                                _firestore2db.collection(
+                                constants.firestore2db?.collection(
                                     '${Studentclass}${Studentsec}chat')
                                     .doc(id)
                                     .delete();
@@ -380,8 +382,7 @@ bool Loading=false;
             .day}",
       };
       _message.clear();
-      await _firestore2db
-          .collection('${Studentclass}${Studentsec}chat')
+      await constants.firestore2db?.collection('${Studentclass}${Studentsec}chat')
           .add(chatData);
     }
   }
@@ -404,8 +405,7 @@ bool Loading=false;
       };
 
       _message.clear();
-      await _firestore2db
-          .collection('${Studentclass}${Studentsec}chat')
+      await constants.firestore2db?.collection('${Studentclass}${Studentsec}chat')
           .add(messages);
     }
     else {
@@ -816,9 +816,9 @@ bool Loading=false;
               ),
               GestureDetector(
                 onTap: () {
-                  _firebaseauth2db.signOut();
+                  constants.firebaseAuth2db?.signOut();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Accountpage(),));
+                      MaterialPageRoute(builder: (context) => Accountpage(""),));
 
                   key.currentState!.closeEndDrawer();
                 },
@@ -1999,7 +1999,7 @@ bool Loading=false;
 
                                 ///Listout the HomeWork
                                 FutureBuilder<dynamic>(
-                                  future: _firestore2db.collection("Students")
+                                  future: constants.firestore2db?.collection("Students")
                                       .doc(Studentid)
                                       .get(),
                                   builder: (context, snapshot) {
@@ -2246,8 +2246,8 @@ bool Loading=false;
 
                                         SizedBox(height: height / 36.85),
                                         studentassingid == "All"?
-                                        StreamBuilder(
-                                          stream: _firestore2db.collection("homeworks").snapshots(),
+                                        StreamBuilder<QuerySnapshot>(
+                                          stream: constants.firestore2db?.collection("homeworks").snapshots(),
                                           builder: (context, snap) {
                                             if (snap.hasData == null) {
                                               return Center(
@@ -2266,8 +2266,8 @@ bool Loading=false;
                                                 var subjecthomeworkall = snap.data!.docs[index];
 
                                                 return
-                                                  StreamBuilder(
-                                                    stream: _firestore2db.collection("homeworks").doc(subjecthomeworkall.id.toString()).
+                                                  StreamBuilder<QuerySnapshot>(
+                                                    stream: constants.firestore2db?.collection("homeworks").doc(subjecthomeworkall.id.toString()).
                                                     collection(
                                                         value['admitclass'].toString())
                                                         .doc(value['section'].toString()).
@@ -2936,8 +2936,8 @@ bool Loading=false;
 
                                               },);
                                           },):
-                                        StreamBuilder(
-                                          stream: _firestore2db.collection("homeworks").doc(currentdate.toString()).
+                                        StreamBuilder<QuerySnapshot>(
+                                          stream: constants.firestore2db?.collection("homeworks").doc(currentdate.toString()).
                                           collection(
                                               value['admitclass'].toString())
                                               .doc(value['section'].toString()).
@@ -4717,8 +4717,8 @@ bool Loading=false;
 
                                     /// Name
 
-                                    StreamBuilder(
-                                        stream: _firestore2db.collection(
+                                    StreamBuilder<QuerySnapshot>(
+                                        stream: constants.firestore2db?.collection(
                                             "Students").doc(Studentid)
                                             .collection("Feedback")
                                             .orderBy(
@@ -4743,8 +4743,7 @@ bool Loading=false;
                                               shrinkWrap: true,
                                               physics: NeverScrollableScrollPhysics(),
 
-                                              itemCount: snapshot.data!
-                                                  .docs.length,
+                                              itemCount: snapshot.data!.docs.length,
                                               itemBuilder: (context,
                                                   index) {
                                                 if (page == "Feedback" &&
@@ -5408,8 +5407,8 @@ bool Loading=false;
                                     //                   });
                                     //           });
                                     //     }),
-                                    StreamBuilder(
-                                        stream: _firestore2db.collection(
+                                    StreamBuilder<QuerySnapshot>(
+                                        stream: constants.firestore2db?.collection(
                                             "Students").doc(Studentid).
                                         collection("Fees")
                                             .where("status", isEqualTo: false)
@@ -5715,8 +5714,8 @@ bool Loading=false;
                                               .w600),
                                     ),
                                     SizedBox(height: height / 92.125,),
-                                    StreamBuilder(
-                                        stream: _firestore2db.collection(
+                                    StreamBuilder<QuerySnapshot>(
+                                        stream: constants.firestore2db?.collection(
                                             "Students").doc(Studentid)
                                             .collection("Fees").where(
                                             "status", isEqualTo: true)
@@ -5957,8 +5956,8 @@ bool Loading=false;
                                       onTap: () async {
                                         List<ExamWithSubjectModel> document = await getStudentReport(Studentid,Studentclass,Studentsec);
                                         List<ExamWithSubjectModel> exams = document;
-                                        var document2 = await _firestore2db.collection("Students").doc(Studentid).get();
-                                        Map<String,dynamic> ? value = document2.data();
+                                        var document2 = await constants.firestore2db?.collection("Students").doc(Studentid).get();
+                                        Map<String,dynamic> ? value = document2!.data();
                                         generateProgressReportPdf(PdfPageFormat.a4, exams, value!,schoolName,schoolAddress,schoolLogo);
                                       },
                                       child: Container(
@@ -6492,7 +6491,7 @@ bool Loading=false;
                                         top: height / 37.8),
                                     child: GestureDetector(
                                       onTap: () {
-                                        _firestore2db.collection("Requestdocumnets").doc().set({
+                                        constants.firestore2db?.collection("Requestdocumnets").doc().set({
                                           "docname":dropdownvalue,
                                           "reason":homecoller.text,
                                           "stname":Studentname,
@@ -6613,8 +6612,7 @@ bool Loading=false;
                                       height: size.height / 2.0,
                                       width: size.width,
                                       child: StreamBuilder<QuerySnapshot>(
-                                        stream: _firestore2db
-                                            .collection(
+                                        stream: constants.firestore2db?.collection(
                                             '${Studentclass}${Studentsec}chat')
                                             .orderBy('time')
                                             .snapshots(),
@@ -6663,7 +6661,7 @@ bool Loading=false;
                                                                                   title: Text('Are you sure delete this message'),
                                                                                   actions: [
                                                                                     TextButton(onPressed: () {
-                                                                                      _firestore2db.collection(
+                                                                                      constants.firestore2db?.collection(
                                                                                           '${Studentclass}${Studentsec}chat')
                                                                                           .doc(snapshot.data!.docs[index].id)
                                                                                           .delete();
@@ -7167,9 +7165,9 @@ bool Loading=false;
                                   ),
 
 
-                                  StreamBuilder(
+                                  StreamBuilder<QuerySnapshot>(
 
-                                    stream: _firestore2db.collection(
+                                    stream: constants.firestore2db?.collection(
                                         "Circulars")
                                         .orderBy("timestamp", descending: true)
                                         .snapshots(),
@@ -7901,68 +7899,68 @@ bool Loading=false;
     setState(() {
       teachertable = ["", "", "", "", "", "", "", ""];
     });
-    var document = await _firestore2db.collection("ClassTimeTable").doc(
+    var document = await constants.firestore2db?.collection("ClassTimeTable").doc(
         "${Studentclass}${Studentsec}").collection("TimeTable").get();
 
     print("${Studentclass}${Studentsec}");
     setState(() {
       if (TTselected == 1) {
         if (day == "Monday") {
-          for (int i = 0; i < document.docs.length; i++) {
-            if (document.docs[i]["order"] == 0) {
+          for (int i = 0; i < document!.docs.length; i++) {
+            if (document!.docs[i]["order"] == 0) {
               teachertable.replaceRange(0, 1,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
-            else if (document.docs[i]["order"] == 1) {
+            else if (document!.docs[i]["order"] == 1) {
               teachertable.replaceRange(1, 2,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
-            else if (document.docs[i]["order"] == 2) {
+            else if (document!.docs[i]["order"] == 2) {
               teachertable.replaceRange(2, 3,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
-            else if (document.docs[i]["order"] == 3) {
+            else if (document!.docs[i]["order"] == 3) {
               teachertable.replaceRange(3, 4,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
-            else if (document.docs[i]["order"] == 4) {
+            else if (document!.docs[i]["order"] == 4) {
               teachertable.replaceRange(4, 5,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
-            else if (document.docs[i]["order"] == 5) {
+            else if (document!.docs[i]["order"] == 5) {
               teachertable.replaceRange(5, 6,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
-            else if (document.docs[i]["order"] == 6) {
+            else if (document!.docs[i]["order"] == 6) {
               teachertable.replaceRange(6, 7,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
-            else if (document.docs[i]["order"] == 7) {
+            else if (document!.docs[i]["order"] == 7) {
               teachertable.replaceRange(7, 8,
                   [
-                    "${document.docs[i]["subject"]}\n${document
-                        .docs[i]["staff"]}"
+                    "${document!.docs[i]["subject"]}\n${document
+                        !.docs[i]["staff"]}"
                   ]);
             }
           }
@@ -7975,502 +7973,502 @@ bool Loading=false;
        */
         }
         if (day == "Tuesday") {
-          for (int i = 0; i < document.docs.length; i++) {
-            if (document.docs[i]["order"] == 8) {
+          for (int i = 0; i < document!.docs.length; i++) {
+            if (document!.docs[i]["order"] == 8) {
               teachertable.replaceRange(0, 1, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 9) {
+            else if (document!.docs[i]["order"] == 9) {
               teachertable.replaceRange(1, 2, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 10) {
+            else if (document!.docs[i]["order"] == 10) {
               teachertable.replaceRange(2, 3, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 11) {
+            else if (document!.docs[i]["order"] == 11) {
               teachertable.replaceRange(3, 4, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 12) {
+            else if (document!.docs[i]["order"] == 12) {
               teachertable.replaceRange(4, 5, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 13) {
+            else if (document!.docs[i]["order"] == 13) {
               teachertable.replaceRange(5, 6, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 14) {
+            else if (document!.docs[i]["order"] == 14) {
               teachertable.replaceRange(6, 7, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 15) {
+            else if (document!.docs[i]["order"] == 15) {
               teachertable.replaceRange(7, 8, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
           }
         }
         if (day == "Wednesday") {
-          for (int i = 0; i < document.docs.length; i++) {
-            if (document.docs[i]["order"] == 16) {
+          for (int i = 0; i < document!.docs.length; i++) {
+            if (document!.docs[i]["order"] == 16) {
               teachertable.replaceRange(0, 1, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 17) {
+            else if (document!.docs[i]["order"] == 17) {
               teachertable.replaceRange(1, 2, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 18) {
+            else if (document!.docs[i]["order"] == 18) {
               teachertable.replaceRange(2, 3, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 19) {
+            else if (document!.docs[i]["order"] == 19) {
               teachertable.replaceRange(3, 4, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 20) {
+            else if (document!.docs[i]["order"] == 20) {
               teachertable.replaceRange(4, 5, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 21) {
+            else if (document!.docs[i]["order"] == 21) {
               teachertable.replaceRange(5, 6, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 22) {
+            else if (document!.docs[i]["order"] == 22) {
               teachertable.replaceRange(6, 7, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 23) {
+            else if (document!.docs[i]["order"] == 23) {
               teachertable.replaceRange(7, 8, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
           }
         }
         if (day == "Thursday") {
-          for (int i = 0; i < document.docs.length; i++) {
-            if (document.docs[i]["order"] == 24) {
+          for (int i = 0; i < document!.docs.length; i++) {
+            if (document!.docs[i]["order"] == 24) {
               teachertable.replaceRange(0, 1, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 25) {
+            else if (document!.docs[i]["order"] == 25) {
               teachertable.replaceRange(1, 2, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 26) {
+            else if (document!.docs[i]["order"] == 26) {
               teachertable.replaceRange(2, 3, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 27) {
+            else if (document!.docs[i]["order"] == 27) {
               teachertable.replaceRange(3, 4, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 28) {
+            else if (document!.docs[i]["order"] == 28) {
               teachertable.replaceRange(4, 5, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 29) {
+            else if (document!.docs[i]["order"] == 29) {
               teachertable.replaceRange(5, 6, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 30) {
+            else if (document!.docs[i]["order"] == 30) {
               teachertable.replaceRange(6, 7, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 31) {
+            else if (document!.docs[i]["order"] == 31) {
               teachertable.replaceRange(7, 8, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
           }
         }
         if (day == "Friday") {
-          for (int i = 0; i < document.docs.length; i++) {
-            if (document.docs[i]["order"] == 32) {
+          for (int i = 0; i < document!.docs.length; i++) {
+            if (document!.docs[i]["order"] == 32) {
               teachertable.replaceRange(0, 1, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 33) {
+            else if (document!.docs[i]["order"] == 33) {
               teachertable.replaceRange(1, 2, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 34) {
+            else if (document!.docs[i]["order"] == 34) {
               teachertable.replaceRange(2, 3, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 35) {
+            else if (document!.docs[i]["order"] == 35) {
               teachertable.replaceRange(3, 4, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 36) {
+            else if (document!.docs[i]["order"] == 36) {
               teachertable.replaceRange(4, 5, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 37) {
+            else if (document!.docs[i]["order"] == 37) {
               teachertable.replaceRange(5, 6, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 38) {
+            else if (document!.docs[i]["order"] == 38) {
               teachertable.replaceRange(6, 7, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 39) {
+            else if (document!.docs[i]["order"] == 39) {
               teachertable.replaceRange(7, 8, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
           }
         }
         if (day == "Saturday") {
-          for (int i = 0; i < document.docs.length; i++) {
-            if (document.docs[i]["order"] == 40) {
+          for (int i = 0; i < document!.docs.length; i++) {
+            if (document!.docs[i]["order"] == 40) {
               teachertable.replaceRange(0, 1, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 41) {
+            else if (document!.docs[i]["order"] == 41) {
               teachertable.replaceRange(1, 2, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 42) {
+            else if (document!.docs[i]["order"] == 42) {
               teachertable.replaceRange(2, 3, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 43) {
+            else if (document!.docs[i]["order"] == 43) {
               teachertable.replaceRange(3, 4, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 44) {
+            else if (document!.docs[i]["order"] == 44) {
               teachertable.replaceRange(4, 5, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 45) {
+            else if (document!.docs[i]["order"] == 45) {
               teachertable.replaceRange(5, 6, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 46) {
+            else if (document!.docs[i]["order"] == 46) {
               teachertable.replaceRange(6, 7, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
-            else if (document.docs[i]["order"] == 47) {
+            else if (document!.docs[i]["order"] == 47) {
               teachertable.replaceRange(7, 8, [
-                "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+                "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
               ]);
             }
           }
         }
       }
       else if (TTselected == 2) {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["order"] == 0) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["order"] == 0) {
             teachertable.replaceRange(0, 1,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
-          else if (document.docs[i]["order"] == 1) {
+          else if (document!.docs[i]["order"] == 1) {
             teachertable.replaceRange(1, 2,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
-          else if (document.docs[i]["order"] == 2) {
+          else if (document!.docs[i]["order"] == 2) {
             teachertable.replaceRange(2, 3,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
-          else if (document.docs[i]["order"] == 3) {
+          else if (document!.docs[i]["order"] == 3) {
             teachertable.replaceRange(3, 4,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
-          else if (document.docs[i]["order"] == 4) {
+          else if (document!.docs[i]["order"] == 4) {
             teachertable.replaceRange(4, 5,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
-          else if (document.docs[i]["order"] == 5) {
+          else if (document!.docs[i]["order"] == 5) {
             teachertable.replaceRange(5, 6,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
-          else if (document.docs[i]["order"] == 6) {
+          else if (document!.docs[i]["order"] == 6) {
             teachertable.replaceRange(6, 7,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
-          else if (document.docs[i]["order"] == 7) {
+          else if (document!.docs[i]["order"] == 7) {
             teachertable.replaceRange(7, 8,
                 [
-                  "${document.docs[i]["subject"]}\n${document
-                      .docs[i]["staff"]}"
+                  "${document!.docs[i]["subject"]}\n${document
+                      !.docs[i]["staff"]}"
                 ]);
           }
         }
       }
       else if (TTselected == 3) {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["order"] == 8) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["order"] == 8) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 9) {
+          else if (document!.docs[i]["order"] == 9) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 10) {
+          else if (document!.docs[i]["order"] == 10) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 11) {
+          else if (document!.docs[i]["order"] == 11) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 12) {
+          else if (document!.docs[i]["order"] == 12) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 13) {
+          else if (document!.docs[i]["order"] == 13) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 14) {
+          else if (document!.docs[i]["order"] == 14) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 15) {
+          else if (document!.docs[i]["order"] == 15) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
         }
       }
       else if (TTselected == 4) {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["order"] == 16) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["order"] == 16) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 17) {
+          else if (document!.docs[i]["order"] == 17) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 18) {
+          else if (document!.docs[i]["order"] == 18) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 19) {
+          else if (document!.docs[i]["order"] == 19) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 20) {
+          else if (document!.docs[i]["order"] == 20) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 21) {
+          else if (document!.docs[i]["order"] == 21) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 22) {
+          else if (document!.docs[i]["order"] == 22) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 23) {
+          else if (document!.docs[i]["order"] == 23) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
         }
       }
       else if (TTselected == 5) {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["order"] == 24) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["order"] == 24) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 25) {
+          else if (document!.docs[i]["order"] == 25) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 26) {
+          else if (document!.docs[i]["order"] == 26) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 27) {
+          else if (document!.docs[i]["order"] == 27) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 28) {
+          else if (document!.docs[i]["order"] == 28) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 29) {
+          else if (document!.docs[i]["order"] == 29) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 30) {
+          else if (document!.docs[i]["order"] == 30) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 31) {
+          else if (document!.docs[i]["order"] == 31) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
         }
       }
       else if (TTselected == 6) {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["order"] == 32) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["order"] == 32) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 33) {
+          else if (document!.docs[i]["order"] == 33) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 34) {
+          else if (document!.docs[i]["order"] == 34) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 35) {
+          else if (document!.docs[i]["order"] == 35) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 36) {
+          else if (document!.docs[i]["order"] == 36) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 37) {
+          else if (document!.docs[i]["order"] == 37) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 38) {
+          else if (document!.docs[i]["order"] == 38) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 39) {
+          else if (document!.docs[i]["order"] == 39) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
         }
       }
       else if (TTselected == 7) {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["order"] == 40) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["order"] == 40) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 41) {
+          else if (document!.docs[i]["order"] == 41) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 42) {
+          else if (document!.docs[i]["order"] == 42) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 43) {
+          else if (document!.docs[i]["order"] == 43) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 44) {
+          else if (document!.docs[i]["order"] == 44) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 45) {
+          else if (document!.docs[i]["order"] == 45) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 46) {
+          else if (document!.docs[i]["order"] == 46) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
-          else if (document.docs[i]["order"] == 47) {
+          else if (document!.docs[i]["order"] == 47) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["subject"]}\n${document.docs[i]["staff"]}"
+              "${document!.docs[i]["subject"]}\n${document!.docs[i]["staff"]}"
             ]);
           }
         }
@@ -8556,7 +8554,7 @@ bool Loading=false;
   TextEditingController remarkscon1 = TextEditingController();
 
   seditpoup(docid, context) async {
-    _firestore2db.collection("Students").doc(Studentid).collection("Feedback")
+    constants.firestore2db?.collection("Students").doc(Studentid).collection("Feedback")
         .doc(docid).get()
         .then((value) {
       setState(() {
@@ -8704,7 +8702,7 @@ bool Loading=false;
 
 
   updateremarks(docid) {
-    _firestore2db.collection("Students").doc(Studentid)
+    constants.firestore2db?.collection("Students").doc(Studentid)
         .collection("Feedback")
         .doc(docid)
         .update({
@@ -8924,17 +8922,17 @@ bool Loading=false;
     double height = MediaQuery.of(context).size.height;
 
     ///Subject add function
-    var studentdata=await _firestore2db.collection("ClassMaster").where("name",isEqualTo:Studentclass).get();
+    var studentdata=await constants.firestore2db?.collection("ClassMaster").where("name",isEqualTo:Studentclass).get();
 
-    for(int i=0;i<studentdata.docs.length;i++){
-      var Sectiondata= await _firestore2db.collection("ClassMaster").doc(studentdata.docs[i].id).
+    for(int i=0;i<studentdata!.docs.length;i++){
+      var Sectiondata= await constants.firestore2db?.collection("ClassMaster").doc(studentdata!.docs[i].id).
       collection("Sections").doc("${Studentclass}${Studentsec}").collection("Subjects").orderBy("timestamp").get();
       setState(() {
-        subjectcount=Sectiondata.docs.length;
+        subjectcount=Sectiondata!.docs.length;
       });
-      for(int j=0;j<Sectiondata.docs.length;j++){
+      for(int j=0;j<Sectiondata!.docs.length;j++){
          setState(() {
-           SubjectsList.add(Sectiondata.docs[j]['name']);
+           SubjectsList.add(Sectiondata!.docs[j]['name']);
          });
       }
       print("_____________________________________________");
@@ -8942,11 +8940,11 @@ bool Loading=false;
     }
 
     ///exam master add function
-    var examdata=await _firestore2db.collection("Students").doc(Studentid).collection("Exams").get();
+    var examdata=await constants.firestore2db?.collection("Students").doc(Studentid).collection("Exams").get();
 
-    for(int i=0;i<examdata.docs.length;i++){
+    for(int i=0;i<examdata!.docs.length;i++){
     setState(() {
-      ExamnameList.add(examdata.docs[i]['name']);
+      ExamnameList.add(examdata!.docs[i]['name']);
     });
     }
     print(ExamnameList);
@@ -8976,31 +8974,31 @@ bool Loading=false;
       for (int j = 0; j < ExamnameList.length; j++) {
         print("Exam Length");
         print(ExamnameList.length);
-        var document = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").get();
+        var document = await constants.firestore2db?.collection("Students").doc(Studentid).collection("Exams").get();
         print("Doc 1");
-        print(document.docs.length);
+        print(document!.docs.length);
 
-        for (int m = 0; m < document.docs.length; m++) {
-          print(document.docs[m]["name"]);
+        for (int m = 0; m < document!.docs.length; m++) {
+          print(document!.docs[m]["name"]);
           print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-          var document2 = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").
-          doc(document.docs[m].id).collection("Timetable").get();
+          var document2 = await constants.firestore2db?.collection("Students").doc(Studentid).collection("Exams").
+          doc(document!.docs[m].id).collection("Timetable").get();
           print("Doc 2");
-          print(document2.docs.length);
-          for (int n = 0; n < document2.docs.length; n++) {
+          print(document2!.docs.length);
+          for (int n = 0; n < document2!.docs.length; n++) {
             print("Val of i ${i}");
             print("Val of j ${j}}");
-            print("${document2.docs[n]['name']} isequal to ${SubjectsList[i]}");
-            print("${document2.docs[n]['exam']} isequal to ${ExamnameList[j]}");
-            print("${document2.docs[n]['mark']} is answer");
-            print(document2.docs[n]['exam'].toString().length);
+            print("${document2!.docs[n]['name']} isequal to ${SubjectsList[i]}");
+            print("${document2!.docs[n]['exam']} isequal to ${ExamnameList[j]}");
+            print("${document2!.docs[n]['mark']} is answer");
+            print(document2!.docs[n]['exam'].toString().length);
             print(ExamnameList[j].toString().length);
-            if (document2.docs[n]['name'] == SubjectsList[i]) {
-              if (document2.docs[n]['exam'] == ExamnameList[j]) {
+            if (document2!.docs[n]['name'] == SubjectsList[i]) {
+              if (document2!.docs[n]['exam'] == ExamnameList[j]) {
                 print("Done good===========================================");
                 print(MainList[i][j]);
                 setState(() {
-                  MainList[i][j] = document2.docs[n]['mark'];
+                  MainList[i][j] = document2!.docs[n]['mark'];
                 });
                 print(MainList[i][j]);
               }
@@ -9015,16 +9013,16 @@ bool Loading=false;
 
     ///Feed back
 
-    var staffdocument= await _firestore2db.collection("Students").doc(Studentid).collection("Feedback").
+    var staffdocument= await constants.firestore2db?.collection("Students").doc(Studentid).collection("Feedback").
     orderBy("timestamp", descending: true).get();
-    for(int j=0;j<staffdocument.docs.length;j++){
+    for(int j=0;j<staffdocument!.docs.length;j++){
       setState((){
         staffFeedbackList.add(Stafffeebackclass(
-            staffname:staffdocument.docs[j]['staffname'],
-          value:staffdocument.docs[j]['value'] ,
-          date: staffdocument.docs[j]['date'],
-          remarks:staffdocument.docs[j]['remarks'] ,
-          time: staffdocument.docs[j]['time'],
+            staffname:staffdocument!.docs[j]['staffname'],
+          value:staffdocument!.docs[j]['value'] ,
+          date: staffdocument!.docs[j]['date'],
+          remarks:staffdocument!.docs[j]['remarks'] ,
+          time: staffdocument!.docs[j]['time'],
         ));
       });
 
@@ -9681,12 +9679,12 @@ bool Loading=false;
 
 
   getAdmin() async {
-    var admin = await _firestore2db.collection('Admin').get();
+    var admin = await constants.firestore2db?.collection('Admin').get();
 
     setState(() {
-      schoolName = admin.docs.first.get("schoolname");
-      schoolLogo = admin.docs.first.get("logo");
-      schoolAddress = admin.docs.first.get("area")+","+admin.docs.first.get("city")+"-"+admin.docs.first.get("pincode");
+      schoolName = admin!.docs.first.get("schoolname");
+      schoolLogo = admin!.docs.first.get("logo");
+      schoolAddress = admin!.docs.first.get("area")+","+admin!.docs.first.get("city")+"-"+admin!.docs.first.get("pincode");
     });
   }
 
@@ -9703,26 +9701,26 @@ bool Loading=false;
     List examnameList=[];
     int subjectcount = 0;
 
-    var studentdata=await _firestore2db.collection("ClassMaster").where("name",isEqualTo:Studentclass).get();
-    var examdata = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").get();
+    var studentdata=await constants.firestore2db?.collection("ClassMaster").where("name",isEqualTo:Studentclass).get();
+    var examdata = await constants.firestore2db?.collection("Students").doc(Studentid).collection("Exams").get();
 
-    for(int i=0;i<studentdata.docs.length;i++){
-      var Sectiondata= await _firestore2db.collection("ClassMaster").doc(studentdata.docs[i].id).
+    for(int i=0;i<studentdata!.docs.length;i++){
+      var Sectiondata= await constants.firestore2db?.collection("ClassMaster").doc(studentdata!.docs[i].id).
       collection("Sections").doc("${Studentclass}${Studentsec}").collection("Subjects").orderBy("timestamp").get();
       //setState(() {
-      subjectcount=Sectiondata.docs.length;
+      subjectcount=Sectiondata!.docs.length;
       //});
-      for(int j=0;j<Sectiondata.docs.length;j++){
+      for(int j=0;j<Sectiondata!.docs.length;j++){
         //setState(() {
-        subjectsList.add(Sectiondata.docs[j]['name']);
+        subjectsList.add(Sectiondata!.docs[j]['name']);
         //});
       }
     }
 
 
 
-    for(int i=0;i<examdata.docs.length;i++){
-      examnameList.add(examdata.docs[i]['name']);
+    for(int i=0;i<examdata!.docs.length;i++){
+      examnameList.add(examdata!.docs[i]['name']);
     }
 
     examsList.clear();
@@ -9744,16 +9742,16 @@ bool Loading=false;
       examsList.add(exam);
     }
 
-    var document = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").get();
+    var document = await constants.firestore2db?.collection("Students").doc(Studentid).collection("Exams").get();
     for(int i =0; i < examsList.length; i++){
       for(int j =0; j < examsList[i].subjects.length; j++){
-        for(int m = 0; m < document.docs.length; m++){
-          var document2 = await _firestore2db.collection("Students").doc(Studentid).collection("Exams").doc(document.docs[m].id).collection("Timetable").get();
-          for (int n = 0; n < document2.docs.length; n++) {
-            if (document2.docs[n]['exam'] == examsList[i].examName) {
-              if (document2.docs[n]['name'] == examsList[i].subjects[j].name) {
-                examsList[i].subjects[j].mark = document2.docs[n]['mark'];
-                examsList[i].subjects[j].totalMark = document2.docs[n]['total'];
+        for(int m = 0; m < document!.docs.length; m++){
+          var document2 = await constants.firestore2db?.collection("Students").doc(Studentid).collection("Exams").doc(document!.docs[m].id).collection("Timetable").get();
+          for (int n = 0; n < document2!.docs.length; n++) {
+            if (document2!.docs[n]['exam'] == examsList[i].examName) {
+              if (document2!.docs[n]['name'] == examsList[i].subjects[j].name) {
+                examsList[i].subjects[j].mark = document2!.docs[n]['mark'];
+                examsList[i].subjects[j].totalMark = document2!.docs[n]['total'];
               }
             }
           }
@@ -9782,8 +9780,3 @@ class Stafffeebackclass{
 
 
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(
-    app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);

@@ -24,8 +24,8 @@ class _Root_PageState extends State<Root_Page> {
 
       backgroundColor: Color(0xff3D8CF8),
 
-      body:
-      Frontpage("")
+     /* body:
+      Frontpage("",widget.)*/
     );
   }
 }

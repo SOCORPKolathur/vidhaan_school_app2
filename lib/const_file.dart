@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 int selectedIndexvalue=0;
 
@@ -13,20 +14,30 @@ String demotext="""A computer is a machine that can be programmed to carry out s
 
 A broad range of industrial and consumer products use computers as control systems. Simple special-purpose devices like microwave ovens and remote controls are included, as are factory devices like industrial robots and computer-aided design, as well as general-purpose devices like personal computers and mobile devices like smartphones. Computers power the Internet, which links billions of other computers and users.""";
 
-Constants(String schoolID){
-  if(schoolID=="VDRAVEN") {
-    FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-    final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-    FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-    FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
-  }
-  else if (schoolID=="VDSKV"){
-    FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-    final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-    FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-    FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+class Constants {
+  FirebaseAuth? _firebaseauth2db;
+  FirebaseFirestore? _firestore2db;
+  FirebaseStorage? _firestorage2db;
+
+  Constants(String schoolID) {
+    if (schoolID == "VDRAVEN") {
+      FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+      _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
+      _firestorage2db = FirebaseStorage.instanceFor(app: _secondaryApp);
+      _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+    } else if (schoolID == "VDSKV") {
+      FirebaseApp _thirdApp = Firebase.app('ThirdApp');
+      _firestore2db = FirebaseFirestore.instanceFor(app: _thirdApp);
+      _firestorage2db = FirebaseStorage.instanceFor(app: _thirdApp);
+      _firebaseauth2db = FirebaseAuth.instanceFor(app: _thirdApp);
+    } else {
+      // Handle default or error case
+    }
   }
 
+  FirebaseAuth? get firebaseAuth2db => _firebaseauth2db;
+  FirebaseFirestore? get firestore2db => _firestore2db;
+  FirebaseStorage? get firestorage2db => _firestorage2db;
 }
 
 

@@ -41,8 +41,9 @@ import 'package:vidhaan_school_app/modules/home/controllers/home_controller.dart
 
 class Frontpage extends StatefulWidget {
   String?staffid;
+  String schoolID;
 
-  Frontpage(this.staffid);
+  Frontpage(this.staffid,this.schoolID);
 
   @override
   State<Frontpage> createState() => _FrontpageState();
@@ -202,11 +203,11 @@ class _FrontpageState extends State<Frontpage>
       print(Period);
     }
   }
-
+  late Constants constants;
   @override
   void initState() {
     print("Home Page 2");
-
+    constants = Constants(widget.schoolID);
     getstaffdetails();
     Date();
     dayfun();
@@ -267,19 +268,19 @@ class _FrontpageState extends State<Frontpage>
   int notifycount = 0;
 
   getstaffdetails() async {
-    var document = await _firestore2db.collection("Staffs").get();
-    for (int i = 0; i < document.docs.length; i++) {
-      if (document.docs[i]["userid"] == _firebaseauth2db.currentUser!.uid) {
+    var document = await constants.firestore2db?.collection("Staffs").get();
+    for (int i = 0; i < document!.docs.length; i++) {
+      if (document!.docs[i]["userid"] == constants.firebaseAuth2db?.currentUser!.uid) {
         setState(() {
-          staffid = document.docs[i].id;
-          staffauthendicationid = document.docs[i]['userid'];
+          staffid = document!.docs[i].id;
+          staffauthendicationid = document!.docs[i]['userid'];
         });
         print("Saffid:${staffid}");
         print(staffid);
       }
     };
 
-    _firestore2db.collection("Staffs")
+    constants.firestore2db?.collection("Staffs")
         .doc(staffid).collection("Notification").where(
         "readstatus", isEqualTo: false).snapshots()
         .listen((event) {
@@ -290,10 +291,10 @@ class _FrontpageState extends State<Frontpage>
     print(notifycount);
 
 
-    var staffdocument = await _firestore2db.collection("Staffs")
+    var staffdocument = await constants.firestore2db?.collection("Staffs")
         .doc(staffid)
         .get();
-    Map<String, dynamic>?staffvalue = staffdocument.data();
+    Map<String, dynamic>?staffvalue = staffdocument!.data();
     setState(() {
       staffname = staffvalue!['stname'];
       staffregno = staffvalue['regno'];
@@ -314,12 +315,12 @@ class _FrontpageState extends State<Frontpage>
 
 
   notificatouncountdisaapersfun() async {
-    var Notificationdocument = await _firestore2db.collection("Staffs")
+    var Notificationdocument = await constants.firestore2db?.collection("Staffs")
         .doc(staffid).collection("Notification").get();
-    for (int i = 0; i < Notificationdocument.docs.length; i++) {
-      _firestore2db.collection("Staffs")
+    for (int i = 0; i < Notificationdocument!.docs.length; i++) {
+      constants.firestore2db?.collection("Staffs")
           .doc(staffid).collection("Notification").doc(
-          Notificationdocument.docs[i].id).update({
+          Notificationdocument!.docs[i].id).update({
         "readstatus": true,
       });
     }
@@ -358,31 +359,31 @@ class _FrontpageState extends State<Frontpage>
       section.clear();
       subjects.clear();
     });
-    var document = await _firestore2db.collection("ClassMaster").orderBy(
+    var document = await constants.firestore2db?.collection("ClassMaster").orderBy(
         "order").get();
-    var document2 = await _firestore2db.collection("SectionMaster").orderBy(
+    var document2 = await constants.firestore2db?.collection("SectionMaster").orderBy(
         "order").get();
     setState(() {
       classes.add("Class");
       section.add("Section");
     });
-    for (int i = 0; i < document.docs.length; i++) {
+    for (int i = 0; i < document!.docs.length; i++) {
       setState(() {
-        classes.add(document.docs[i]["name"]);
+        classes.add(document!.docs[i]["name"]);
       });
     }
-    for (int i = 0; i < document2.docs.length; i++) {
+    for (int i = 0; i < document2!.docs.length; i++) {
       setState(() {
-        section.add(document2.docs[i]["name"]);
+        section.add(document2!.docs[i]["name"]);
       });
     }
-    var documentsub = await _firestore2db.collection("SubjectMaster").orderBy("order").get();
+    var documentsub = await constants.firestore2db?.collection("SubjectMaster").orderBy("order").get();
     setState(() {
       subjects.add("Subject");
     });
-    for (int i = 0; i < documentsub.docs.length; i++) {
+    for (int i = 0; i < documentsub!.docs.length; i++) {
       setState(() {
-        subjects.add(documentsub.docs[i]["name"]);
+        subjects.add(documentsub!.docs[i]["name"]);
       });
     }
   }
@@ -830,9 +831,9 @@ class _FrontpageState extends State<Frontpage>
               ),
               GestureDetector(
                 onTap: () {
-                  _firebaseauth2db.signOut();
+                  constants.firebaseAuth2db?.signOut();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Accountpage(),));
+                      MaterialPageRoute(builder: (context) => Accountpage(widget.schoolID),));
 
                   key.currentState!.closeEndDrawer();
                 },
@@ -1933,7 +1934,7 @@ class _FrontpageState extends State<Frontpage>
                                 SizedBox(height: height / 184.25),
 
                                 StreamBuilder(
-                                    stream: _firestore2db.collection(
+                                    stream: constants.firestore2db?.collection(
                                         "Circulars")
                                         .orderBy("timestamp", descending: true)
                                         .snapshots(),
@@ -3527,8 +3528,7 @@ class _FrontpageState extends State<Frontpage>
 
 
                                               StreamBuilder<QuerySnapshot>(
-                                                  stream: _firestore2db
-                                                      .collection("Students")
+                                                  stream: constants.firestore2db?.collection("Students")
                                                       .
                                                   orderBy("timestamp")
                                                       .snapshots(),
@@ -4204,7 +4204,7 @@ class _FrontpageState extends State<Frontpage>
                                           /// Name
 
                                           StreamBuilder(
-                                              stream: _firestore2db.collection(
+                                              stream: constants.firestore2db?.collection(
                                                   "Students")
                                                   .orderBy("regno")
                                                   .snapshots(),
@@ -5033,8 +5033,7 @@ class _FrontpageState extends State<Frontpage>
                                       height: size.height / 2.3,
                                       width: size.width,
                                       child: StreamBuilder<QuerySnapshot>(
-                                        stream: _firestore2db
-                                            .collection(
+                                        stream: constants.firestore2db?.collection(
                                             '${dropdownValue4}${dropdownValue5}chat')
                                             .orderBy('time')
                                             .snapshots(),
@@ -5314,7 +5313,7 @@ class _FrontpageState extends State<Frontpage>
                                     ),
                                     SizedBox(height: height / 50.04,),
                                     StreamBuilder<QuerySnapshot>(
-                                      stream: _firestore2db.collection("Staffs").doc(staffid).collection("Payroll_Reports").orderBy("timestamp").snapshots(),
+                                      stream: constants.firestore2db?.collection("Staffs").doc(staffid).collection("Payroll_Reports").orderBy("timestamp").snapshots(),
                                       builder: (context, payrolsnap) {
                                         if (payrolsnap.hasData == null) {
                                           return Center(
@@ -5850,7 +5849,7 @@ class _FrontpageState extends State<Frontpage>
                                       ],
                                     ),
                                     StreamBuilder(
-                                        stream: _firestore2db.collection(
+                                        stream: constants.firestore2db?.collection(
                                             "Staffs").doc(staffid).collection(
                                             'Leave')
                                             .orderBy(
@@ -6154,7 +6153,7 @@ class _FrontpageState extends State<Frontpage>
   submitleave() {
     if (docid == "") {
       String docid = getRandomString(16);
-      _firestore2db.collection("Staffs").doc(staffid).collection('Leave').doc(
+      constants.firestore2db?.collection("Staffs").doc(staffid).collection('Leave').doc(
           docid).set({
         "type": leavetype,
         "date": "${DateTime
@@ -6175,7 +6174,7 @@ class _FrontpageState extends State<Frontpage>
         "staffname": staffname,
         "regno": staffregno,
       });
-      _firestore2db.collection('Leave').doc(docid).set({
+      constants.firestore2db?.collection('Leave').doc(docid).set({
         "type": leavetype,
         "date": "${DateTime
             .now()
@@ -6197,7 +6196,7 @@ class _FrontpageState extends State<Frontpage>
       });
     }
     else {
-      _firestore2db.collection("Staffs").doc(staffid).collection('Leave').doc(
+      constants.firestore2db?.collection("Staffs").doc(staffid).collection('Leave').doc(
           docid).update({
         "type": leavetype,
         "date": "${DateTime
@@ -6218,7 +6217,7 @@ class _FrontpageState extends State<Frontpage>
         "staffname": staffname,
         "regno": staffregno,
       });
-      _firestore2db.collection('Leave').doc(docid).update({
+      constants.firestore2db?.collection('Leave').doc(docid).update({
         "type": leavetype,
         "date": "${DateTime
             .now()
@@ -6593,7 +6592,7 @@ class _FrontpageState extends State<Frontpage>
 
 
   attendaceupload() async {
-    var document2 = await _firestore2db.collection("Attendance")
+    var document2 = await constants.firestore2db?.collection("Attendance")
         .doc(
         "${_typeAheadControllerclass.text}${_typeAheadControllersection.text}")
         .collection("${DateTime
@@ -6604,28 +6603,28 @@ class _FrontpageState extends State<Frontpage>
         .now()
         .year}")
         .get();
-    if (document2.docs.length > 0) {
+    if (document2!.docs.length > 0) {
       Alreadymarked();
     }
     else {
       Successdialog();
-      var document = await _firestore2db.collection("Students").orderBy(
+      var document = await constants.firestore2db?.collection("Students").orderBy(
           "timestamp").get();
-      for (int i = 0; i < document.docs.length; i++) {
-        if (document.docs[i]["admitclass"] == _typeAheadControllerclass.text &&
-            document.docs[i]["section"] == _typeAheadControllersection.text) {
-          _firestore2db.collection("Attendance").doc(
+      for (int i = 0; i < document!.docs.length; i++) {
+        if (document!.docs[i]["admitclass"] == _typeAheadControllerclass.text &&
+            document!.docs[i]["section"] == _typeAheadControllersection.text) {
+          constants.firestore2db?.collection("Attendance").doc(
               "${_typeAheadControllerclass.text}${_typeAheadControllersection
                   .text}").
           collection("${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}").doc().set({
-            "stname": document.docs[i]["stname"],
-            "regno": document.docs[i]["regno"],
-            "stdocid": document.docs[i].id,
+            "stname": document!.docs[i]["stname"],
+            "regno": document!.docs[i]["regno"],
+            "stdocid": document!.docs[i].id,
             "present": present[i],
             "order": i
           });
           if (present[i] == true) {
-            _firestore2db.collection("Students").doc(document.docs[i].id)
+            constants.firestore2db?.collection("Students").doc(document!.docs[i].id)
                 .collection("Attendance").
             doc("${DateTime
                 .now()
@@ -6642,7 +6641,7 @@ class _FrontpageState extends State<Frontpage>
             });
           }
           if (present[i] == false) {
-            _firestore2db.collection("Students").doc(document.docs[i].id)
+            constants.firestore2db?.collection("Students").doc(document!.docs[i].id)
                 .collection("Attendance").
             doc("${DateTime
                 .now()
@@ -6665,7 +6664,7 @@ class _FrontpageState extends State<Frontpage>
                   .millisecondsSinceEpoch,
               "month": cmonth
             });
-            _firestore2db.collection("Students")
+            constants.firestore2db?.collection("Students")
                 .doc(document.docs[i].id)
                 .update({
               "absentdays": FieldValue.increment(1),
@@ -6801,15 +6800,13 @@ class _FrontpageState extends State<Frontpage>
 
 
   good(id) {
-    _firestore2db
-        .collection("Students")
+    constants.firestore2db?.collection("Students")
         .doc(id)
         .update({"isSelected": true});
   }
 
   bad(id) {
-    _firestore2db
-        .collection("Students")
+    constants.firestore2db?.collection("Students")
         .doc(id)
         .update({"isSelected": false});
   }
@@ -6820,7 +6817,7 @@ class _FrontpageState extends State<Frontpage>
     setState(() {
       marked = false;
     });
-    var document = await _firestore2db.collection("Attendance").doc(
+    var document = await constants.firestore2db?.collection("Attendance").doc(
         "${dropdownValue4}${dropdownValue5}").
     collection("${DateTime
         .now()
@@ -6829,7 +6826,7 @@ class _FrontpageState extends State<Frontpage>
         .month}-${DateTime
         .now()
         .year}").get();
-    if (document.docs.length > 0) {
+    if (document!.docs.length > 0) {
       setState(() {
         marked = true;
       });
@@ -6924,15 +6921,15 @@ class _FrontpageState extends State<Frontpage>
       teachertable = ["", "", "", "", "", "", "", ""];
     });
 
-    var document = await _firestore2db.collection("Staffs").doc(staffid)
+    var document = await constants.firestore2db?.collection("Staffs").doc(staffid)
         .collection('Timetable').where("day", isEqualTo: day)
         .get();
     setState(() {
       if (day == "Monday") {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["period"] == 0) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["period"] == 0) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
           else if (document.docs[i]["period"] == 1) {
@@ -6978,45 +6975,45 @@ class _FrontpageState extends State<Frontpage>
         }
       }
       if (day == "Tuesday") {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["period"] == 8) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["period"] == 8) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 9) {
+          else if (document!.docs[i]["period"] == 9) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 10) {
+          else if (document!.docs[i]["period"] == 10) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 11) {
+          else if (document!.docs[i]["period"] == 11) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 12) {
+          else if (document!.docs[i]["period"] == 12) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 13) {
+          else if (document!.docs[i]["period"] == 13) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 14) {
+          else if (document!.docs[i]["period"] == 14) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 15) {
+          else if (document!.docs[i]["period"] == 15) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
         }
@@ -7027,40 +7024,40 @@ class _FrontpageState extends State<Frontpage>
         }
       }
       if (day == "Wednesday") {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["period"] == 16) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["period"] == 16) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 17) {
+          else if (document!.docs[i]["period"] == 17) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 18) {
+          else if (document!.docs[i]["period"] == 18) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 19) {
+          else if (document!.docs[i]["period"] == 19) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 20) {
+          else if (document!.docs[i]["period"] == 20) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 21) {
+          else if (document!.docs[i]["period"] == 21) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 22) {
+          else if (document!.docs[i]["period"] == 22) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
           else if (document.docs[i]["period"] == 23) {
@@ -7076,45 +7073,45 @@ class _FrontpageState extends State<Frontpage>
         }
       }
       if (day == "Thursday") {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["period"] == 24) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["period"] == 24) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 25) {
+          else if (document!.docs[i]["period"] == 25) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 26) {
+          else if (document!.docs[i]["period"] == 26) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 27) {
+          else if (document!.docs[i]["period"] == 27) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 28) {
+          else if (document!.docs[i]["period"] == 28) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 29) {
+          else if (document!.docs[i]["period"] == 29) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 30) {
+          else if (document!.docs[i]["period"] == 30) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 31) {
+          else if (document!.docs[i]["period"] == 31) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
         }
@@ -7125,45 +7122,45 @@ class _FrontpageState extends State<Frontpage>
         }
       }
       if (day == "Friday") {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["period"] == 32) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["period"] == 32) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 33) {
+          else if (document!.docs[i]["period"] == 33) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 34) {
+          else if (document!.docs[i]["period"] == 34) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 35) {
+          else if (document!.docs[i]["period"] == 35) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 36) {
+          else if (document!.docs[i]["period"] == 36) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 37) {
+          else if (document!.docs[i]["period"] == 37) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 38) {
+          else if (document!.docs[i]["period"] == 38) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 39) {
+          else if (document!.docs[i]["period"] == 39) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
         }
@@ -7174,45 +7171,45 @@ class _FrontpageState extends State<Frontpage>
         }
       }
       if (day == "Saturday") {
-        for (int i = 0; i < document.docs.length; i++) {
-          if (document.docs[i]["period"] == 40) {
+        for (int i = 0; i < document!.docs.length; i++) {
+          if (document!.docs[i]["period"] == 40) {
             teachertable.replaceRange(0, 1, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 41) {
+          else if (document!.docs[i]["period"] == 41) {
             teachertable.replaceRange(1, 2, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 42) {
+          else if (document!.docs[i]["period"] == 42) {
             teachertable.replaceRange(2, 3, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 43) {
+          else if (document!.docs[i]["period"] == 43) {
             teachertable.replaceRange(3, 4, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 44) {
+          else if (document!.docs[i]["period"] == 44) {
             teachertable.replaceRange(4, 5, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 45) {
+          else if (document!.docs[i]["period"] == 45) {
             teachertable.replaceRange(5, 6, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 46) {
+          else if (document!.docs[i]["period"] == 46) {
             teachertable.replaceRange(6, 7, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
-          else if (document.docs[i]["period"] == 47) {
+          else if (document!.docs[i]["period"] == 47) {
             teachertable.replaceRange(7, 8, [
-              "${document.docs[i]["class"]} ${document.docs[i]["section"]}"
+              "${document!.docs[i]["class"]} ${document!.docs[i]["section"]}"
             ]);
           }
         }
@@ -7233,12 +7230,12 @@ class _FrontpageState extends State<Frontpage>
       if (teachertable[j] == "Free Period") {
         print(teachertable[j]);
         print("free period itemmm list --------------------------------------");
-        // teachertable.replaceRange(i,j,["${document.docs[i]["class"]} ${document.docs[i]["section"]}" ]);
-        var _staffdocument = await _firestore2db.collection("Staffs").doc(
+        // teachertable.replaceRange(i,j,["${document!.docs[i]["class"]} ${document!.docs[i]["section"]}" ]);
+        var _staffdocument = await constants.firestore2db?.collection("Staffs").doc(
             staffid).collection("Subtitution").get();
         print("document lengthhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-        print(_staffdocument.docs.length);
-        for (int i = 0; i < _staffdocument.docs.length; i++) {
+        print(_staffdocument!.docs.length);
+        for (int i = 0; i < _staffdocument!.docs.length; i++) {
           if (day == _staffdocument.docs[i]['day']) {
             var removeindex = (int.parse(
                 _staffdocument.docs[i]['period'].toString()).remainder(8));
@@ -7273,10 +7270,10 @@ class _FrontpageState extends State<Frontpage>
   add() async {
     int status = 1;
     if (_pickedFile != null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile!).catchError((
           error) async {
         status = 0;
       });
@@ -7290,10 +7287,10 @@ class _FrontpageState extends State<Frontpage>
       }
     }
     if (_pickedFile2 != null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile2!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile2!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile2!).catchError((
           error) async {
         status = 0;
       });
@@ -7307,10 +7304,10 @@ class _FrontpageState extends State<Frontpage>
       }
     }
     if (_pickedFile3 != null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile3!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile3!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile3!).catchError((
           error) async {
         status = 0;
       });
@@ -7324,10 +7321,10 @@ class _FrontpageState extends State<Frontpage>
       }
     }
     if (_pickedFile4 != null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile4!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile4!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile4!).catchError((
           error) async {
         status = 0;
       });
@@ -7341,10 +7338,10 @@ class _FrontpageState extends State<Frontpage>
       }
     }
     if (_pickedFile5 != null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile5!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile5!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile5!).catchError((
           error) async {
         status = 0;
       });
@@ -7368,7 +7365,7 @@ class _FrontpageState extends State<Frontpage>
     print(homecoller.text);
     print(topic.text);
     print("+Des++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    _firestore2db.collection("homeworks").doc("${DateTime
+    constants.firestore2db?.collection("homeworks").doc("${DateTime
         .now()
         .day}${DateTime
         .now()
@@ -7414,12 +7411,12 @@ class _FrontpageState extends State<Frontpage>
     });
 
 
-    var studentdata = await _firestore2db.collection("Students").
+    var studentdata = await constants.firestore2db?.collection("Students").
     where("admitclass", isEqualTo: _typeAheadControllerclass.text).where(
         "section", isEqualTo: _typeAheadControllersection.text).get();
 
-    for (int i = 0; i < studentdata.docs.length; i++) {
-      sendPushMessage(studentdata.docs[i]['token'],
+    for (int i = 0; i < studentdata!.docs.length; i++) {
+      sendPushMessage(studentdata!.docs[i]['token'],
           "New Assignment has been assigned for ${subject}",
           "Assignment Update", "Assignment");
     }
@@ -7639,8 +7636,7 @@ class _FrontpageState extends State<Frontpage>
                         status == "Pending" ? TextButton(
                           child: const Text('Revoke'),
                           onPressed: () {
-                            _firestore2db.collection("Staffs").doc(staffid)
-                                .collection('Leave').doc(id)
+                            constants.firestore2db?.collection("Staffs").doc(staffid).collection('Leave').doc(id)
                                 .update({
                               "status": "Revoked"
                             });
@@ -7697,7 +7693,7 @@ class _FrontpageState extends State<Frontpage>
   }
 
   updaetremarks(id, value, remarks) {
-    _firestore2db.collection("Students").doc(id).update({
+    constants.firestore2db?.collection("Students").doc(id).update({
       "value": value,
       "Remarks": remarks,
     });
@@ -7705,11 +7701,11 @@ class _FrontpageState extends State<Frontpage>
 
 
   onetimefun() async {
-    var document1 = await _firestore2db.collection("Students")
+    var document1 = await constants.firestore2db?.collection("Students")
         .orderBy("regno")
         .get();
-    for (int i = 0; i < document1.docs.length; i++) {
-      _firestore2db.collection("Students").doc(document1.docs[i].id).update({
+    for (int i = 0; i < document1!.docs.length; i++) {
+      constants.firestore2db?.collection("Students").doc(document1!.docs[i].id).update({
         "Remarks": "Good"
       });
     }
@@ -7904,7 +7900,7 @@ class _FrontpageState extends State<Frontpage>
                           title: Text('Are you sure delete this message'),
                           actions: [
                             TextButton(onPressed: () {
-                              _firestore2db.collection(
+                              constants.firestore2db?.collection(
                                   '${dropdownValue4}${dropdownValue5}chat')
                                   .doc(id)
                                   .delete();
@@ -7977,21 +7973,20 @@ class _FrontpageState extends State<Frontpage>
             .now()
             .day}",
       };
-      var document = await _firestore2db.collection("Students").orderBy(
+      var document = await constants.firestore2db?.collection("Students").orderBy(
           "timestamp").get();
-      for (int i = 0; i < document.docs.length; i++) {
-        if (document.docs[i]["admitclass"] == _typeAheadControllerclass.text &&
-            document.docs[i]["section"] == _typeAheadControllersection.text) {
+      for (int i = 0; i < document!.docs.length; i++) {
+        if (document!.docs[i]["admitclass"] == _typeAheadControllerclass.text &&
+            document!.docs[i]["section"] == _typeAheadControllersection.text) {
           homecontroller.sendPushMessage(
-              document.docs[i]["token"], _message.text, "New message alert",
+              document!.docs[i]["token"], _message.text, "New message alert",
               "Message");
         }
       }
 
 
       _message.clear();
-      await _firestore2db
-          .collection('${dropdownValue4}${dropdownValue5}chat')
+      await constants.firestore2db?.collection('${dropdownValue4}${dropdownValue5}chat')
           .add(chatData);
     }
   }
@@ -8009,11 +8004,11 @@ class _FrontpageState extends State<Frontpage>
         .width;
 
 
-    var datadocument = await _firestore2db.collection("Staffs").doc(staffid)
+    var datadocument = await constants.firestore2db?.collection("Staffs").doc(staffid)
         .collection("Payroll_Reports").doc(documentid)
         .get();
 
-    totalearning = (double.parse(datadocument["basic"].toString()) +
+    totalearning = (double.parse(datadocument!["basic"].toString()) +
         double.parse(datadocument["hra"].toString()) +
         double.parse(datadocument["da"].toString()) +
         double.parse(datadocument["other"].toString())
@@ -8484,10 +8479,3 @@ class _FrontpageState extends State<Frontpage>
 }
 
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(
-    app: _secondaryApp);
-FirebaseStorage _firebaseStorage2 = FirebaseStorage.instanceFor(
-    app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);

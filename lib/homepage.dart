@@ -21,7 +21,8 @@ import 'Homepage2.dart';
 
 
 class Homepage extends StatefulWidget {
-  const Homepage({Key? key}) : super(key: key);
+  String schoolID;
+   Homepage(this.schoolID);
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -73,9 +74,9 @@ class _HomepageState extends State<Homepage> {
     double classlattitude = 0;
     String section = "";
 
-    var document = await _firestore2db.collection("Qrscan").doc(
+    var document = await constants.firestore2db?.collection("Qrscan").doc(
         _scanBarcode).get();
-    Map<String, dynamic>?valuses = document.data();
+    Map<String, dynamic>?valuses = document!.data();
     setState(() {
       classlongtitude = double.parse(valuses!["longtitude"]);
       classlattitude = double.parse(valuses['lattitude']);
@@ -213,11 +214,11 @@ class _HomepageState extends State<Homepage> {
 
   getstaffdetails() async {
 
-    var document = await _firestore2db.collection("Staffs").get();
-    for(int i=0;i<document.docs.length;i++){
-      if(document.docs[i]["userid"]==_firebaseauth2db.currentUser!.uid){
+    var document = await constants.firestore2db?.collection("Staffs").get();
+    for(int i=0;i<document!.docs.length;i++){
+      if(document!.docs[i]["userid"]==constants.firebaseAuth2db?.currentUser!.uid){
         setState(() {
-          staffid=document.docs[i].id;
+          staffid=document!.docs[i].id;
         });
         print("Saffid:${staffid}");
         print(staffid);
@@ -225,8 +226,8 @@ class _HomepageState extends State<Homepage> {
 
     };
 
-      var staffdocument= await _firestore2db.collection("Staffs").doc(staffid).get();
-      Map<String,dynamic>?staffvalue=staffdocument.data();
+      var staffdocument= await constants.firestore2db?.collection("Staffs").doc(staffid).get();
+      Map<String,dynamic>?staffvalue=staffdocument!.data();
       setState(() {
         staffname=staffvalue!['stname'];
         staffregno=staffvalue['regno'];
@@ -241,7 +242,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   Marktheattendancefun(){
-    _firestore2db.collection("Staff_attendance").doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
+    constants.firestore2db?.collection("Staff_attendance").doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
     set(
         {
           "Staffattendance":true,
@@ -255,10 +256,10 @@ class _HomepageState extends State<Homepage> {
     Navigator.pop(context);
   }
 
-
+  late Constants constants;
     @override
     void initState() {
-
+      constants = Constants(widget.schoolID);
       getstaffdetails();
       print(new DateFormat.yMMMd().format(new DateTime.now()));
       super.initState();
@@ -289,7 +290,7 @@ class _HomepageState extends State<Homepage> {
 
         body:
         selectedIndexvalue == 0 ?
-        Frontpage(staffid) :
+        Frontpage(staffid,widget.schoolID) :
         selectedIndexvalue == 1 ?
         Records(staffregno) :
         selectedIndexvalue == 2 ?
@@ -377,7 +378,3 @@ class _HomepageState extends State<Homepage> {
     }
 
   }
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);

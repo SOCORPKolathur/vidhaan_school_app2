@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -12,6 +9,7 @@ import 'package:pinput/pinput.dart';
 import 'RiveFilr.dart';
 import 'Student_Landing_Page.dart';
 import 'app/modules/register_screen/controllers/register_screen_controller.dart';
+import 'const_file.dart';
 import 'homepage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -21,8 +19,9 @@ class Otppage extends StatefulWidget {
   String phoneController;
   String nameController;
   String staffid;
+  String schoolID;
 
-  Otppage(this.phoneController,this.nameController,this.staffid);
+  Otppage(this.phoneController,this.nameController,this.staffid,this.schoolID);
   @override
   State<Otppage> createState() => _OtppageState();
 }
@@ -74,8 +73,10 @@ class _OtppageState extends State<Otppage> {
 
     });
   }
+  late Constants constants;
   @override
   void initState() {
+    constants = Constants(widget.schoolID);
     //initPlatformState();
     print(widget.phoneController);
     print(widget.nameController);
@@ -90,39 +91,39 @@ class _OtppageState extends State<Otppage> {
 
   _verifyphone()async{
     print("Init Fun ction+++++++++++++");
-    await _firebaseauth2db.verifyPhoneNumber(
+    await constants.firebaseAuth2db?.verifyPhoneNumber(
         phoneNumber: "+91${widget.phoneController}" ,
         verificationCompleted:(PhoneAuthCredential credential)async{
-          await _firebaseauth2db.signInWithCredential(credential).then((value)async{
+          await constants.firebaseAuth2db?.signInWithCredential(credential).then((value)async{
             if(value.user!=null){
             if(widget.nameController=="Teacher"){
 
-            _firestore2db.collection("Staffs").doc(widget.staffid).update({
-            "userid":_firebaseauth2db.currentUser!.uid,
+            constants.firestore2db?.collection("Staffs").doc(widget.staffid).update({
+            "userid":constants.firebaseAuth2db?.currentUser!.uid,
             "token":usertoken
             });
-            _firestore2db.collection('deviceid').doc(_firebaseauth2db.currentUser!.uid).set({
-            "id":_firebaseauth2db.currentUser!.uid,
+            constants.firestore2db?.collection('deviceid').doc(constants.firebaseAuth2db?.currentUser!.uid).set({
+            "id":constants.firebaseAuth2db?.currentUser!.uid,
             "type":"Teacher",
             });
             print("++++++++++++++++++++++++Push Successful");
             Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context)=> Homepage()),(Route<dynamic> route) => false);
+            MaterialPageRoute(builder: (context)=> Homepage(widget.schoolID)),(Route<dynamic> route) => false);
 
             }
 
             if(widget.nameController=="Student"){
-            _firestore2db.collection("Students").doc(widget.staffid).update({
-            "studentid":_firebaseauth2db.currentUser!.uid,
+            constants.firestore2db?.collection("Students").doc(widget.staffid).update({
+            "studentid":constants.firebaseAuth2db?.currentUser!.uid,
             "token":usertoken
             });
-            _firestore2db.collection('deviceid').doc(_firebaseauth2db.currentUser!.uid).set({
-            "id":_firebaseauth2db.currentUser!.uid,
+            constants.firestore2db?.collection('deviceid').doc(constants.firebaseAuth2db?.currentUser!.uid).set({
+            "id":constants.firebaseAuth2db?.currentUser!.uid,
             "type":"Student",
             });
             print("++++++++++++++++++++++++Push Successful");
             Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context)=> Student_landing_Page("",false)),(Route<dynamic> route) => false);
+            MaterialPageRoute(builder: (context)=> Student_landing_Page("",false,widget.schoolID)),(Route<dynamic> route) => false);
             }
 
             print("Valied Otp");
@@ -338,42 +339,42 @@ class _OtppageState extends State<Otppage> {
                         print(_verificationCode);
                         print(otp);
 
-                        _firebaseauth2db.signInWithCredential(
+                        constants.firebaseAuth2db?.signInWithCredential(
                             PhoneAuthProvider.credential(
                                 verificationId: _verificationCode,
                                 smsCode: otp)).then((value) => {
                           if(value.user!=null){
 
                             if(widget.nameController=="Teacher"){
-                              _firestore2db.collection("Staffs").doc(widget.staffid).update({
-                                "userid":_firebaseauth2db.currentUser!.uid,
+                              constants.firestore2db?.collection("Staffs").doc(widget.staffid).update({
+                                "userid":constants.firebaseAuth2db?.currentUser!.uid,
                                 "token":usertoken
                               }),
-                              _firestore2db.collection('deviceid').doc(_firebaseauth2db.currentUser!.uid).set({
-                                "id":_firebaseauth2db.currentUser!.uid,
+                              constants.firestore2db?.collection('deviceid').doc(constants.firebaseAuth2db?.currentUser!.uid).set({
+                                "id":constants.firebaseAuth2db?.currentUser!.uid,
                                 "type":"Teacher",
                               }),
                         print("++++++++++++++++++++++++Push Successful"),
                               Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context)=> Homepage()),(Route<dynamic> route) => false),
+                                  MaterialPageRoute(builder: (context)=> Homepage(widget.schoolID)),(Route<dynamic> route) => false),
 
                             },
 
                             if(widget.nameController=="Student"){
                         print("Student login================================="),
-                        print(_firebaseauth2db.currentUser!.uid),
+                        print(constants.firebaseAuth2db?.currentUser!.uid),
                         print(usertoken),
-                              _firestore2db.collection("Students").doc(widget.staffid).update({
-                                "studentid":_firebaseauth2db.currentUser!.uid,
+                              constants.firestore2db?.collection("Students").doc(widget.staffid).update({
+                                "studentid":constants.firebaseAuth2db?.currentUser!.uid,
                                 "token":usertoken
                               }),
-                              _firestore2db.collection('deviceid').doc(_firebaseauth2db.currentUser!.uid).set({
-                                "id":_firebaseauth2db.currentUser!.uid,
+                              constants.firestore2db?.collection('deviceid').doc(constants.firebaseAuth2db?.currentUser!.uid).set({
+                                "id":constants.firebaseAuth2db?.currentUser!.uid,
                                 "type":"Student",
                               }),
                         print("++++++++++++++++++++++++Push Successful"),
                               Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context)=> Student_landing_Page("",false)),(Route<dynamic> route) => false),
+                                  MaterialPageRoute(builder: (context)=> Student_landing_Page("",false,widget.schoolID)),(Route<dynamic> route) => false),
                             },
 
 
@@ -463,8 +464,3 @@ class _OtppageState extends State<Otppage> {
     },);
   }
 }
-
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);

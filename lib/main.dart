@@ -19,6 +19,7 @@ import 'Student_Landing_Page.dart';
 import 'account_page.dart';
 import 'firebase_options1.dart';
 import 'firebase_options2.dart';
+import 'firebase_options3.dart';
 import 'homepage.dart';
 import 'const_file.dart';
 
@@ -38,13 +39,35 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await Firebase.initializeApp(
-    name: 'SecondaryApp',
-    options: SecondaryFirebaseOptions.currentPlatform,
-  );
+  try {
+    // Initialize the secondary Firebase app if it hasn't been initialized
+    FirebaseApp firstApp = Firebase.app('FirstApp');
+  } catch (e) {
+    await Firebase.initializeApp(
+      name: 'FirstApp',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  try {
+    // Initialize the secondary Firebase app if it hasn't been initialized
+    FirebaseApp secondaryApp = Firebase.app('SecondaryApp');
+  } catch (e) {
+    await Firebase.initializeApp(
+      name: 'SecondaryApp',
+      options: SecondaryFirebaseOptions.currentPlatform,
+    );
+  }
+
+  try {
+    // Initialize the third Firebase app if it hasn't been initialized
+    FirebaseApp thirdApp = Firebase.app('ThirdApp');
+  } catch (e) {
+    await Firebase.initializeApp(
+      name: 'ThirdApp',
+      options: ThirdFirebaseOptions.currentPlatform,
+    );
+  }
   await FaceCamera.initialize();
   //initialize background
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -74,7 +97,7 @@ class _MyAppState extends State<MyApp> {
   }
 
 
-  navigateToPage(String page) {
+ /* navigateToPage(String page) {
     print("Navigate the Firebase messing Pagessssssssssssssssssssssssssssssssssssssssss");
     // Implement your navigation logic here
     // For example, use Navigator.push to navigate to the desired page
@@ -84,7 +107,7 @@ class _MyAppState extends State<MyApp> {
 
     if(userType=="Student"){
       if(page=="Home Work"){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Student_landing_Page(page,true)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Student_landing_Page(page,true,)));
       }
       if(page=="Attendance"){
         Navigator.push(context, MaterialPageRoute(builder: (context) => Student_landing_Page(page,true)));
@@ -103,7 +126,7 @@ class _MyAppState extends State<MyApp> {
 
     }
 
-  }
+  }*/
 
 
   setupInteractedMessage() async {
@@ -126,7 +149,7 @@ class _MyAppState extends State<MyApp> {
 
    _handleMessage(RemoteMessage message) {
     print(message.data['page'].toString());
-    navigateToPage(message.data['page'].toString());
+    //navigateToPage(message.data['page'].toString());
 
   }
 
@@ -227,6 +250,9 @@ class _splashscreenState extends State<splashscreen> {
   String schoolID="";
 
   bool user =false;
+
+  late Constants constants;
+
   Future<void> initPlatformState() async {
     String? deviceId;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -245,7 +271,7 @@ class _splashscreenState extends State<splashscreen> {
       _deviceId = deviceId;
       print("deviceId->$_deviceId");
     });
-    var  result = await FirebaseFirestore.instance.collection('UserID')
+    var  result = await _firestore2db.collection('UserID')
         .get();
 
     for(int i=0;i<result.docs.length;i++){
@@ -253,7 +279,8 @@ class _splashscreenState extends State<splashscreen> {
         setState(() {
           user=true;
           schoolurl=result.docs[i]["schoolurl"];
-          schoolID=result.docs[i]["schoolurl"];
+          schoolID=result.docs[i]["schoolID"];
+          constants = Constants(schoolID);
         });
       }
 
@@ -266,19 +293,19 @@ class _splashscreenState extends State<splashscreen> {
       );
     }
     else{
-      if(Constants(schoolID)._firebaseauth2db.currentUser!=null){
-        var getdate=await Constants(schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
-        var getdate2=await Constants(schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
-        if(getdate.docs.length>0){
+      if(constants.firebaseAuth2db?.currentUser!=null){
+        var getdate=await constants.firestore2db?.collection('deviceid').where("id",isEqualTo: constants.firebaseAuth2db?.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
+        var getdate2=await constants.firestore2db?.collection('deviceid').where("id",isEqualTo: constants.firebaseAuth2db?.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
+        if(getdate!.docs.length>0){
           Timer(Duration(seconds: 5),(){
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Student_landing_Page("",false),));
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Student_landing_Page("",false,schoolID),));
 
           }
           );
         }
-        if(getdate2.docs.length>0){
+        if(getdate2!.docs.length>0){
           Timer(Duration(seconds: 5),(){
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Homepage(),));
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Homepage(schoolID),));
 
           }
           );
@@ -287,7 +314,7 @@ class _splashscreenState extends State<splashscreen> {
       else{
         print("Login Page");
         Timer(Duration(seconds: 5),(){
-          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Accountpage()));
+          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Accountpage(schoolID)));
 
 
         }
@@ -401,7 +428,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _deviceId = deviceId!;
       print("deviceId->$_deviceId");
     });
-    await FirebaseFirestore.instance
+    await _firestore2db
         .collection('UserID')
         .doc(_deviceId)
         .set({
@@ -509,9 +536,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        var document = await FirebaseFirestore.instance.collection("Schools").get();
+                        print("Get Started");
+                        var document = await _firestore2db.collection("Schools").get();
+                        print(document.docs.length);
                         for(int i=0;i<document.docs.length;i++) {
+                          print(document.docs[i]["schoolID"]);
                           if (schoolid.text == document.docs[i]["schoolID"]) {
+                            print(document.docs[i]["schoolID"]);
                             initPlatformState(document.docs[i]["appurl"],document.docs[i]["schoolID"]);
                             Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context) =>
@@ -562,25 +593,28 @@ class _Intro_PageState extends State<Intro_Page> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolID);
     getdeviceid();
     // TODO: implement initState
     super.initState();
   }
-
+  late Constants constants;
 
   getdeviceid()async{
-    if(Constants(widget.schoolID)._firebaseauth2db.currentUser!=null){
-      var getdate=await Constants(widget.schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(widget.schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
-      var getdate2=await Constants(widget.schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(widget.schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
-      if(getdate.docs.length>0){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Student_landing_Page("",false),));
+    print("Welcome");
+    print(constants.firebaseAuth2db?.currentUser);
+    if(constants.firebaseAuth2db?.currentUser!=null){
+      var getdate=await constants.firestore2db?.collection('deviceid').where("id",isEqualTo: constants.firebaseAuth2db?.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
+      var getdate2=await constants.firestore2db?.collection('deviceid').where("id",isEqualTo: constants.firebaseAuth2db?.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
+      if(getdate!.docs.length>0){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Student_landing_Page("",false,widget.schoolID),));
       }
-      else if(getdate2.docs.length>0){Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Homepage(),));
+      else if(getdate2!.docs.length>0){Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Homepage(widget.schoolID),));
       }
     }
     else{
       print("Login Page");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>Accountpage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>Accountpage(widget.schoolID)));
      // Otppage("9176463821", "Teacher", "e71KBP6ky3KnurZlHpfZ"),
      // Otppage("9941123453", "Student", "i570pkx8k9u78gea"),
     }
@@ -602,10 +636,10 @@ class _Intro_PageState extends State<Intro_Page> {
 
 
 
-/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+FirebaseApp _firstApp = Firebase.app('FirstApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/
+FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _firstApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _firstApp);
 
 
 /*class MyHomePage1 extends StatefulWidget {

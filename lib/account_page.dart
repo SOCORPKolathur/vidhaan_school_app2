@@ -6,11 +6,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vidhaan_school_app/const_file.dart';
 import 'package:vidhaan_school_app/otp_page.dart';
 
 
 class Accountpage extends StatefulWidget {
-  const Accountpage({Key? key}) : super(key: key);
+  String schoolID;
+   Accountpage(this.schoolID);
 
   @override
   State<Accountpage> createState() => _AccountpageState();
@@ -30,6 +32,12 @@ class _AccountpageState extends State<Accountpage> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolID);
+    if (constants.firestore2db != null) {
+      print('Firestore initialized for schoolID: ${widget.schoolID}');
+    } else {
+      print('Firestore not initialized for schoolID: ${widget.schoolID}');
+    }
     setState(() {
       anim=true;
       hide=false;
@@ -45,6 +53,7 @@ class _AccountpageState extends State<Accountpage> {
   String? selectedValue;
   bool Student= true;
   bool teacher= false;
+  late Constants constants;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -147,10 +156,10 @@ class _AccountpageState extends State<Accountpage> {
                           backgroundColor: student==false?Colors.transparent: Color(0xff3D8CF8).withOpacity(0.10),
                           avatar: Icon(student ? Icons.task_alt_rounded : Icons.task_alt_rounded,
 
-                              color: student? Color(0xff3D8CF8): Colors.black38
+                              color: student? Colors.white: Colors.black45
                           ),
                           label:  Text('Student',style: GoogleFonts.poppins(
-                            color: student? Colors.black: Colors.black,
+                            color: student? Colors.white: Colors.black45,
                             fontSize: width/24,
                             fontWeight: student? FontWeight.w500 :FontWeight.w500,
                             backgroundColor: Colors.transparent
@@ -186,10 +195,10 @@ class _AccountpageState extends State<Accountpage> {
                           backgroundColor: teacher==false?Colors.transparent: Color(0xff3D8CF8).withOpacity(0.10),
                           avatar: Icon(teacher ? Icons.task_alt_rounded : Icons.task_alt_rounded,
 
-                              color: teacher? Color(0xff3D8CF8): Colors.black38
+                              color: teacher? Colors.white: Colors.black45
                           ),
                           label:  Text('Staff    ',style: GoogleFonts.poppins(
-                            color: teacher? Colors.black: Colors.black,
+                            color: teacher? Colors.white: Colors.black45,
                             fontSize: width/26.13333333,
                             fontWeight: teacher? FontWeight.w500 :FontWeight.w500,
                             backgroundColor: Colors.transparent
@@ -318,6 +327,10 @@ class _AccountpageState extends State<Accountpage> {
   String staffid="";
   int staffidlength=0;
   updatestaff() async {
+    print("Login Button");
+    if (constants.firestore2db == null) {
+      throw Exception("Firestore is not initialized");
+    }
     setState(() {
       loading=true;
       studentid='';
@@ -326,11 +339,12 @@ class _AccountpageState extends State<Accountpage> {
       staffidlength=0;
     });
    if(_backgroundColor=="Teacher"){
-     var document = await _firestore2db.collection("Staffs").get();
-     for(int i=0;i<document.docs.length;i++){
-       if(document.docs[i]["mobile"]==phoneController.text){
+     var document = await constants.firestore2db?.collection("Staffs").get();
+     print(document!.docs.length);
+     for(int i=0;i<document!.docs.length;i++){
+       if(document!.docs[i]["mobile"]==phoneController.text){
          setState(() {
-           staffid=document.docs[i].id;
+           staffid=document!.docs[i].id;
            staffidlength=staffidlength+1;
          });
        }
@@ -350,19 +364,20 @@ class _AccountpageState extends State<Accountpage> {
            phoneController.text,
            _backgroundColor,
            staffid,
+           widget.schoolID
          )));
        });
      }
   }
     else{
      print("Student enter");
-     var document2 = await _firestore2db.collection("Students").get();
-     print(document2.docs.length);
-     for(int j=0;j<document2.docs.length;j++){
+     var document2 = await constants.firestore2db?.collection("Students").get();
+     print(document2!.docs.length);
+     for(int j=0;j<document2!.docs.length;j++){
 
-       if(document2.docs[j]["mobile"]==phoneController.text){
+       if(document2!.docs[j]["mobile"]==phoneController.text){
          setState(() {
-           studentid=document2.docs[j].id;
+           studentid=document2!.docs[j].id;
            studentlength=studentlength+1;
          });
        }
@@ -382,6 +397,7 @@ class _AccountpageState extends State<Accountpage> {
            phoneController.text,
            _backgroundColor,
            studentid,
+           widget.schoolID
          )));
        });
      }
@@ -408,7 +424,3 @@ class _AccountpageState extends State<Accountpage> {
   }
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
