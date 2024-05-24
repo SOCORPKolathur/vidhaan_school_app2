@@ -20,6 +20,7 @@ import 'account_page.dart';
 import 'firebase_options1.dart';
 import 'firebase_options2.dart';
 import 'homepage.dart';
+import 'const_file.dart';
 
 
 
@@ -33,9 +34,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   );
   print('Handling a background message ${message.messageId}');
 }
-
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +58,6 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
-
 class _MyAppState extends State<MyApp> {
 
 
@@ -69,19 +66,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     print("Init Stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-    usertypecheckfunction();
+    //usertypecheckfunction();
     setupInteractedMessage();
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   print("Notification Data: ${message.data}");
-    //   print("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
-    //   // Extract necessary information and navigate
-    //   String pageToNavigate = message.data['page'];
-    //   navigateToPage(pageToNavigate);
-    // });
-
-
     // TODO: implement initState
     super.initState();
+
   }
 
 
@@ -116,8 +105,8 @@ class _MyAppState extends State<MyApp> {
 
   }
 
-// It is assumed that all messages contain a data field with the key 'type'
- setupInteractedMessage() async {
+
+  setupInteractedMessage() async {
     print("1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
     // Get any messages which caused the application to open from
     // a terminated state.
@@ -150,7 +139,7 @@ class _MyAppState extends State<MyApp> {
   String? _deviceId;
   String schoolurl="";
 
-  usertypecheckfunction() async {
+  /*  usertypecheckfunction() async {
     String? deviceId;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -204,7 +193,7 @@ class _MyAppState extends State<MyApp> {
 
 
 
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -224,20 +213,159 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+
+///Splashscreen
+class splashscreen extends StatefulWidget {
+  const splashscreen({Key ? key}) : super(key: key);
+
+  @override
+  _splashscreenState createState() => _splashscreenState();
+}
+class _splashscreenState extends State<splashscreen> {
+  String? _deviceId;
+  String schoolurl="";
+  String schoolID="";
+
+  bool user =false;
+  Future<void> initPlatformState() async {
+    String? deviceId;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      deviceId = await UniqueIdentifier.serial;
+    } on PlatformException {
+      deviceId = 'Failed to get deviceId.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _deviceId = deviceId;
+      print("deviceId->$_deviceId");
+    });
+    var  result = await FirebaseFirestore.instance.collection('UserID')
+        .get();
+
+    for(int i=0;i<result.docs.length;i++){
+      if (_deviceId==result.docs[i]["id"]) {
+        setState(() {
+          user=true;
+          schoolurl=result.docs[i]["schoolurl"];
+          schoolID=result.docs[i]["schoolurl"];
+        });
+      }
+
+    }
+    if(user==false){
+      Timer(Duration(seconds: 5),
+              () {
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child:  MyHomePage()));
+          }
+      );
+    }
+    else{
+      if(Constants(schoolID)._firebaseauth2db.currentUser!=null){
+        var getdate=await Constants(schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
+        var getdate2=await Constants(schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
+        if(getdate.docs.length>0){
+          Timer(Duration(seconds: 5),(){
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Student_landing_Page("",false),));
+
+          }
+          );
+        }
+        if(getdate2.docs.length>0){
+          Timer(Duration(seconds: 5),(){
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Homepage(),));
+
+          }
+          );
+        }
+      }
+      else{
+        print("Login Page");
+        Timer(Duration(seconds: 5),(){
+          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Accountpage()));
+
+
+        }
+        );
+        // Otppage("9176463821", "Teacher", "e71KBP6ky3KnurZlHpfZ"),
+        // Otppage("9941123453", "Student", "i570pkx8k9u78gea"),
+      }
+
+    }
+
+  }
+  late VideoPlayerController _controller;
+  void initState() {
+    _controller = VideoPlayerController.asset("assets/VidhaanLogoVideonew2.mp4",videoPlayerOptions: VideoPlayerOptions(
+      allowBackgroundPlayback: true,
+      mixWithOthers: true,
+
+    ))
+      ..initialize().then((value) => {setState(() {})});
+    _controller.setVolume(0.0);
+    _controller.play();
+    initPlatformState();
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return   Scaffold(
+
+
+        body: GestureDetector(
+          onTap: (){
+            print(width);
+            print(height);
+          },
+          child: SizedBox.expand(
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: width/0.98,
+                height: height/0.94337,
+                child: VideoPlayer(_controller,),
+              ),
+            ),
+          ),
+        )
+
+    );
+
+  }
+
+}
+
+///Page to enter School ID
 class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
 class _MyHomePageState extends State<MyHomePage> {
-
-
 
   bool school= false;
 
+  late VideoPlayerController _controller;
   @override
   void initState() {
+    _controller = VideoPlayerController.asset("assets/VidhaanLogoVideonew2.mp4",videoPlayerOptions: VideoPlayerOptions(
+      allowBackgroundPlayback: true,
+      mixWithOthers: true,
+
+    ))
+      ..initialize().then((value) => {setState(() {})});
+    _controller.setVolume(0.0);
+    _controller.play();
     Future.delayed(Duration(milliseconds: 2500),(){
       setState(() {
         school=true;
@@ -255,18 +383,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-
-
-
-
-  demo(){
-  }
-
   TextEditingController schoolid = new TextEditingController();
 
   String _deviceId =" ";
 
-  Future<void> initPlatformState(url) async {
+  Future<void> initPlatformState(url,id) async {
     String? deviceId;
 
     try {
@@ -285,7 +406,8 @@ class _MyHomePageState extends State<MyHomePage> {
         .doc(_deviceId)
         .set({
       "id":_deviceId,
-      "schoolurl": url
+      "schoolurl": url,
+      "schoolID": id,
     });
   }
 
@@ -301,18 +423,30 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           alignment: Alignment.center,
           children: [
+            SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: width/0.98,
+                  height: height/0.94337,
+                  child: VideoPlayer(_controller,),
+                ),
+              ),
+            ),
+/*
             Lottie.asset("assets/Vidhaan Logo Resolution Changed 3mb version.json",repeat:false,height: double.infinity),
+*/
             SlideInUp(
               delay: Duration(milliseconds: 4500),
               duration: Duration(milliseconds: 500),
               from: 500,
               child: Padding(
-                padding:  EdgeInsets.only(top: height/2.52),
+                padding:  EdgeInsets.only(top: height/3.52),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: width/1.2,
+                      width: width/1.125,
                       height: height/12.6,
                       decoration: BoxDecoration(color: Color(0xffFEFCFF),
 
@@ -369,7 +503,7 @@ class _MyHomePageState extends State<MyHomePage> {
               duration: Duration(milliseconds: 400),
               from: 500,
               child: Padding(
-                padding:  EdgeInsets.only(top: height/1.89),
+                padding:  EdgeInsets.only(top: height/1.79),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -378,10 +512,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         var document = await FirebaseFirestore.instance.collection("Schools").get();
                         for(int i=0;i<document.docs.length;i++) {
                           if (schoolid.text == document.docs[i]["schoolID"]) {
-                            initPlatformState(document.docs[i]["appurl"]);
+                            initPlatformState(document.docs[i]["appurl"],document.docs[i]["schoolID"]);
                             Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context) =>
-                                Intro_Page(),));
+                                Intro_Page(document.docs[i]["schoolID"]),));
                           }
                         }
                       },
@@ -413,141 +547,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-class splashscreen extends StatefulWidget {
-  const splashscreen({Key ? key}) : super(key: key);
-
-  @override
-  _splashscreenState createState() => _splashscreenState();
-}
-class _splashscreenState extends State<splashscreen> {
-  String? _deviceId;
-  String schoolurl="";
-
-  bool user =false;
-  Future<void> initPlatformState() async {
-    String? deviceId;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      deviceId = await UniqueIdentifier.serial;
-    } on PlatformException {
-      deviceId = 'Failed to get deviceId.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _deviceId = deviceId;
-      print("deviceId->$_deviceId");
-    });
-    var  result = await FirebaseFirestore.instance.collection('UserID')
-        .get();
-
-    for(int i=0;i<result.docs.length;i++){
-      if (_deviceId==result.docs[i]["id"]) {
-        setState(() {
-          user=true;
-          schoolurl=result.docs[i]["schoolurl"];
-        });
-      }
-
-    }
-    if(user==false){
-      Timer(Duration(seconds: 5),
-              () {
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child:  MyHomePage()));
-          }
-      );
-    }
-    else{
-      if(_firebaseauth2db.currentUser!=null){
-        var getdate=await _firestore2db.collection('deviceid').where("id",isEqualTo: _firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
-        var getdate2=await _firestore2db.collection('deviceid').where("id",isEqualTo: _firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
-        if(getdate.docs.length>0){
-          Timer(Duration(seconds: 5),(){
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Student_landing_Page("",false),));
-
-          }
-          );
-        }
-        if(getdate2.docs.length>0){
-          Timer(Duration(seconds: 5),(){
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Homepage(),));
-
-          }
-          );
-        }
-      }
-      else{
-        print("Login Page");
-        Timer(Duration(seconds: 5),(){
-          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Accountpage()));
 
 
-        }
-        );
-        // Otppage("9176463821", "Teacher", "e71KBP6ky3KnurZlHpfZ"),
-        // Otppage("9941123453", "Student", "i570pkx8k9u78gea"),
-      }
 
-    }
-
-  }
-  late VideoPlayerController _controller;
-  void initState() {
-    _controller = VideoPlayerController.asset("assets/VidhaanLogoVideonew2.mp4",videoPlayerOptions: VideoPlayerOptions(
-      allowBackgroundPlayback: true,
-      mixWithOthers: true,
-
-    ))
-      ..initialize().then((value) => {setState(() {})});
-    _controller.setVolume(0.0);
-    _controller.play();
-  initPlatformState();
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return   Scaffold(
-
-
-      body: GestureDetector(
-        onTap: (){
-          print(width);
-          print(height);
-        },
-        child: SizedBox.expand(
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              width: width/0.98,
-              height: height/0.94337,
-              child: VideoPlayer(_controller,),
-            ),
-          ),
-        ),
-      )
-
-    );
-
-  }
-
-}
-
+///After school ID Navigate to this page
 class Intro_Page extends StatefulWidget {
-  const Intro_Page({Key? key}) : super(key: key);
+  String schoolID;
+   Intro_Page(this.schoolID);
 
   @override
   State<Intro_Page> createState() => _Intro_PageState();
 }
-
 class _Intro_PageState extends State<Intro_Page> {
 
   @override
@@ -559,9 +569,9 @@ class _Intro_PageState extends State<Intro_Page> {
 
 
   getdeviceid()async{
-    if(_firebaseauth2db.currentUser!=null){
-      var getdate=await _firestore2db.collection('deviceid').where("id",isEqualTo: _firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
-      var getdate2=await _firestore2db.collection('deviceid').where("id",isEqualTo: _firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
+    if(Constants(widget.schoolID)._firebaseauth2db.currentUser!=null){
+      var getdate=await Constants(widget.schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(widget.schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
+      var getdate2=await Constants(widget.schoolID)._firestore2db.collection('deviceid').where("id",isEqualTo: Constants(widget.schoolID)._firebaseauth2db.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
       if(getdate.docs.length>0){
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Student_landing_Page("",false),));
       }
@@ -580,17 +590,25 @@ class _Intro_PageState extends State<Intro_Page> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+
+
+
+
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/
 
 
-class MyHomePage1 extends StatefulWidget {
+/*class MyHomePage1 extends StatefulWidget {
   const MyHomePage1({super.key});
 
   @override
@@ -703,4 +721,4 @@ class _MyHomePage1State extends State<MyHomePage1> {
       ),
     );
   }
-}
+}*/
