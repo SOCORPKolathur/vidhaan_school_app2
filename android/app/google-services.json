@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "256400049959",
-    "project_id": "shreesaividhaan-672cd",
-    "storage_bucket": "shreesaividhaan-672cd.appspot.com"
+    "project_number": "434464302156",
+    "project_id": "skv-school-5e60f",
+    "storage_bucket": "skv-school-5e60f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:256400049959:android:11595d49fb4477a9af4b02",
+        "mobilesdk_app_id": "1:434464302156:android:10463d76bb5d0f2711c0e9",
         "android_client_info": {
           "package_name": "info.socorp.vidhaan"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAVTmwKQ1vQHjmhqP8y3J5FtLYc_6Bht1M"
+          "current_key": "AIzaSyCRyrNzagAOnYtBImV6vA1blsGDFsh5uyI"
         }
       ],
       "services": {

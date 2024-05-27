@@ -5416,10 +5416,8 @@ bool Loading=false;
                                     //           });
                                     //     }),
                                     StreamBuilder<QuerySnapshot>(
-                                        stream: constants.firestore2db?.collection(
-                                            "Students").doc(Studentid).
-                                        collection("Fees")
-                                            .where("status", isEqualTo: false)
+                                        stream: constants.firestore2db?.collection("Students").doc(Studentid).
+                                        collection("Fees").where("status", isEqualTo: false)
                                             .snapshots(),
                                         builder: (context, snap2) {
                                           if (snap2.hasData == null) {
@@ -5711,6 +5709,7 @@ bool Loading=false;
                                         }),
                                     SizedBox(height: height / 92.125,),
 
+                                    ///Paid Fees Reports
                                     Text(
                                       "Previous Reports",
                                       style: GoogleFonts
@@ -7899,7 +7898,7 @@ bool Loading=false;
   TextEditingController namecontroller = TextEditingController();
   TextEditingController otpcontroller = TextEditingController();
   TextEditingController email = TextEditingController();
-  FirebaseAuth auth = FirebaseAuth.instance;
+
   List teachertable = ["", "", "", "", "", "", "", ""];
 
   gettimetable() async {

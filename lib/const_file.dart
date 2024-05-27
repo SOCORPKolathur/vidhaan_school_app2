@@ -20,16 +20,24 @@ class Constants {
   FirebaseStorage? _firestorage2db;
 
   Constants(String schoolID) {
+    FirebaseApp _firstApp = Firebase.app('FirstApp');
     if (schoolID == "VDRAVEN") {
       FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
       _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
       _firestorage2db = FirebaseStorage.instanceFor(app: _secondaryApp);
-      _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
-    } else if (schoolID == "VDSKV") {
+      _firebaseauth2db = FirebaseAuth.instanceFor(app: _firstApp);
+    }
+    else if (schoolID == "VDSS") {
       FirebaseApp _thirdApp = Firebase.app('ThirdApp');
       _firestore2db = FirebaseFirestore.instanceFor(app: _thirdApp);
       _firestorage2db = FirebaseStorage.instanceFor(app: _thirdApp);
-      _firebaseauth2db = FirebaseAuth.instanceFor(app: _thirdApp);
+      _firebaseauth2db = FirebaseAuth.instanceFor(app: _firstApp);
+    }
+    else if (schoolID == "VDSKV") {
+      FirebaseApp _forthApp = Firebase.app('ForthApp');
+      _firestore2db = FirebaseFirestore.instanceFor(app: _forthApp);
+      _firestorage2db = FirebaseStorage.instanceFor(app: _forthApp);
+      _firebaseauth2db = FirebaseAuth.instanceFor(app: _firstApp);
     }
 
     else {

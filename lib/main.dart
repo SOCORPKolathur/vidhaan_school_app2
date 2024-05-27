@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:animate_do/animate_do.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:face_camera/face_camera.dart';
@@ -15,6 +16,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:splash_view/source/presentation/pages/pages.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vidhaan_school_app/firebase_options4.dart';
 import 'Student_Landing_Page.dart';
 import 'account_page.dart';
 import 'firebase_options1.dart';
@@ -26,13 +28,13 @@ import 'const_file.dart';
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(
+  /*  await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await Firebase.initializeApp(
     name: 'SecondaryApp',
     options: SecondaryFirebaseOptions.currentPlatform,
-  );
+  );*/
   print('Handling a background message ${message.messageId}');
 }
 
@@ -68,6 +70,16 @@ void main() async {
       options: ThirdFirebaseOptions.currentPlatform,
     );
   }
+  try {
+    // Initialize the third Firebase app if it hasn't been initialized
+    FirebaseApp forthApp = Firebase.app('ForthApp');
+  } catch (e) {
+    await Firebase.initializeApp(
+      name: 'ForthApp',
+      options: FourthFirebaseOptions.currentPlatform,
+    );
+  }
+
   await FaceCamera.initialize();
   //initialize background
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -542,15 +554,25 @@ class _MyHomePageState extends State<MyHomePage> {
                         print("Get Started");
                         var document = await _firestore2db.collection("Schools").get();
                         print(document.docs.length);
+                        int temp =0;
                         for(int i=0;i<document.docs.length;i++) {
                           print(document.docs[i]["schoolID"]);
                           if (schoolid.text == document.docs[i]["schoolID"]) {
                             print(document.docs[i]["schoolID"]);
+                            setState(() {
+                              temp=temp+1;
+                            });
                             initPlatformState(document.docs[i]["appurl"],document.docs[i]["schoolID"]);
                             Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context) =>
                                 Intro_Page(document.docs[i]["schoolID"]),));
                           }
+                        }
+                        if(temp==0){
+                          setState(() {
+                            temp=0;
+                          });
+                          showwwaring();
                         }
                       },
                       child: Container(
@@ -579,6 +601,32 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
     );
+  }
+
+  showwwaring() {
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    return AwesomeDialog(
+      width: width / 0.8,
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.rightSlide,
+      title: 'Invalid School ID',
+      desc: "Kindly recheck your school ID",
+
+
+      descTextStyle: TextStyle(
+
+      ),
+
+      btnOkOnPress: () {
+
+      },
+
+    )
+      ..show();
   }
 }
 
