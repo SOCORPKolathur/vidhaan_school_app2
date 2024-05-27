@@ -4,17 +4,27 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'View_Time_Table_Page.dart';
+import 'const_file.dart';
 import 'examtimetable.dart';
 
 
 class Exams extends StatefulWidget {
-  const Exams({Key? key}) : super(key: key);
+  String schoolId;
+   Exams(this.schoolId);
 
   @override
   State<Exams> createState() => _ExamsState();
 }
 
 class _ExamsState extends State<Exams> {
+  late Constants constants;
+
+  @override
+  void initState() {
+    constants = Constants(widget.schoolId);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -81,7 +91,7 @@ class _ExamsState extends State<Exams> {
                 thickness: 1.5,
               ),
               StreamBuilder(
-                  stream: _firestore2db.collection("ExamMaster").snapshots(),
+                  stream: constants.firestore2db?.collection("ExamMaster").snapshots(),
                   builder: (context,snap){
                     if(snap.hasData==null){
                       return Center(
@@ -140,7 +150,7 @@ class _ExamsState extends State<Exams> {
 
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(builder: (context)=>
-                                                    View_Time_Table_Page(snap.data!.docs[index]["name"],snap.data!.docs[index].id))
+                                                    View_Time_Table_Page(snap.data!.docs[index]["name"],snap.data!.docs[index].id, widget.schoolId))
                                             );
 
                                           },
@@ -168,7 +178,7 @@ class _ExamsState extends State<Exams> {
                                         GestureDetector(
                                           onTap: (){
                                             Navigator.of(context).push(
-                                              MaterialPageRoute(builder: (context)=>ExamTimetable(snap.data!.docs[index]["name"],snap.data!.docs[index].id))
+                                              MaterialPageRoute(builder: (context)=>ExamTimetable(snap.data!.docs[index]["name"],snap.data!.docs[index].id, widget.schoolId))
                                             );
                                           },
                                           child: Container(
@@ -214,7 +224,7 @@ class _ExamsState extends State<Exams> {
     );
   }
 }
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

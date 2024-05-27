@@ -4,20 +4,32 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'const_file.dart';
+
 class MarkDetails extends StatefulWidget {
+  String schoolId;
   String?Class;
   String?Section;
   String?documnetid;
   String?snapid;
   String?Subjectname;
 
-   MarkDetails({this.Class,this.Section,this.documnetid,this.snapid,this.Subjectname});
+   MarkDetails(this.Class,this.Section,this.documnetid,this.snapid,this.Subjectname, this.schoolId);
 
   @override
   State<MarkDetails> createState() => _MarkDetailsState();
 }
 
 class _MarkDetailsState extends State<MarkDetails> {
+
+  late Constants constants;
+
+  @override
+  void initState() {
+    constants = Constants(widget.schoolId);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -146,7 +158,7 @@ class _MarkDetailsState extends State<MarkDetails> {
             ),
 
             StreamBuilder<QuerySnapshot>(
-              stream:_firestore2db.collection("ExamMaster").doc(widget.documnetid).collection(widget.Class.toString()).doc(widget.snapid).
+              stream:constants.firestore2db?.collection("ExamMaster").doc(widget.documnetid).collection(widget.Class.toString()).doc(widget.snapid).
               collection("${widget.Class}-${widget.Section}Submmission").snapshots() ,
               builder: (context, snapshot2) {
                 if(!snapshot2.hasData){
@@ -226,7 +238,7 @@ class _MarkDetailsState extends State<MarkDetails> {
   }
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

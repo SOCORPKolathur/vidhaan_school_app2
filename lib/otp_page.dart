@@ -19,9 +19,9 @@ class Otppage extends StatefulWidget {
   String phoneController;
   String nameController;
   String staffid;
-  String schoolID;
+  String schoolId;
 
-  Otppage(this.phoneController,this.nameController,this.staffid,this.schoolID);
+  Otppage(this.phoneController,this.nameController,this.staffid,this.schoolId);
   @override
   State<Otppage> createState() => _OtppageState();
 }
@@ -76,7 +76,7 @@ class _OtppageState extends State<Otppage> {
   late Constants constants;
   @override
   void initState() {
-    constants = Constants(widget.schoolID);
+    constants = Constants(widget.schoolId);
     //initPlatformState();
     print(widget.phoneController);
     print(widget.nameController);
@@ -108,7 +108,7 @@ class _OtppageState extends State<Otppage> {
             });
             print("++++++++++++++++++++++++Push Successful");
             Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context)=> Homepage(widget.schoolID)),(Route<dynamic> route) => false);
+            MaterialPageRoute(builder: (context)=> Homepage(widget.schoolId)),(Route<dynamic> route) => false);
 
             }
 
@@ -123,7 +123,7 @@ class _OtppageState extends State<Otppage> {
             });
             print("++++++++++++++++++++++++Push Successful");
             Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context)=> Student_landing_Page("",false,widget.schoolID)),(Route<dynamic> route) => false);
+            MaterialPageRoute(builder: (context)=> Student_landing_Page("",false,widget.schoolId)),(Route<dynamic> route) => false);
             }
 
             print("Valied Otp");
@@ -356,7 +356,7 @@ class _OtppageState extends State<Otppage> {
                               }),
                         print("++++++++++++++++++++++++Push Successful"),
                               Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context)=> Homepage(widget.schoolID)),(Route<dynamic> route) => false),
+                                  MaterialPageRoute(builder: (context)=> Homepage(widget.schoolId)),(Route<dynamic> route) => false),
 
                             },
 
@@ -374,7 +374,7 @@ class _OtppageState extends State<Otppage> {
                               }),
                         print("++++++++++++++++++++++++Push Successful"),
                               Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context)=> Student_landing_Page("",false,widget.schoolID)),(Route<dynamic> route) => false),
+                                  MaterialPageRoute(builder: (context)=> Student_landing_Page("",false,widget.schoolId)),(Route<dynamic> route) => false),
                             },
 
 

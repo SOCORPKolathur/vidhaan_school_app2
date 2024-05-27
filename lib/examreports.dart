@@ -4,18 +4,28 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Exam_Reports(Terms)_Page/Exam_report_View_Page.dart';
+import 'const_file.dart';
 
 
 
 
 class ExamReports extends StatefulWidget {
-  const ExamReports({Key? key}) : super(key: key);
+  String schoolId;
+   ExamReports(this.schoolId);
 
   @override
   State<ExamReports> createState() => _ExamReportsState();
 }
 
 class _ExamReportsState extends State<ExamReports> {
+  late Constants constants;
+
+
+  @override
+  void initState() {
+    constants = Constants(widget.schoolId);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -43,7 +53,7 @@ class _ExamReportsState extends State<ExamReports> {
               children: [
 
                 StreamBuilder(
-                    stream: _firestore2db.collection("ExamMaster").snapshots(),
+                    stream: constants.firestore2db?.collection("ExamMaster").snapshots(),
                     builder: (context,snap){
                       if(snap.hasData==null){
                         return Center(
@@ -71,8 +81,8 @@ class _ExamReportsState extends State<ExamReports> {
 
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context)=>Exam_report_View_Page(
-                                            title:snap.data!.docs[index]["name"] ,
-                                            docid:snap.data!.docs[index].id ,))
+                                            snap.data!.docs[index]["name"] ,
+                                            snap.data!.docs[index].id ,widget.schoolId))
 
                                     );
                                   },
@@ -137,8 +147,8 @@ class _ExamReportsState extends State<ExamReports> {
   }
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/
 

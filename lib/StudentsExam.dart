@@ -5,16 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'Studentexamrimetable.dart';
+import 'const_file.dart';
 import 'examtimetable.dart';
 
 class StudentExam extends StatefulWidget {
-  const StudentExam({Key? key}) : super(key: key);
+  String schoolId;
+   StudentExam(this.schoolId);
 
   @override
   State<StudentExam> createState() => _StudentExamState();
 }
 
 class _StudentExamState extends State<StudentExam> {
+  late Constants constants;
+
 
   String Studentid = "";
   String Studentname = '';
@@ -23,9 +27,9 @@ class _StudentExamState extends State<StudentExam> {
 
   studentdetails() async {
     var document =
-    await _firestore2db.collection("Students").get();
-    for (int i = 0; i < document.docs.length; i++) {
-      if (document.docs[i]["studentid"] == _firebaseauth2db.currentUser!.uid) {
+    await constants.firestore2db?.collection("Students").get();
+    for (int i = 0; i < document!.docs.length; i++) {
+      if (document.docs[i]["studentid"] == constants.firebaseAuth2db?.currentUser!.uid) {
         setState(() {
           Studentid = document.docs[i].id;
         });
@@ -33,11 +37,10 @@ class _StudentExamState extends State<StudentExam> {
         print(Studentid);
       }
       if (Studentid.isNotEmpty) {
-        var studentdocument = await _firestore2db
-            .collection("Students")
+        var studentdocument = await constants.firestore2db?.collection("Students")
             .doc(Studentid)
             .get();
-        Map<String, dynamic>? stuvalue = studentdocument.data();
+        Map<String, dynamic>? stuvalue = studentdocument!.data();
         final split = stuvalue!['stname'].split(' ');
         final Map<int, String> values = {
           for (int k = 0; k < split.length; k++)
@@ -58,6 +61,7 @@ class _StudentExamState extends State<StudentExam> {
   }
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
     studentdetails();
     // TODO: implement initState
     super.initState();
@@ -132,7 +136,7 @@ class _StudentExamState extends State<StudentExam> {
                 thickness: 1.5,
               ),
               StreamBuilder(
-                  stream: _firestore2db.collection("Students").doc(Studentid).collection("Exams").snapshots(),
+                  stream: constants.firestore2db?.collection("Students").doc(Studentid).collection("Exams").snapshots(),
                   builder: (context,snap){
 
                     if(!snap.hasData){
@@ -167,7 +171,7 @@ class _StudentExamState extends State<StudentExam> {
                                       MaterialPageRoute(builder: (context)=>StudentExamTime(
                                           snap.data!.docs[index]["name"].toString(),
                                           snap.data!.docs[index].id.toString(),
-                                          Studentid.toString()))
+                                          Studentid.toString(), widget.schoolId))
                                   );
 
 
@@ -230,7 +234,8 @@ class _StudentExamState extends State<StudentExam> {
     );
   }
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

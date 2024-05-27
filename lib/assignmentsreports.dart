@@ -8,16 +8,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:vidhaan_school_app/submittedassignments.dart';
 
+import 'const_file.dart';
+
 class AssignmentReports extends StatefulWidget {
   String staffreg;
+  String schoolId;
 
-  AssignmentReports(this.staffreg);
+  AssignmentReports(this.staffreg, this.schoolId);
 
   @override
   State<AssignmentReports> createState() => _AssignmentReportsState();
 }
 
 class _AssignmentReportsState extends State<AssignmentReports> {
+  late Constants constants;
   final TextEditingController _typeAheadControllerclass =
       TextEditingController();
   final TextEditingController _typeAheadControllersection =
@@ -40,29 +44,29 @@ class _AssignmentReportsState extends State<AssignmentReports> {
       subjects.clear();
     });
     var document =
-        await _firestore2db.collection("ClassMaster").orderBy("order").get();
+        await constants.firestore2db?.collection("ClassMaster").orderBy("order").get();
     var document2 =
-        await _firestore2db.collection("SectionMaster").orderBy("order").get();
+        await constants.firestore2db?.collection("SectionMaster").orderBy("order").get();
     setState(() {
       classes.add("Class");
       section.add("Section");
     });
-    for (int i = 0; i < document.docs.length; i++) {
+    for (int i = 0; i < document!.docs.length; i++) {
       setState(() {
         classes.add(document.docs[i]["name"]);
       });
     }
-    for (int i = 0; i < document2.docs.length; i++) {
+    for (int i = 0; i < document2!.docs.length; i++) {
       setState(() {
         section.add(document2.docs[i]["name"]);
       });
     }
     var documentsub =
-        await _firestore2db.collection("SubjectMaster").orderBy("order").get();
+        await constants.firestore2db?.collection("SubjectMaster").orderBy("order").get();
     setState(() {
       subjects.add("Subject");
     });
-    for (int i = 0; i < documentsub.docs.length; i++) {
+    for (int i = 0; i < documentsub!.docs.length; i++) {
       setState(() {
         subjects.add(documentsub.docs[i]["name"]);
       });
@@ -73,6 +77,7 @@ class _AssignmentReportsState extends State<AssignmentReports> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
     adddropdownvalue();
     setState(() {
       duedate.text =
@@ -284,8 +289,7 @@ class _AssignmentReportsState extends State<AssignmentReports> {
             ),
             view == true
                 ? StreamBuilder(
-                    stream: _firestore2db
-                        .collection("homeworks")
+                    stream: constants.firestore2db?.collection("homeworks")
                         .doc(currentdate.toString())
                         .collection(dropdownValue4.toString())
                         .doc(dropdownValue5.toString())
@@ -399,7 +403,7 @@ class _AssignmentReportsState extends State<AssignmentReports> {
                                                                     dropdownValue4,
                                                                     dropdownValue5,
                                                                     subjecthomework
-                                                                        .id,subjecthomework['topic'])));
+                                                                        .id,subjecthomework['topic'], widget.schoolId)));
                                                   },
                                                   child: Container(
                                                       height: height / 20.9,
@@ -490,8 +494,8 @@ class _AssignmentReportsState extends State<AssignmentReports> {
   }
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db =
     FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

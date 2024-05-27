@@ -7,32 +7,32 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:vidhaan_school_app/const_file.dart';
 
 class Exam_report_View_Page extends StatefulWidget {
   String ?title;
   String ?docid;
-  Exam_report_View_Page({this.title, this.docid});
+  String schoolId;
+  Exam_report_View_Page(this.title, this.docid, this.schoolId);
 
   @override
   State<Exam_report_View_Page> createState() => _Exam_report_View_PageState();
 }
 
 class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
-
   final TextEditingController _typeAheadControllerclass = TextEditingController();
-
-
   static final List<String> classes = [];
   static final List<String> section = [];
   static final List<String> subject = [];
-
   String dropdownValue4="Class";
   String dropdownValue5="Section";
   String dropdownValue6="Subject";
+  late Constants constants;
 
   @override
   void initState() {
     print("Home Page 2");
+    constants = Constants(widget.schoolId);
     setState(() {
       Loading=false;
     });
@@ -49,8 +49,8 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
       section.clear();
       subject.clear();
     });
-    var document = await  _firestore2db.collection("ClassMaster").orderBy("order").get();
-    var document2 = await  _firestore2db.collection("SectionMaster").orderBy("order").get();
+    var document = await  constants.firestore2db?.collection("ClassMaster").orderBy("order").get();
+    var document2 = await  constants.firestore2db?.collection("SectionMaster").orderBy("order").get();
 
 
     setState(() {
@@ -58,12 +58,12 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
       section.add("Section");
       subject.add("Subject");
     });
-    for(int i=0;i<document.docs.length;i++) {
+    for(int i=0;i<document!.docs.length;i++) {
       setState(() {
         classes.add(document.docs[i]["name"]);
       });
     }
-    for(int i=0;i<document2.docs.length;i++) {
+    for(int i=0;i<document2!.docs.length;i++) {
       setState(() {
         section.add(document2.docs[i]["name"]);
       });
@@ -77,13 +77,13 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
     setState(() {
       subject.clear();
     });
-    var document3 = await  _firestore2db.collection("ExamMaster").doc(widget.docid).collection(dropdownValue4).get();
+    var document3 = await  constants.firestore2db?.collection("ExamMaster").doc(widget.docid).collection(dropdownValue4).get();
     setState(() {
       subject.add("Subject");
     });
-    for(int i=0;i<document3.docs.length;i++) {
+    for(int i=0;i<document3!.docs.length;i++) {
       setState(() {
-        subject.add(document3.docs[i]["name"]);
+        subject.add(document3!.docs[i]["name"]);
       });
 
     }
@@ -374,7 +374,7 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
                 ),
 
                 StreamBuilder<QuerySnapshot>(
-                    stream: _firestore2db.collection("Students").orderBy("regno").snapshots(),
+                    stream: constants.firestore2db?.collection("Students").orderBy("regno").snapshots(),
                     builder: (context,snap){
 
                       if(snap.hasData==null){
@@ -485,11 +485,11 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
       Loading=true;
     });
 
-    var studentdata=await _firestore2db.collection("Students").orderBy("regno").get();
-    var examdata=await  _firestore2db.collection("ExamMaster").doc(widget.docid).collection(dropdownValue4).where("name",isEqualTo: dropdownValue6).get();
-    print(examdata.docs.length);
+    var studentdata=await constants.firestore2db?.collection("Students").orderBy("regno").get();
+    var examdata=await  constants.firestore2db?.collection("ExamMaster").doc(widget.docid).collection(dropdownValue4).where("name",isEqualTo: dropdownValue6).get();
+    print(examdata!.docs.length);
     setState(() {
-      documentid=examdata.docs[0].id;
+      documentid=examdata!.docs[0].id;
       subjectname=examdata.docs[0]['name'];
     });
 
@@ -498,15 +498,15 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
 
     print("Document documentid$documentid");
 
-    for(int i=0;i<studentdata.docs.length;i++){
+    for(int i=0;i<studentdata!.docs.length;i++){
       if(studentdata.docs[i]['admitclass']==dropdownValue4&&studentdata.docs[i]['section']==dropdownValue5){
-        var docdata= await _firestore2db.collection("Students").doc(studentdata.docs[i].id).collection("Exams").get();
-        if(docdata.docs.isNotEmpty){
+        var docdata= await constants.firestore2db?.collection("Students").doc(studentdata.docs[i].id).collection("Exams").get();
+        if(docdata!.docs.isNotEmpty){
           for(int s=0;s<docdata.docs.length;s++){
-            var data2=await _firestore2db.collection("Students").doc(studentdata.docs[i].id).
-            collection("Exams").doc(docdata.docs[s].id).collection("Timetable").get();
+            var data2=await constants.firestore2db?.collection("Students").doc(studentdata.docs[i].id).
+            collection("Exams").doc(docdata!.docs[s].id).collection("Timetable").get();
 
-            for(int k=0;k<data2.docs.length;k++){
+            for(int k=0;k<data2!.docs.length;k++){
               if(data2.docs[k]['exam']==widget.title && data2.docs[k]['name']==dropdownValue6){
                 setState(() {
                   Totalmarkcontroller.text=data2.docs[k]['total'];
@@ -523,9 +523,9 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
 
 
     }
-    var filledmarkdata=await _firestore2db.collection("ExamMaster").doc(widget.docid).collection(dropdownValue4).doc(documentid).
+    var filledmarkdata=await constants.firestore2db?.collection("ExamMaster").doc(widget.docid).collection(dropdownValue4).doc(documentid).
     collection("${dropdownValue4}-${dropdownValue5}Submmission").get();
-    print(filledmarkdata.docs.length);
+    print(filledmarkdata!.docs.length);
     setState(() {
       Loading=false;
     });
@@ -537,8 +537,8 @@ class _Exam_report_View_PageState extends State<Exam_report_View_Page> {
 
 }
 
-
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

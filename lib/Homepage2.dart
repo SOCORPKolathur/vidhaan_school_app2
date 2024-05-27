@@ -41,9 +41,9 @@ import 'package:vidhaan_school_app/modules/home/controllers/home_controller.dart
 
 class Frontpage extends StatefulWidget {
   String?staffid;
-  String schoolID;
+  String schoolId;
 
-  Frontpage(this.staffid,this.schoolID);
+  Frontpage(this.staffid,this.schoolId);
 
   @override
   State<Frontpage> createState() => _FrontpageState();
@@ -207,7 +207,7 @@ class _FrontpageState extends State<Frontpage>
   @override
   void initState() {
     print("Home Page 2");
-    constants = Constants(widget.schoolID);
+    constants = Constants(widget.schoolId);
     getstaffdetails();
     Date();
     dayfun();
@@ -666,7 +666,7 @@ class _FrontpageState extends State<Frontpage>
               GestureDetector(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Exams(),));
+                      MaterialPageRoute(builder: (context) => Exams(widget.schoolId),));
 
                   key.currentState!.closeEndDrawer();
                 },
@@ -686,7 +686,7 @@ class _FrontpageState extends State<Frontpage>
               GestureDetector(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Root_Page4(),));
+                      MaterialPageRoute(builder: (context) => Root_Page4(widget.schoolId),));
 
                   key.currentState!.closeEndDrawer();
                 },
@@ -833,7 +833,7 @@ class _FrontpageState extends State<Frontpage>
                 onTap: () {
                   constants.firebaseAuth2db?.signOut();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Accountpage(widget.schoolID),));
+                      MaterialPageRoute(builder: (context) => Accountpage(widget.schoolId),));
 
                   key.currentState!.closeEndDrawer();
                 },
@@ -981,7 +981,7 @@ class _FrontpageState extends State<Frontpage>
                                               context, MaterialPageRoute(
                                             builder: (context) =>
                                                 Notifications(
-                                                    Userdocid: staffid),));
+                                                   staffid, widget.schoolId),));
                                         },
                                         child: Container(
                                             margin: EdgeInsets.only(
@@ -4261,7 +4261,11 @@ class _FrontpageState extends State<Frontpage>
                                                                                 .data!
                                                                                 .docs[index]["token"],
                                                                             staffid,
-                                                                            staffauthendicationid
+                                                                            staffauthendicationid,
+                                                                          widget.schoolId
+
+                                                                          // widget.schoolId,
+
 
                                                                         )));
                                                           },
@@ -4369,7 +4373,8 @@ class _FrontpageState extends State<Frontpage>
                                                                                 .data!
                                                                                 .docs[index]["token"],
                                                                             staffid,
-                                                                            staffauthendicationid
+                                                                            staffauthendicationid,
+                                                                          widget.schoolId
 
                                                                         )));
                                                           },
@@ -5992,7 +5997,7 @@ class _FrontpageState extends State<Frontpage>
                             ),
                           ),
                         ) : page == "CheckIn" ? Today_Presents_Page(
-                            staffname, staffregno,staffid)
+                            staffname, staffregno,staffid, widget.schoolId)
                             : Container()
                     ),
                   ),

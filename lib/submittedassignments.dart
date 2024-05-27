@@ -5,28 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vidhaan_school_app/viewassigndetails2.dart';
 
+import 'const_file.dart';
+
 class SubmittedAssign extends StatefulWidget {
+  String schoolId;
   String date;
   String classes;
   String sec;
   String id;
   String topic;
-  SubmittedAssign(this.date,this.classes,this.sec,this.id,this.topic);
+  SubmittedAssign(this.date,this.classes,this.sec,this.id,this.topic, this.schoolId);
 
   @override
   State<SubmittedAssign> createState() => _SubmittedAssignState();
 }
 
 class _SubmittedAssignState extends State<SubmittedAssign> {
+  late Constants constants;
+  
+  
+  
 
   getcount() async {
-    var document = await _firestore2db.collection("Students").where("admitclass",isEqualTo: widget.classes).where("section",isEqualTo: widget.sec).get();
+    var document = await constants.firestore2db?.collection("Students").where("admitclass",isEqualTo: widget.classes).where("section",isEqualTo: widget.sec).get();
     var document2 =await
-    _firestore2db.collection("homeworks").doc(widget.date).collection(widget.classes).doc(widget.sec).
+    constants.firestore2db?.collection("homeworks").doc(widget.date).collection(widget.classes).doc(widget.sec).
     collection("class HomeWorks").doc(widget.id).collection("Submissions").get();
     setState(() {
-      presentcount=document2.docs.length;
-      absentcount=document.docs.length- document2.docs.length;
+      presentcount=document2!.docs.length;
+      absentcount=document!.docs.length- document2.docs.length;
     });
 
   }
@@ -35,6 +42,8 @@ class _SubmittedAssignState extends State<SubmittedAssign> {
   void initState() {
     getcount();
     // TODO: implement initState
+    constants = Constants(widget.schoolId);
+    
     super.initState();
   }
 
@@ -162,7 +171,7 @@ class _SubmittedAssignState extends State<SubmittedAssign> {
           ),
 
           StreamBuilder(
-            stream: _firestore2db.collection("homeworks").doc(widget.date).
+            stream: constants.firestore2db?.collection("homeworks").doc(widget.date).
             collection(widget.classes).doc(widget.sec).
             collection("class HomeWorks").doc(widget.id).collection("Submissions").snapshots(),
             builder: (context, snapshot2) {
@@ -260,7 +269,7 @@ class _SubmittedAssignState extends State<SubmittedAssign> {
                                   InkWell(
                                     onTap: (){
                                       Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context)=>Assignmentsdetails2(widget.date,widget.classes,widget.sec,widget.id,subjecthomework.id,widget.topic))
+                                          MaterialPageRoute(builder: (context)=>Assignmentsdetails2(widget.date,widget.classes,widget.sec,widget.id,subjecthomework.id,widget.topic, widget.schoolId))
                                       );
 
                                     },
@@ -374,7 +383,7 @@ class _SubmittedAssignState extends State<SubmittedAssign> {
           child: Column(
             children: [
               StreamBuilder(
-                stream: _firestore2db.collection("Students").orderBy("regno").snapshots(),
+                stream: constants.firestore2db?.collection("Students").orderBy("regno").snapshots(),
                   builder: (context, snapshot) {
                     if(snapshot.hasData==null){
                       return Center(child: CircularProgressIndicator(),);
@@ -439,7 +448,7 @@ class _SubmittedAssignState extends State<SubmittedAssign> {
   //   setState(() {
   //     incomplrListdata.clear();
   //   });
-  //   var studendata=await _firestore2db.collection("homeworks").doc(widget.date).
+  //   var studendata=await constants.firestore2db?.collection("homeworks").doc(widget.date).
   //   collection(widget.classes).doc(widget.sec).collection("class HomeWorks").doc(widget.id).collection("Submissions").get();
   //
   //   for(int i=0;i<studendata.docs.length;i++){
@@ -455,7 +464,7 @@ class _SubmittedAssignState extends State<SubmittedAssign> {
 
 
 }
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

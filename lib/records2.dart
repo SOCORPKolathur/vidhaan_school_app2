@@ -7,14 +7,18 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
+import 'const_file.dart';
+
 class Records2 extends StatefulWidget {
-  const Records2({Key? key}) : super(key: key);
+  String schoolId;
+   Records2(this.schoolId);
 
   @override
   State<Records2> createState() => _Records2State();
 }
 
 class _Records2State extends State<Records2> {
+  late Constants constants;
 
   final TextEditingController _typeAheadControllerclass = TextEditingController();
   final TextEditingController _typeAheadControllersection = TextEditingController();
@@ -34,31 +38,31 @@ class _Records2State extends State<Records2> {
       section.clear();
       subjects.clear();
     });
-    var document = await  _firestore2db.collection("ClassMaster").orderBy("order").get();
-    var document2 = await  _firestore2db.collection("SectionMaster").orderBy("order").get();
+    var document = await  constants.firestore2db?.collection("ClassMaster").orderBy("order").get();
+    var document2 = await  constants.firestore2db?.collection("SectionMaster").orderBy("order").get();
     setState(() {
       classes.add("Class");
       section.add("Section");
 
     });
-    for(int i=0;i<document.docs.length;i++) {
+    for(int i=0;i<document!.docs.length;i++) {
       setState(() {
         classes.add(document.docs[i]["name"]);
       });
 
     }
-    for(int i=0;i<document2.docs.length;i++) {
+    for(int i=0;i<document2!.docs.length;i++) {
       setState(() {
         section.add(document2.docs[i]["name"]);
       });
 
     }
-    var documentsub = await  _firestore2db.collection("SubjectMaster").orderBy("order").get();
+    var documentsub = await  constants.firestore2db?.collection("SubjectMaster").orderBy("order").get();
     setState(() {
       subjects.add("Subject");
 
     });
-    for(int i=0;i<documentsub.docs.length;i++) {
+    for(int i=0;i<documentsub!.docs.length;i++) {
       setState(() {
         subjects.add(documentsub.docs[i]["name"]);
       });
@@ -70,6 +74,7 @@ class _Records2State extends State<Records2> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
     adddropdownvalue();
     setState(() {
       duedate.text="${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
@@ -81,11 +86,11 @@ class _Records2State extends State<Records2> {
   int absentcount=0;
 
   getcount() async {
-    var document1= await _firestore2db.collection("Attendance").doc("${dropdownValue4}${dropdownValue5}").collection(duedate.text).where("present",isEqualTo: true).get();
-    var document2= await _firestore2db.collection("Attendance").doc("${dropdownValue4}${dropdownValue5}").collection(duedate.text).where("present",isEqualTo: false).get();
+    var document1= await constants.firestore2db?.collection("Attendance").doc("${dropdownValue4}${dropdownValue5}").collection(duedate.text).where("present",isEqualTo: true).get();
+    var document2= await constants.firestore2db?.collection("Attendance").doc("${dropdownValue4}${dropdownValue5}").collection(duedate.text).where("present",isEqualTo: false).get();
     setState(() {
-      presentcount= document1.docs.length;
-      absentcount= document2.docs.length;
+      presentcount= document1!.docs.length;
+      absentcount= document2!.docs.length;
     });
 
 
@@ -404,7 +409,7 @@ class _Records2State extends State<Records2> {
 
 
             StreamBuilder<QuerySnapshot>(
-                stream: _firestore2db.collection("Attendance").doc("${dropdownValue4}${dropdownValue5}").collection(duedate.text).
+                stream: constants.firestore2db?.collection("Attendance").doc("${dropdownValue4}${dropdownValue5}").collection(duedate.text).
                 orderBy("order").snapshots(),
                 builder: (context, snapshot) {
 
@@ -489,11 +494,11 @@ class _Records2State extends State<Records2> {
           ],
         ),
       ),
-
     );
   }
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

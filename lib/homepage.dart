@@ -21,8 +21,8 @@ import 'Homepage2.dart';
 
 
 class Homepage extends StatefulWidget {
-  String schoolID;
-   Homepage(this.schoolID);
+  String schoolId;
+   Homepage(this.schoolId);
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -259,7 +259,7 @@ class _HomepageState extends State<Homepage> {
   late Constants constants;
     @override
     void initState() {
-      constants = Constants(widget.schoolID);
+      constants = Constants(widget.schoolId);
       getstaffdetails();
       print(new DateFormat.yMMMd().format(new DateTime.now()));
       super.initState();
@@ -290,13 +290,13 @@ class _HomepageState extends State<Homepage> {
 
         body:
         selectedIndexvalue == 0 ?
-        Frontpage(staffid,widget.schoolID) :
+        Frontpage(staffid,widget.schoolId) :
         selectedIndexvalue == 1 ?
-        Records(staffregno) :
+        Records(staffregno, widget.schoolId) :
         selectedIndexvalue == 2 ?
-        Exams():
+        Exams(widget.schoolId):
         selectedIndexvalue == 3 ?
-        Profile() :
+        Profile(widget.schoolId) :
         SizedBox(),
 
         bottomNavigationBar: CreateBottombar(),

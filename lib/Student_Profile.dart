@@ -9,16 +9,20 @@ import 'package:url_launcher/url_launcher.dart';
 import 'Profile_More_Page.dart';
 import 'Profileview.dart';
 import 'Today Presents_Page.dart';
+import 'const_file.dart';
 
 class Student_Profile extends StatefulWidget {
+  String schoolId;
 String ?stuid;
-Student_Profile(this.stuid);
+Student_Profile(this.stuid, this.schoolId);
 
   @override
   State<Student_Profile> createState() => _Student_ProfileState();
 }
 
 class _Student_ProfileState extends State<Student_Profile> {
+  late Constants constants;
+
   int selectedMenu=0;
 
   String stuname='';
@@ -27,8 +31,8 @@ class _Student_ProfileState extends State<Student_Profile> {
 
   getstaffdetails() async {
     print(widget.stuid);
-    var document2 =  await _firestore2db.collection("Students").doc(widget.stuid).get();
-    Map<String,dynamic>? value = document2.data();
+    var document2 =  await constants.firestore2db?.collection("Students").doc(widget.stuid).get();
+    Map<String,dynamic>? value = document2!.data();
     setState(() {
       stuname=value!["stname"];
       sturegno=value["regno"];
@@ -38,6 +42,7 @@ class _Student_ProfileState extends State<Student_Profile> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
     getstaffdetails();
     // TODO: implement initState
     super.initState();
@@ -48,7 +53,7 @@ class _Student_ProfileState extends State<Student_Profile> {
     double width = MediaQuery.of(context).size.width;
     return
       Scaffold(body: FutureBuilder<dynamic>(
-          future: _firestore2db.collection("Students").doc(widget.stuid.toString()).get(),
+          future: constants.firestore2db?.collection("Students").doc(widget.stuid.toString()).get(),
           builder:(context , value) {
 
             if(value.hasData==null){
@@ -1489,7 +1494,8 @@ class _Student_ProfileState extends State<Student_Profile> {
           } ),);
   }
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

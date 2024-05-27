@@ -13,22 +13,27 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vidhaan_school_app/photoviewpage.dart';
 
+import 'const_file.dart';
+
 
 class AssigmentsST extends StatefulWidget {
   String docid;
+  String schoolId;
   String classes;
   String sec;
   String stname;
   String stregno;
   String date;
   String type;
-  AssigmentsST(this.docid,this.classes,this.sec,this.stname,this.stregno,this.date,this.type);
+
+  AssigmentsST(this.docid,this.classes,this.sec,this.stname,this.stregno,this.date,this.type, this.schoolId);
 
   @override
   State<AssigmentsST> createState() => _AssigmentsSTState();
 }
 
 class _AssigmentsSTState extends State<AssigmentsST> {
+  late Constants constants;
 
 
   File? _pickedFile;
@@ -46,10 +51,11 @@ class _AssigmentsSTState extends State<AssigmentsST> {
   add() async {
     int status = 1;
     if(_pickedFile!=null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile!).catchError((
           error) async {
         status = 0;
       });
@@ -63,10 +69,10 @@ class _AssigmentsSTState extends State<AssigmentsST> {
       }
     }
     if(_pickedFile2!=null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile2!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile2!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile2!).catchError((
           error) async {
         status = 0;
       });
@@ -80,10 +86,10 @@ class _AssigmentsSTState extends State<AssigmentsST> {
       }
     }
     if(_pickedFile3!=null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile3!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile3!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile3!).catchError((
           error) async {
         status = 0;
       });
@@ -97,10 +103,10 @@ class _AssigmentsSTState extends State<AssigmentsST> {
       }
     }
     if(_pickedFile4!=null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile4!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile4!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile4!).catchError((
           error) async {
         status = 0;
       });
@@ -114,10 +120,10 @@ class _AssigmentsSTState extends State<AssigmentsST> {
       }
     }
     if(_pickedFile5!=null) {
-      var ref = _firebaseStorage2.ref().child('ListImages').child(
+      var ref = constants.firestorage2db?.ref().child('ListImages').child(
           "${_pickedFile5!.path}.jpg");
 
-      var uploadTask2 = await ref.putFile(_pickedFile5!).catchError((
+      var uploadTask2 = await ref!.putFile(_pickedFile5!).catchError((
           error) async {
         status = 0;
       });
@@ -131,7 +137,7 @@ class _AssigmentsSTState extends State<AssigmentsST> {
         print(imageurl5);
       }
     }
-    _firestore2db.collection("homeworks").doc(widget.date).
+    constants.firestore2db?.collection("homeworks").doc(widget.date).
     collection(widget.classes).doc(widget.sec).
     collection("class HomeWorks").doc(widget.docid).collection("Submissions").doc().set({
 
@@ -149,7 +155,7 @@ class _AssigmentsSTState extends State<AssigmentsST> {
       "stregno":widget.stregno,
 
     });
-    _firestore2db.collection("homeworks").doc(widget.date).
+    constants.firestore2db?.collection("homeworks").doc(widget.date).
     collection(widget.classes).doc(widget.sec).
     collection("class HomeWorks").doc(widget.docid).update({
       "submited": FieldValue.arrayUnion([widget.stregno]),
@@ -251,7 +257,7 @@ print(widget.docid);
 print(widget.classes);
 print(widget.stname);
 
-  _firestore2db.collection("homeworks").doc(widget.date).
+    constants.firestore2db?.collection("homeworks").doc(widget.date).
     collection(widget.classes).doc(widget.sec).
     collection("class HomeWorks").doc(widget.docid).get().then((value){
 
@@ -270,6 +276,7 @@ print(widget.stname);
   void initState() {
     print(" Time:  ${DateFormat('hh:mm a').format(DateTime.now())}");
     getstatus();
+    constants = Constants(widget.schoolId);
    // checksubmittedfunction();
     // TODO: implement initState
     super.initState();
@@ -285,10 +292,10 @@ print(widget.stname);
     setState(() {
       statusval= false;
     });
-var docu=  await  _firestore2db.collection("homeworks").doc(widget.date).
+var docu=  await  constants.firestore2db?.collection("homeworks").doc(widget.date).
     collection(widget.classes).doc(widget.sec).
     collection("class HomeWorks").doc(widget.docid).collection("Submissions").get();
-for(int i=0;i<docu.docs.length;i++){
+for(int i=0;i<docu!.docs.length;i++){
   if(docu.docs[i]["stregno"]==widget.stregno)
   setState(() {
     statusval = true;
@@ -313,7 +320,7 @@ for(int i=0;i<docu.docs.length;i++){
             fontSize: width/20),),
       ),
       body: FutureBuilder(
-        future: _firestore2db.collection("homeworks").doc(widget.date).
+        future: constants.firestore2db?.collection("homeworks").doc(widget.date).
         collection(widget.classes).doc(widget.sec).
         collection("class HomeWorks").doc(widget.docid).get(),
         builder: (context,snap) {
@@ -1141,8 +1148,9 @@ for(int i=0;i<docu.docs.length;i++){
 
 
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
 FirebaseStorage _firebaseStorage2= FirebaseStorage.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

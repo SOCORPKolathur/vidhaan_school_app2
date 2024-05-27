@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'View_exammarkdDetails.dart';
+import 'const_file.dart';
 
 class StudentExamTime extends StatefulWidget {
+  String schoolId;
   String title;
   String docid;
   String userdocid;
-  StudentExamTime(this.title,this.docid,this.userdocid);
+  StudentExamTime(this.title,this.docid,this.userdocid, this.schoolId);
 
   @override
   State<StudentExamTime> createState() => _StudentExamTimeState();
@@ -19,6 +21,7 @@ class StudentExamTime extends StatefulWidget {
 
 class _StudentExamTimeState extends State<StudentExamTime> {
 
+  late Constants constants;
 
   final TextEditingController _typeAheadControllerclass = TextEditingController();
   final TextEditingController _typeAheadControllersection = TextEditingController();
@@ -31,11 +34,10 @@ class _StudentExamTimeState extends State<StudentExamTime> {
   String dropdownValue5="";
 
   getadmitclass() async {
-    var studentdocument = await _firestore2db
-        .collection("Students")
+    var studentdocument = await constants.firestore2db?.collection("Students")
         .doc(widget.userdocid)
         .get();
-    Map<String, dynamic>? stuvalue = studentdocument.data();
+    Map<String, dynamic>? stuvalue = studentdocument!.data();
     setState(() {
       dropdownValue4 = stuvalue!['admitclass'];
       dropdownValue5 = stuvalue!['section'];
@@ -45,6 +47,8 @@ class _StudentExamTimeState extends State<StudentExamTime> {
   }
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
+    
     print("Home Page 2");
 
     getadmitclass();
@@ -58,19 +62,19 @@ class _StudentExamTimeState extends State<StudentExamTime> {
       classes.clear();
       section.clear();
     });
-    var document = await  _firestore2db.collection("ClassMaster").orderBy("order").get();
-    var document2 = await  _firestore2db.collection("SectionMaster").orderBy("order").get();
+    var document = await  constants.firestore2db?.collection("ClassMaster").orderBy("order").get();
+    var document2 = await  constants.firestore2db?.collection("SectionMaster").orderBy("order").get();
     setState(() {
       classes.add("Class");
       section.add("Section");
     });
-    for(int i=0;i<document.docs.length;i++) {
+    for(int i=0;i<document!.docs.length;i++) {
       setState(() {
         classes.add(document.docs[i]["name"]);
       });
 
     }
-    for(int i=0;i<document2.docs.length;i++) {
+    for(int i=0;i<document2!.docs.length;i++) {
       setState(() {
         section.add(document2.docs[i]["name"]);
       });
@@ -152,7 +156,7 @@ class _StudentExamTimeState extends State<StudentExamTime> {
                       ]
                   ),
                   StreamBuilder(
-                      stream: _firestore2db.collection("Students").doc(widget.userdocid).collection("Exams").snapshots(),
+                      stream: constants.firestore2db?.collection("Students").doc(widget.userdocid).collection("Exams").snapshots(),
                       builder: (context,snap){
                         if(!snap.hasData){
                           return Center(
@@ -172,7 +176,7 @@ class _StudentExamTimeState extends State<StudentExamTime> {
                             itemBuilder: (context,index){
 
                                 return
-                                     StreamBuilder(stream:_firestore2db.collection("Students").doc(widget.userdocid).collection("Exams").
+                                     StreamBuilder(stream:constants.firestore2db?.collection("Students").doc(widget.userdocid).collection("Exams").
                                      doc(snap.data!.docs[index].id).collection("Timetable").orderBy("timestamp2",).snapshots(),
                                          builder: (context, snapshot2) {
                                            if(!snapshot2.hasData){
@@ -315,7 +319,7 @@ class _StudentExamTimeState extends State<StudentExamTime> {
                       ]
                   ),
                   StreamBuilder(
-                      stream: _firestore2db.collection("Students").doc(widget.userdocid).collection("Exams").snapshots(),
+                      stream: constants.firestore2db?.collection("Students").doc(widget.userdocid).collection("Exams").snapshots(),
                       builder: (context,snap){
                         if(!snap.hasData){
                           return Center(
@@ -335,7 +339,7 @@ class _StudentExamTimeState extends State<StudentExamTime> {
                             itemBuilder: (context,index){
 
                                 return
-                                     StreamBuilder(stream:_firestore2db.collection("Students").doc(widget.userdocid).collection("Exams").
+                                     StreamBuilder(stream:constants.firestore2db?.collection("Students").doc(widget.userdocid).collection("Exams").
                                      doc(snap.data!.docs[index].id).collection("Timetable").orderBy("name",descending: true).snapshots(),
                                          builder: (context, snapshot2) {
                                            if(!snapshot2.hasData){
@@ -423,7 +427,8 @@ class _StudentExamTimeState extends State<StudentExamTime> {
     );
   }
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

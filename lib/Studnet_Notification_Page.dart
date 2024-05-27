@@ -6,18 +6,27 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'const_file.dart';
+
 class Student_Notification_Page extends StatefulWidget {
+  String schoolId;
   String ?Userdocid;
-  Student_Notification_Page({this.Userdocid});
+  Student_Notification_Page(this.Userdocid, this.schoolId);
 
   @override
   State<Student_Notification_Page> createState() => _Student_Notification_PageState();
 }
 
 class _Student_Notification_PageState extends State<Student_Notification_Page> {
+  late Constants constants;
+  
+  @override
+  void initState() {
+    constants = Constants(widget.schoolId);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-
     double height= MediaQuery.of(context).size.height;
     double width= MediaQuery.of(context).size.width;
 
@@ -33,7 +42,7 @@ class _Student_Notification_PageState extends State<Student_Notification_Page> {
               SizedBox(height:height/50.6),
 
               StreamBuilder(
-                stream:_firestore2db.collection("Students").doc(widget.Userdocid).
+                stream:constants.firestore2db?.collection("Students").doc(widget.Userdocid).
                 collection("Notification").orderBy("timestamp").snapshots(),
                 builder: (context, snapshot) {
                   if(snapshot.hasData==null){
@@ -191,7 +200,7 @@ class _Student_Notification_PageState extends State<Student_Notification_Page> {
   }
 
   readstatus(docid){
-    _firestore2db.collection("Students").doc(widget.Userdocid).collection("Notification").doc(docid).update({
+    constants.firestore2db?.collection("Students").doc(widget.Userdocid).collection("Notification").doc(docid).update({
       "readstatus":true
     });
   }
@@ -267,8 +276,8 @@ class _Student_Notification_PageState extends State<Student_Notification_Page> {
 
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
 FirebaseStorage _firebaseStorage2= FirebaseStorage.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

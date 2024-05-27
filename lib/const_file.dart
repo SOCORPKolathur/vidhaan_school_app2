@@ -30,7 +30,9 @@ class Constants {
       _firestore2db = FirebaseFirestore.instanceFor(app: _thirdApp);
       _firestorage2db = FirebaseStorage.instanceFor(app: _thirdApp);
       _firebaseauth2db = FirebaseAuth.instanceFor(app: _thirdApp);
-    } else {
+    }
+
+    else {
       // Handle default or error case
     }
   }

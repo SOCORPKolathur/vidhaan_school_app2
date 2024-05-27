@@ -6,17 +6,22 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'const_file.dart';
+
 class View_Time_Table_Page extends StatefulWidget {
   String title;
   String docid;
+  String schoolId;
 
-  View_Time_Table_Page(this.title, this.docid);
+  View_Time_Table_Page(this.title, this.docid, this.schoolId);
 
   @override
   State<View_Time_Table_Page> createState() => _View_Time_Table_PageState();
 }
 
 class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
+  late Constants constants;
+
   final TextEditingController _typeAheadControllerclass =
       TextEditingController();
   final TextEditingController _typeAheadControllersection =
@@ -35,6 +40,7 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
   @override
   void initState() {
     adddropdownvalue();
+    constants = Constants(widget.schoolId);
 
     super.initState();
   }
@@ -47,21 +53,21 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
       subject.clear();
     });
     var document =
-        await _firestore2db.collection("ClassMaster").orderBy("order").get();
+        await constants.firestore2db?.collection("ClassMaster").orderBy("order").get();
     var document2 =
-        await _firestore2db.collection("SectionMaster").orderBy("order").get();
+        await constants.firestore2db?.collection("SectionMaster").orderBy("order").get();
 
     setState(() {
       classes.add("Class");
       section.add("Section");
       subject.add("Subject");
     });
-    for (int i = 0; i < document.docs.length; i++) {
+    for (int i = 0; i < document!.docs.length; i++) {
       setState(() {
         classes.add(document.docs[i]["name"]);
       });
     }
-    for (int i = 0; i < document2.docs.length; i++) {
+    for (int i = 0; i < document2!.docs.length; i++) {
       setState(() {
         section.add(document2.docs[i]["name"]);
       });
@@ -72,15 +78,14 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
     setState(() {
       subject.clear();
     });
-    var document3 = await _firestore2db
-        .collection("ExamMaster")
+    var document3 = await constants.firestore2db?.collection("ExamMaster")
         .doc(widget.docid)
         .collection(dropdownValue4)
         .get();
     setState(() {
       subject.add("Subject");
     });
-    for (int i = 0; i < document3.docs.length; i++) {
+    for (int i = 0; i < document3!.docs.length; i++) {
       setState(() {
         subject.add(document3.docs[i]["name"]);
       });
@@ -280,8 +285,7 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
               ):const SizedBox(),
 
               StreamBuilder<QuerySnapshot>(
-                  stream: _firestore2db
-                      .collection("ExamMaster")
+                  stream: constants.firestore2db?.collection("ExamMaster")
                       .where("name", isEqualTo: widget.title)
                       .snapshots(),
                   builder: (context, snap) {
@@ -304,8 +308,7 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
                           var studentdata = snap.data!.docs[index];
 
                           return StreamBuilder<QuerySnapshot>(
-                              stream: _firestore2db
-                                  .collection("ExamMaster")
+                              stream: constants.firestore2db?.collection("ExamMaster")
                                   .doc(studentdata.id).collection(dropdownValue4).orderBy("timestamp2")
                                   .snapshots(),
                               builder: (context, snap2) {
@@ -398,8 +401,8 @@ class _View_Time_Table_PageState extends State<View_Time_Table_Page> {
   }
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db =
     FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

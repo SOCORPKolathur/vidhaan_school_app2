@@ -11,7 +11,8 @@ import 'examreports.dart';
 
 class Records extends StatefulWidget {
   String staffregno;
-   Records(this.staffregno);
+  String schoolId;
+   Records(this.staffregno, this.schoolId);
 
   @override
   State<Records> createState() => _RecordsState();
@@ -95,7 +96,7 @@ class _RecordsState extends State<Records> {
                     child: GestureDetector(
                       onTap: (){
                         Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context)=>Records2())
+                            MaterialPageRoute(builder: (context)=>Records2(widget.schoolId))
                         );
 
 
@@ -159,7 +160,7 @@ class _RecordsState extends State<Records> {
                       child: GestureDetector(
                         onTap: (){
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context)=>ExamReports())
+                              MaterialPageRoute(builder: (context)=>ExamReports(widget.schoolId))
                           );
                         },
                         child: Container(
@@ -221,7 +222,7 @@ class _RecordsState extends State<Records> {
                       child: GestureDetector(
                         onTap: (){
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context)=>AssignmentReports(widget.staffregno))
+                              MaterialPageRoute(builder: (context)=>AssignmentReports(widget.staffregno, widget.schoolId))
                           );
                         },
                         child: Container(
@@ -305,7 +306,8 @@ class _RecordsState extends State<Records> {
     );
   }
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

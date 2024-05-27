@@ -8,17 +8,20 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Profile_More_Page.dart';
 import 'Profileview.dart';
+import 'const_file.dart';
 
 
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  String schoolId;
+   Profile(this.schoolId);
 
   @override
   State<Profile> createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
+  late Constants constants;
 
   String staffid="";
   String staffname="";
@@ -26,16 +29,16 @@ class _ProfileState extends State<Profile> {
 
   getstaffdetails() async {
 
-    var document = await _firestore2db.collection("Staffs").get();
-    for(int i=0;i<document.docs.length;i++){
-      if(document.docs[i]["userid"]==_firebaseauth2db.currentUser!.uid){
+    var document = await constants.firestore2db?.collection("Staffs").get();
+    for(int i=0;i<document!.docs.length;i++){
+      if(document.docs[i]["userid"]==constants.firebaseAuth2db?.currentUser!.uid){
         setState(() {
           staffid=document.docs[i].id.toString();
         });
       }
       if(staffid.isNotEmpty){
-        var staffdocument= await _firestore2db.collection("Staffs").doc(staffid).get();
-        Map<String,dynamic>?staffvalue=staffdocument.data();
+        var staffdocument= await constants.firestore2db?.collection("Staffs").doc(staffid).get();
+        Map<String,dynamic>?staffvalue=staffdocument!.data();
         setState(() {
           staffname=staffvalue!['stname'].toString();
           staffregno=staffvalue['regno'].toString();
@@ -287,6 +290,8 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     getstaffdetails();
+    constants = Constants(widget.schoolId);
+    
     // TODO: implement initState
     super.initState();
   }
@@ -304,7 +309,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: staffid.toString()!=""?
       FutureBuilder<dynamic>(
-        future: _firestore2db.collection("Staffs").doc(staffid.toString()).get(),
+        future: constants.firestore2db?.collection("Staffs").doc(staffid.toString()).get(),
         builder:(context , value) {
 
           if(value.hasData==null){
@@ -1498,7 +1503,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

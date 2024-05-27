@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vidhaan_school_app/photoviewpage.dart';
 
+import 'const_file.dart';
+
 class Assignmentsdetails2 extends StatefulWidget {
   String date;
   String classes;
@@ -13,13 +15,22 @@ class Assignmentsdetails2 extends StatefulWidget {
   String id;
   String docid;
   String topic;
-   Assignmentsdetails2(this.date,this.classes,this.sec,this.id,this.docid,this.topic);
+  String schoolId;
+   Assignmentsdetails2(this.date,this.classes,this.sec,this.id,this.docid,this.topic,this.schoolId);
 
   @override
   State<Assignmentsdetails2> createState() => _Assignmentsdetails2State();
 }
 
 class _Assignmentsdetails2State extends State<Assignmentsdetails2> {
+  late Constants constants;
+  
+  @override
+  void initState() {
+    constants = Constants(widget.schoolId);
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -34,7 +45,7 @@ class _Assignmentsdetails2State extends State<Assignmentsdetails2> {
             fontSize:width/20),),
       ),
       body: FutureBuilder(
-          future: _firestore2db.collection("homeworks").doc(widget.date).
+          future: constants.firestore2db?.collection("homeworks").doc(widget.date).
           collection(widget.classes).doc(widget.sec).
           collection("class HomeWorks").doc(widget.id).collection("Submissions").doc(widget.docid).get(),
           builder: (context,snap) {
@@ -266,7 +277,8 @@ class _Assignmentsdetails2State extends State<Assignmentsdetails2> {
 
 
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

@@ -14,20 +14,21 @@ import 'const_file.dart';
 
 
 class Feedbackhistory extends StatefulWidget {
-  String studentid;
+  String studentId;
+  String schoolId;
   String studentname;
   String staffname;
   String studenttoken;
   String staffid;
   String staffauthendicationid;
-  Feedbackhistory(this.studentid,this.studentname,this.staffname,this.studenttoken,this.staffid,this.staffauthendicationid);
+  Feedbackhistory(this.studentId,this.studentname,this.staffname,this.studenttoken,this.staffid,this.staffauthendicationid, this.schoolId);
 
   @override
   State<Feedbackhistory> createState() => _FeedbackhistoryState();
 }
 
 class _FeedbackhistoryState extends State<Feedbackhistory> {
-
+  late Constants constants;
 
   String dropfedback4 = "Outstanding";
   String dropdownvalueweditvalue = "Outstanding";
@@ -36,6 +37,12 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
   TextEditingController remarkscon1 = new TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  
+  @override
+  void initState() {
+    constants = Constants(widget.schoolId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +330,7 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                         /// Name
 
                         StreamBuilder(
-                            stream: _firestore2db.collection("Students").doc(widget.studentid).collection("Feedback")
+                            stream: constants.firestore2db?.collection("Students").doc(widget.studentId).collection("Feedback")
                                 .orderBy("timestamp",descending: true)
                                 .snapshots(),
                             builder: (context, snapshot) {
@@ -345,9 +352,7 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                               return ListView.builder(
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
-
-                                  itemCount: snapshot.data!
-                                      .docs.length,
+                                  itemCount: snapshot.data!.docs.length,
                                   itemBuilder: (context,
                                       index) {
                                     return
@@ -454,13 +459,13 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                                           trailing:GestureDetector(
                                             onTap: (){
 
-                                              print(_firebaseauth2db..currentUser!.uid);
+                                              print(constants.firebaseAuth2db?..currentUser!.uid);
                                               print(widget.staffauthendicationid);
                                               normalpopup(
                                                   snapshot.data!.docs[index].id,
                                                   widget.studentname,
                                                   widget.staffauthendicationid,
-                                                  _firebaseauth2db.currentUser!.uid,
+                                                  constants.firebaseAuth2db?.currentUser!.uid,
                                                   snapshot.data!.docs[index]["remarks"],
                                                   widget. staffname,
                                                   snapshot.data!.docs[index]["value"]
@@ -616,7 +621,7 @@ Navigator.of(context).pop();
 
   ///edit the popup dialog
   seditpoup(docid) async {
-    _firestore2db.collection("Students").doc(widget.studentid).collection("Feedback").doc(docid).get().then((value){
+    constants.firestore2db?.collection("Students").doc(widget.studentId).collection("Feedback").doc(docid).get().then((value){
       setState(() {
         remarkscon1.text= value['remarks'];
         dropdownvalueweditvalue= value['value'];
@@ -815,7 +820,7 @@ Navigator.of(context).pop();
           title: Text('Are you sure delete this message'),
           actions: [
             TextButton(onPressed: () {
-              _firestore2db.collection("Students").doc(widget.studentid).collection("Feedback").doc(docid)
+              constants.firestore2db?.collection("Students").doc(widget.studentId).collection("Feedback").doc(docid)
                   .delete();
               Navigator.pop(context);
             }, child: Text('Delete'))
@@ -986,7 +991,7 @@ Navigator.of(context).pop();
 
 
   updateremarks(docid){
-    _firestore2db.collection("Students").doc(widget.studentid).collection("Feedback").doc(docid).update({
+    constants.firestore2db?.collection("Students").doc(widget.studentId).collection("Feedback").doc(docid).update({
       "remarks":remarkscon1.text,
       "value":dropdownvalueweditvalue
     });
@@ -999,7 +1004,7 @@ Navigator.of(context).pop();
 
 
   submit(){
-    _firestore2db.collection("Students").doc(widget.studentid).collection("Feedback").doc().set({
+    constants.firestore2db?.collection("Students").doc(widget.studentId).collection("Feedback").doc().set({
       "staffname":widget.staffname,
       "remarks":remarkscon.text,
       "value":dropfedback4,
@@ -1040,9 +1045,8 @@ Navigator.of(context).pop();
       print("error push notification");
     }
   }
-
 }
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+/*FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

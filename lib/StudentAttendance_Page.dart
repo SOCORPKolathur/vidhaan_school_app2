@@ -12,17 +12,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import 'const_file.dart';
+
 
 
 class StudentAttendance_Page extends StatefulWidget {
   String?Studentid;
-  StudentAttendance_Page(this.Studentid);
+  String schoolId;
+  StudentAttendance_Page(this.Studentid, this.schoolId);
   
   @override
   State<StudentAttendance_Page> createState() => _StudentAttendance_PageState();
 }
 
 class _StudentAttendance_PageState extends State<StudentAttendance_Page> {
+  late Constants constants;
+
 
   List Presntlist=[];
   List Presntlist2=[];
@@ -102,14 +107,14 @@ class _StudentAttendance_PageState extends State<StudentAttendance_Page> {
 
 
 
-    var studentdocument= await _firestore2db.collection("Students").doc(widget.Studentid).
+    var studentdocument= await constants.firestore2db?.collection("Students").doc(widget.Studentid).
     collection('Attendance').orderBy("timesatmp",descending: true).get();
     print("Studnet 2 id ${widget.Studentid}");
 
-    var Eventsholiday= await  _firestore2db.collection("Events").where("type",isEqualTo:"Holiday").get();
+    var Eventsholiday= await  constants.firestore2db?.collection("Events").where("type",isEqualTo:"Holiday").get();
 
       print("Event document Length");
-       print(Eventsholiday.docs.length.toString());
+       print(Eventsholiday!.docs.length.toString());
 
     print("Student Attendanceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     for(int k =0;k<Eventsholiday.docs.length;k++){
@@ -150,7 +155,7 @@ class _StudentAttendance_PageState extends State<StudentAttendance_Page> {
       });
 
     }
-    for(int i=0;i<studentdocument.docs.length;i++){
+    for(int i=0;i<studentdocument!.docs.length;i++){
       if(studentdocument.docs[i]['Attendance']=="Present"){
         print(studentdocument.docs[i]['Date']);
        if(studentdocument.docs[i]['month']== cmonth){
@@ -266,6 +271,8 @@ class _StudentAttendance_PageState extends State<StudentAttendance_Page> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
+
   cmonth = getMonth(DateTime.now().month);
   print("cmonthtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
   print(cmonth);
@@ -727,7 +734,8 @@ class _StudentAttendance_PageState extends State<StudentAttendance_Page> {
   }
 
 }
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
 FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

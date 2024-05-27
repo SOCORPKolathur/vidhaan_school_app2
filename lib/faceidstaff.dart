@@ -19,21 +19,23 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-
 import 'View Staff Report/Staff_View_Reports.dart';
-
+import 'const_file.dart';
 class DemoFaceid extends StatefulWidget {
-  const DemoFaceid({Key? key}) : super(key: key);
-
+  String schoolId;
+   DemoFaceid(this.schoolId);
   @override
   State<DemoFaceid> createState() => _DemoFaceidState();
 }
 
 class _DemoFaceidState extends State<DemoFaceid> {
+  late Constants constants;
+  
   File? _capturedImage;
 
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
 
     getstaffdetails();
     // TODO: implement initState
@@ -139,7 +141,7 @@ class _DemoFaceidState extends State<DemoFaceid> {
       final rightearLandmark = face.landmarks[FaceLandmarkType.rightEar];
       final rightearPosition = rightearLandmark?.position;
 
-      _firestore2db.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).set({
+      constants.firestore2db?.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).set({
         "leftEyePositionx":leftEyePosition!.x,
         "rightEyePositionx":rightEyePosition!.x,
         "bottommouthPositionx":bottommouthPosition!.x,
@@ -169,7 +171,7 @@ class _DemoFaceidState extends State<DemoFaceid> {
     }).join('\n');
 
 
-    _firestore2db.collection("Staffs").doc(staffid).update({
+    constants.firestore2db?.collection("Staffs").doc(staffid).update({
       "faceid":true
     });
     showsucess();
@@ -190,9 +192,10 @@ class _DemoFaceidState extends State<DemoFaceid> {
 
 
 
-    var document = await _firestore2db.collection("Staffs").get();
-    for(int i=0;i<document.docs.length;i++){
-      if(document.docs[i]["userid"]==_firebaseauth2db.currentUser!.uid){
+    var document = await constants.firestore2db?.collection("Staffs").get();
+    for(int i=0;i<document!.docs.length;i++){
+
+      if(document.docs[i]["userid"]==constants.firebaseAuth2db?.currentUser!.uid){
         setState(() {
           staffid=document.docs[i].id;
         });
@@ -200,9 +203,9 @@ class _DemoFaceidState extends State<DemoFaceid> {
         print(staffid);
       }
       if(staffid.isNotEmpty){
-        var staffdocument= await _firestore2db.collection("Staffs").doc(staffid).get();
-        Map<String,dynamic>?staffvalue=staffdocument.data();
-        var document2 = await  _firestore2db.collection("Staffs").doc(staffid).
+        var staffdocument= await constants.firestore2db?.collection("Staffs").doc(staffid).get();
+        Map<String,dynamic>?staffvalue=staffdocument!.data();
+        var document2 = await  constants.firestore2db?.collection("Staffs").doc(staffid).
         collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
         setState(() {
@@ -265,19 +268,23 @@ class _DemoFaceidState extends State<DemoFaceid> {
 
 class DemoFaceid2 extends StatefulWidget {
   int val;
-  DemoFaceid2(this.val);
+  String schoolId;
+  DemoFaceid2(this.val, this.schoolId);
 
   @override
   State<DemoFaceid2> createState() => _DemoFaceid2State();
 }
 
 class _DemoFaceid2State extends State<DemoFaceid2> {
+  late Constants constants;
   File? _capturedImage;
 
   @override
   void initState() {
     cmonth = getMonth(DateTime.now().month);
     getstaffdetails();
+    constants = Constants(widget.schoolId);
+
     // TODO: implement initState
     super.initState();
   }
@@ -393,8 +400,10 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
 
 
 
-      var documet = await _firestore2db.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).get();
-      Map<String, dynamic>?  value= documet.data();
+
+
+      var documet = await constants.firestore2db?.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).get();
+      Map<String, dynamic>?  value= documet!.data();
       int i =0;
       setState(() {
         i=0;
@@ -526,7 +535,7 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
     print(faceData2);
   }
   Marktheattendancefun(){
-    _firestore2db.collection("Staffs").
+    constants.firestore2db?.collection("Staffs").
     doc(staffid).
     update(
         {
@@ -534,7 +543,7 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
         }
     );
 
-    _firestore2db.collection("Staffs").doc(staffid).
+    constants.firestore2db?.collection("Staffs").doc(staffid).
     collection("Attendance").doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
     set(
         {
@@ -550,7 +559,7 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
         }
     );
 
-    _firestore2db.collection("Staff_attendance").
+    constants.firestore2db?.collection("Staff_attendance").
     doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
     collection("Staffs").doc(staffid).
     set(
@@ -596,10 +605,10 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
   }
 
   Marktheattendancefun2() async {
-    var document = await _firestore2db.collection("Staffs").doc(staffid).collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
+    var document = await constants.firestore2db?.collection("Staffs").doc(staffid).collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
-    if(document.docs.length>0) {
-      _firestore2db.collection("Staffs").
+    if(document!.docs.length>0) {
+      constants.firestore2db?.collection("Staffs").
       doc(staffid).
       update(
           {
@@ -607,7 +616,7 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
           }
       );
 
-      _firestore2db.collection("Staffs").doc(staffid).
+      constants.firestore2db?.collection("Staffs").doc(staffid).
       collection("Attendance").doc("${DateTime
           .now()
           .day}${DateTime
@@ -621,7 +630,7 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
           }
       );
 
-      _firestore2db.collection("Staff_attendance").
+      constants.firestore2db?.collection("Staff_attendance").
       doc("${DateTime
           .now()
           .day}${DateTime
@@ -694,9 +703,11 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
 
 
 
-    var document = await _firestore2db.collection("Staffs").get();
-    for(int i=0;i<document.docs.length;i++){
-      if(document.docs[i]["userid"]==_firebaseauth2db.currentUser!.uid){
+
+
+    var document = await constants.firestore2db?.collection("Staffs").get();
+    for(int i=0;i<document!.docs.length;i++){
+      if(document.docs[i]["userid"]==constants.firebaseAuth2db?.currentUser!.uid){
         setState(() {
           staffid=document.docs[i].id;
         });
@@ -704,9 +715,9 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
         print(staffid);
       }
       if(staffid.isNotEmpty){
-        var staffdocument= await _firestore2db.collection("Staffs").doc(staffid).get();
-        Map<String,dynamic>?staffvalue=staffdocument.data();
-        var document2 = await  _firestore2db.collection("Staffs").doc(staffid).
+        var staffdocument= await constants.firestore2db?.collection("Staffs").doc(staffid).get();
+        Map<String,dynamic>?staffvalue=staffdocument!.data();
+        var document2 = await  constants.firestore2db?.collection("Staffs").doc(staffid).
         collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
         setState(() {
@@ -754,7 +765,8 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
 }
 
 
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

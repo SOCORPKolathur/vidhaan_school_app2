@@ -239,19 +239,22 @@ class _MyAppState extends State<MyApp> {
 
 ///Splashscreen
 class splashscreen extends StatefulWidget {
-  const splashscreen({Key ? key}) : super(key: key);
+  const splashscreen();
 
   @override
   _splashscreenState createState() => _splashscreenState();
 }
 class _splashscreenState extends State<splashscreen> {
+
+
   String? _deviceId;
   String schoolurl="";
-  String schoolID="";
+  String schoolId="";
 
   bool user =false;
 
   late Constants constants;
+
 
   Future<void> initPlatformState() async {
     String? deviceId;
@@ -279,8 +282,8 @@ class _splashscreenState extends State<splashscreen> {
         setState(() {
           user=true;
           schoolurl=result.docs[i]["schoolurl"];
-          schoolID=result.docs[i]["schoolID"];
-          constants = Constants(schoolID);
+          schoolId=result.docs[i]["schoolID"];
+          constants = Constants(schoolId);
         });
       }
 
@@ -298,14 +301,14 @@ class _splashscreenState extends State<splashscreen> {
         var getdate2=await constants.firestore2db?.collection('deviceid').where("id",isEqualTo: constants.firebaseAuth2db?.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
         if(getdate!.docs.length>0){
           Timer(Duration(seconds: 5),(){
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Student_landing_Page("",false,schoolID),));
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Student_landing_Page("",false,schoolId),));
 
           }
           );
         }
         if(getdate2!.docs.length>0){
           Timer(Duration(seconds: 5),(){
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Homepage(schoolID),));
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Homepage(schoolId),));
 
           }
           );
@@ -314,7 +317,7 @@ class _splashscreenState extends State<splashscreen> {
       else{
         print("Login Page");
         Timer(Duration(seconds: 5),(){
-          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Accountpage(schoolID)));
+          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Accountpage(schoolId)));
 
 
         }

@@ -32,8 +32,8 @@ import 'const_file.dart';
 class Student_landing_Page extends StatefulWidget {
   String?navigation;
   bool?naviagtiontcheck;
-  String schoolID;
-  Student_landing_Page(this.navigation,this.naviagtiontcheck,this.schoolID);
+  String schoolId;
+  Student_landing_Page(this.navigation,this.naviagtiontcheck,this.schoolId);
 
   @override
   State<Student_landing_Page> createState() => _Student_landing_PageState();
@@ -164,7 +164,7 @@ bool Loading=false;
 
   @override
   void initState() {
-    constants = Constants(widget.schoolID);
+    constants = Constants(widget.schoolId);
     if(widget.navigation!=""&&widget.naviagtiontcheck!=false){
       setState(() {
         page=widget.navigation!;
@@ -633,7 +633,7 @@ bool Loading=false;
               InkWell(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => Student_Profile(Studentid),));
+                    builder: (context) => Student_Profile(Studentid, widget.schoolId),));
                   key.currentState!.closeEndDrawer();
                 },
                 child: Container(
@@ -949,7 +949,7 @@ bool Loading=false;
                                                   context, MaterialPageRoute(
                                                 builder: (context) =>
                                                     Student_Notification_Page(
-                                                      Userdocid: Studentid,
+                                                     Studentid, widget.schoolId
                                                     ),));
                                             },
                                             child: Container(
@@ -2427,6 +2427,7 @@ bool Loading=false;
                                                                                                   Studentsec,
                                                                                                   Studentname,
                                                                                                   Studentregno,
+                                                                                                  widget.schoolId,
                                                                                                   currentdate
                                                                                                       .toString(),
                                                                                                   "Completed"))
@@ -2481,6 +2482,7 @@ bool Loading=false;
                                                                                                   Studentsec,
                                                                                                   Studentname,
                                                                                                   Studentregno,
+                                                                                                  widget.schoolId,
                                                                                                   currentdate
                                                                                                       .toString(),
                                                                                                   "View"))
@@ -2747,6 +2749,7 @@ bool Loading=false;
                                                                                                       Studentsec,
                                                                                                       Studentname,
                                                                                                       Studentregno,
+                                                                                                      widget.schoolId,
                                                                                                       currentdate
                                                                                                           .toString(),
                                                                                                       "Completed"))
@@ -2801,6 +2804,7 @@ bool Loading=false;
                                                                                                       Studentsec,
                                                                                                       Studentname,
                                                                                                       Studentregno,
+                                                                                                      widget.schoolId,
                                                                                                       currentdate
                                                                                                           .toString(),
                                                                                                       "View"))
@@ -3093,6 +3097,7 @@ bool Loading=false;
                                                                                             Studentsec,
                                                                                             Studentname,
                                                                                             Studentregno,
+                                                                                            widget.schoolId,
                                                                                             currentdate
                                                                                                 .toString(),
                                                                                             "Completed"))
@@ -3346,6 +3351,7 @@ bool Loading=false;
                                                                                             Studentsec,
                                                                                             Studentname,
                                                                                             Studentregno,
+                                                                                            widget.schoolId,
                                                                                             currentdate
                                                                                                 .toString(),
                                                                                             "View"))
@@ -3613,6 +3619,7 @@ bool Loading=false;
                                                                                             Studentsec,
                                                                                             Studentname,
                                                                                             Studentregno,
+                                                                                            widget.schoolId,
                                                                                             currentdate
                                                                                                 .toString(),
                                                                                             "Completed"))
@@ -3667,6 +3674,7 @@ bool Loading=false;
                                                                                             Studentsec,
                                                                                             Studentname,
                                                                                             Studentregno,
+                                                                                            widget.schoolId,
                                                                                             currentdate
                                                                                                 .toString(),
                                                                                             "View"))
@@ -3920,7 +3928,7 @@ bool Loading=false;
                                     Container(
                                       //color:Colors.red,
                                       child: StudentAttendance_Page(
-                                          Studentid),),
+                                          Studentid, widget.schoolId),),
 
                                     SizedBox(height: height / 2.0),
                                   ],
@@ -7869,8 +7877,8 @@ bool Loading=false;
         ),
       ) :
       selecteIndexvalue == 2 ?
-      StudentExam() :
-      Student_Profile(Studentid),
+      StudentExam(widget.schoolId) :
+      Student_Profile(Studentid, widget.schoolId),
       bottomNavigationBar: CreateBottombar(),
     );
   }

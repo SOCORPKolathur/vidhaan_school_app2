@@ -19,17 +19,21 @@ import 'package:lottie/lottie.dart';
 import 'package:vidhaan_school_app/faceidstaff.dart';
 
 import 'View Staff Report/Staff_View_Reports.dart';
+import 'const_file.dart';
 
 class Today_Presents_Page extends StatefulWidget {
 String name;
 String regno;
 String staffid;
-  Today_Presents_Page(this.name,this.regno,this.staffid);
+String schoolId;
+  Today_Presents_Page(this.name,this.regno,this.staffid, this.schoolId);
   @override
   State<Today_Presents_Page> createState() => _Today_Presents_PageState();
 }
 
 class _Today_Presents_PageState extends State<Today_Presents_Page> {
+  late Constants constants;
+  
 
 
   double venderlatitude = 0;
@@ -72,8 +76,8 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
 
 
-    var document = await _firestore2db.collection("Qrscan").doc(_scanBarcode).get();
-    Map<String, dynamic>?valuses = document.data();
+    var document = await constants.firestore2db?.collection("Qrscan").doc(_scanBarcode).get();
+    Map<String, dynamic>?valuses = document!.data();
     setState(() {
       classlongtitude = double.parse(valuses!["longtitude"]);
       classlattitude = double.parse(valuses['lattitude']);
@@ -258,7 +262,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
   }
 
   Marktheattendancefun(){
-    _firestore2db.collection("Staffs").
+    constants.firestore2db?.collection("Staffs").
     doc(staffid).
     update(
         {
@@ -266,7 +270,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
         }
         );
 
-    _firestore2db.collection("Staffs").doc(staffid).
+    constants.firestore2db?.collection("Staffs").doc(staffid).
     collection("Attendance").doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
     set(
         {
@@ -281,7 +285,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
         }
         );
 
-    _firestore2db.collection("Staff_attendance").
+    constants.firestore2db?.collection("Staff_attendance").
     doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
     collection("Staffs").doc(staffid).
     set(
@@ -304,10 +308,10 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
   }
 
   Marktheattendancefun2() async {
-    var document = await _firestore2db.collection("Staffs").doc(staffid).collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
+    var document = await constants.firestore2db?.collection("Staffs").doc(staffid).collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
-    if(document.docs.length>0) {
-      _firestore2db.collection("Staffs").
+    if(document!.docs.length>0) {
+      constants.firestore2db?.collection("Staffs").
       doc(staffid).
       update(
           {
@@ -315,7 +319,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           }
       );
 
-      _firestore2db.collection("Staffs").doc(staffid).
+      constants.firestore2db?.collection("Staffs").doc(staffid).
       collection("Attendance").doc("${DateTime
           .now()
           .day}${DateTime
@@ -329,7 +333,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           }
       );
 
-      _firestore2db.collection("Staff_attendance").
+      constants.firestore2db?.collection("Staff_attendance").
       doc("${DateTime
           .now()
           .day}${DateTime
@@ -387,9 +391,9 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
 
 
-    var document = await _firestore2db.collection("Staffs").get();
-       for(int i=0;i<document.docs.length;i++){
-      if(document.docs[i]["userid"]==_firebaseauth2db.currentUser!.uid){
+    var document = await constants.firestore2db?.collection("Staffs").get();
+       for(int i=0;i<document!.docs.length;i++){
+      if(document.docs[i]["userid"]==constants.firebaseAuth2db?.currentUser!.uid){
         setState(() {
           staffid=document.docs[i].id;
         });
@@ -397,9 +401,9 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
         print(staffid);
       }
       if(staffid.isNotEmpty){
-        var staffdocument= await _firestore2db.collection("Staffs").doc(staffid).get();
-        Map<String,dynamic>?staffvalue=staffdocument.data();
-        var document2 = await  _firestore2db.collection("Staffs").doc(staffid).
+        var staffdocument= await constants.firestore2db?.collection("Staffs").doc(staffid).get();
+        Map<String,dynamic>?staffvalue=staffdocument!.data();
+        var document2 = await  constants.firestore2db?.collection("Staffs").doc(staffid).
         collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
         setState(() {
@@ -407,13 +411,13 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           staffregno = staffvalue['regno'];
           staffimg = staffvalue['imgurl'];
         });
-          if(document2.docs.length>0){
+          if(document2!.docs.length>0){
             setState(() {
               checkin = true;
             });
-            var document3 = await  _firestore2db.collection("Staffs").doc(staffid).
-            collection("Attendance").doc(document2.docs[0].id).get();
-            Map<String,dynamic>?val=document3.data();
+            var document3 = await  constants.firestore2db?.collection("Staffs").doc(staffid).
+            collection("Attendance").doc(document2!.docs[0].id).get();
+            Map<String,dynamic>?val=document3!.data();
             if(val!["checkOuttime"]!="-"){
               setState(() {
                 checkout=true;
@@ -448,6 +452,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
     setState(() {
       attendance=false;
     });
@@ -511,8 +516,8 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       final leftmouthPosition = leftmouthLandmark?.position;
       final nouseLandmark = face.landmarks[FaceLandmarkType.noseBase];
       final nousePosition = nouseLandmark?.position;
-      var documet = await _firestore2db.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).get();
-      Map<String, dynamic>?  value= documet.data();
+      var documet = await constants.firestore2db?.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).get();
+      Map<String, dynamic>?  value= documet!.data();
       int i =0;
       setState(() {
         i=0;
@@ -651,7 +656,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
       final leftmouthPosition = leftmouthLandmark?.position;
       final nouseLandmark = face.landmarks[FaceLandmarkType.noseBase];
       final nousePosition = nouseLandmark?.position;
-      _firestore2db.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).set({
+      constants.firestore2db?.collection("Staffs").doc(staffid).collection("Facedate").doc(staffid).set({
         "leftEyePositionx":leftEyePosition!.x,
         "rightEyePositionx":rightEyePosition!.x,
         "bottommouthPositionx":bottommouthPosition!.x,
@@ -671,7 +676,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
     }).join('\n');
 
 
-    _firestore2db.collection("Staffs").doc(staffid).update({
+    constants.firestore2db?.collection("Staffs").doc(staffid).update({
       "faceid":true
     });
     showsucess();
@@ -787,7 +792,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
                   //verfiy(1);
                   if(checkin==false) {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DemoFaceid2(1)));
+                        builder: (context) => DemoFaceid2(1, widget.schoolId)));
                   }
                   else{
                     alreadymarked();
@@ -811,7 +816,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
                   if(checkin==true) {
                     if (checkout == false) {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => DemoFaceid2(2)));
+                          builder: (context) => DemoFaceid2(2, widget.schoolId)));
                     }
                     else {
                       alreadymarked();
@@ -838,7 +843,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           SizedBox(height: height/37.8,),
          GestureDetector(
             onTap: (){
-              Navigator.push(context,MaterialPageRoute(builder: (context) => Staff_View_Reports(docid: widget.staffid),));
+              Navigator.push(context,MaterialPageRoute(builder: (context) => Staff_View_Reports(widget.staffid, widget.schoolId),));
 
             },
             child: Container(
@@ -919,8 +924,8 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
   }
   getbettingis() async {
-    final docRef = _firestore2db.collection("Staffs").doc(staffid);
-    docRef.snapshots().listen(
+    final docRef = constants.firestore2db?.collection("Staffs").doc(staffid);
+    docRef!.snapshots().listen(
             (event) {
           Map<String, dynamic>? value = event.data();
           setState(() {
@@ -955,7 +960,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
         ),
 
       btnOkOnPress: () {
-       Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DemoFaceid()));
+       Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DemoFaceid(widget.schoolId)));
       },
       btnOkText: "Continue"
     )..show();
@@ -1055,7 +1060,8 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
 }
 
+/*
 FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
 final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+FirebaseFirestore constants.firestore2db? = FirebaseFirestore.instanceFor(app: _secondaryApp);
+FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);*/

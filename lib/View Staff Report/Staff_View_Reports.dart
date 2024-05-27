@@ -11,16 +11,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../const_file.dart';
+
 class Staff_View_Reports extends StatefulWidget {
   String ?docid;
-   Staff_View_Reports({this.docid});
+  String schoolId;
+   Staff_View_Reports(this.docid, this.schoolId);
 
   @override
   State<Staff_View_Reports> createState() => _Staff_View_ReportsState();
 }
 
 class _Staff_View_ReportsState extends State<Staff_View_Reports> {
-
+  late Constants constants;
   List Presntlist=[];
   List Presntlist2=[];
   List Presntlist3=[];
@@ -52,6 +55,8 @@ class _Staff_View_ReportsState extends State<Staff_View_Reports> {
   int Totalvalue=0;
 
   String cmonth = "";
+
+
 
   String getMonth(int currentMonthIndex) {
     return DateFormat('MMM').format(DateTime(0, currentMonthIndex)).toString();
@@ -97,16 +102,16 @@ class _Staff_View_ReportsState extends State<Staff_View_Reports> {
     print(AllHolidays_List);
     print("get Holiday Functionsssssssssssssssssssssssssssssssssssss");
 
-    var studentdocument= await _firestore2db.collection("Staffs").doc(widget.docid).
+    var studentdocument= await constants.firestore2db?.collection("Staffs").doc(widget.docid).
     collection('Attendance').orderBy("timstamp",descending: true).get();
 
 
-    var Eventsholiday= await  _firestore2db.collection("Events").where("type",isEqualTo:"Holiday").get();
+    var Eventsholiday= await  constants.firestore2db?.collection("Events").where("type",isEqualTo:"Holiday").get();
     setState(() {
-      Totalvalue=studentdocument.docs.length;
+      Totalvalue=studentdocument!.docs.length;
     });
     print("Event document Length");
-    print(Eventsholiday.docs.length.toString());
+    print(Eventsholiday!.docs.length.toString());
 
     print("Student Attendanceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     for(int k =0;k<Eventsholiday.docs.length;k++){
@@ -147,7 +152,7 @@ class _Staff_View_ReportsState extends State<Staff_View_Reports> {
       });
 
     }
-    for(int i=0;i<studentdocument.docs.length;i++){
+    for(int i=0;i<studentdocument!.docs.length;i++){
       if(studentdocument.docs[i]['Staffattendance']==true){
         print(studentdocument.docs[i]['Date']);
         if(studentdocument.docs[i]['month']== cmonth){
@@ -262,9 +267,9 @@ class _Staff_View_ReportsState extends State<Staff_View_Reports> {
     events: {
     },
   );
-
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
     cmonth = getMonth(DateTime.now().month);
     print("cmonthtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
     print(cmonth);
@@ -799,7 +804,7 @@ class reports{
   reports({this.Date,this.status,this.checkin,this.checkout});
 }
 
-FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
-final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
-FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
-FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
+// FirebaseApp _secondaryApp = Firebase.app('SecondaryApp');
+// final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
+// FirebaseFirestore _firestore2db = FirebaseFirestore.instanceFor(app: _secondaryApp);
+// FirebaseAuth _firebaseauth2db = FirebaseAuth.instanceFor(app: _secondaryApp);
