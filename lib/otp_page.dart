@@ -89,6 +89,7 @@ class _OtppageState extends State<Otppage> {
 
   var _verificationCode;
 
+  String just = '';
   _verifyphone()async{
     print("Init Fun ction+++++++++++++");
     await constants.firebaseAuth2db?.verifyPhoneNumber(
@@ -131,9 +132,12 @@ class _OtppageState extends State<Otppage> {
             }
           });
         },
+
         verificationFailed:(FirebaseAuthException e){
           print(e.message);
-
+          setState(() {
+           just = e.message.toString();
+          });
           print("Vaerification failed");
         } ,
         codeSent:(String ?verificationid ,int ?resendtoken ){
@@ -150,7 +154,6 @@ class _OtppageState extends State<Otppage> {
             _verificationCode=verificationid;
           });
         },timeout: Duration(seconds: 120) );
-
   }
 
   String otp="";
@@ -224,6 +227,15 @@ class _OtppageState extends State<Otppage> {
 
 
                     ),),
+
+                  // Text(just,
+                  //   style: GoogleFonts.montserrat(
+                  //
+                  //       color: Colors.black,
+                  //       fontWeight: FontWeight.w600,fontSize: 18
+                  //
+                  //
+                  //   ),),
 
                   SizedBox(height:height*4/122.83),
 
@@ -333,58 +345,90 @@ class _OtppageState extends State<Otppage> {
                     child: InkWell(
                       onTap: ()async{
                         print("Print 1");
-                        setState(() {
-                          loading=true;
-                        });
-                        print(_verificationCode);
-                        print(otp);
+                        if(otp.length == 6) {
+                          setState(() {
+                            loading = true;
+                          });
+                          print(_verificationCode);
+                          print(otp);
+                          constants.firebaseAuth2db?.signInWithCredential(
+                              PhoneAuthProvider.credential(
+                                  verificationId: _verificationCode,
+                                  smsCode: otp)).then((value) =>
+                          {
+                            if(value.user != null){
+                              if(widget.nameController == "Teacher"){
+                                constants.firestore2db?.collection("Staffs")
+                                    .doc(widget.staffid)
+                                    .update({
+                                  "userid": constants.firebaseAuth2db
+                                      ?.currentUser!.uid,
+                                  "token": usertoken
+                                }),
+                                constants.firestore2db?.collection('deviceid')
+                                    .doc(
+                                    constants.firebaseAuth2db?.currentUser!.uid)
+                                    .set({
+                                  "id": constants.firebaseAuth2db?.currentUser!
+                                      .uid,
+                                  "type": "Teacher",
+                                }),
+                                print(
+                                    "++++++++++++++++++++++++Push Successful"),
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (context) =>
+                                        Homepage(widget.schoolId)), (
+                                    Route<dynamic> route) => false),
 
-                        constants.firebaseAuth2db?.signInWithCredential(
-                            PhoneAuthProvider.credential(
-                                verificationId: _verificationCode,
-                                smsCode: otp)).then((value) => {
-                          if(value.user!=null){
+                              },
 
-                            if(widget.nameController=="Teacher"){
-                              constants.firestore2db?.collection("Staffs").doc(widget.staffid).update({
-                                "userid":constants.firebaseAuth2db?.currentUser!.uid,
-                                "token":usertoken
-                              }),
-                              constants.firestore2db?.collection('deviceid').doc(constants.firebaseAuth2db?.currentUser!.uid).set({
-                                "id":constants.firebaseAuth2db?.currentUser!.uid,
-                                "type":"Teacher",
-                              }),
-                        print("++++++++++++++++++++++++Push Successful"),
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context)=> Homepage(widget.schoolId)),(Route<dynamic> route) => false),
-
-                            },
-
-                            if(widget.nameController=="Student"){
-                        print("Student login================================="),
-                        print(constants.firebaseAuth2db?.currentUser!.uid),
-                        print(usertoken),
-                              constants.firestore2db?.collection("Students").doc(widget.staffid).update({
-                                "studentid":constants.firebaseAuth2db?.currentUser!.uid,
-                                "token":usertoken
-                              }),
-                              constants.firestore2db?.collection('deviceid').doc(constants.firebaseAuth2db?.currentUser!.uid).set({
-                                "id":constants.firebaseAuth2db?.currentUser!.uid,
-                                "type":"Student",
-                              }),
-                        print("++++++++++++++++++++++++Push Successful"),
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context)=> Student_landing_Page("",false,widget.schoolId)),(Route<dynamic> route) => false),
-                            },
+                              if(widget.nameController == "Student"){
+                                print(
+                                    "Student login================================="),
+                                print(constants.firebaseAuth2db?.currentUser!
+                                    .uid),
+                                print(usertoken),
+                                constants.firestore2db?.collection("Students")
+                                    .doc(widget.staffid)
+                                    .update({
+                                  "studentid": constants.firebaseAuth2db
+                                      ?.currentUser!.uid,
+                                  "token": usertoken
+                                }),
+                                constants.firestore2db?.collection('deviceid')
+                                    .doc(
+                                    constants.firebaseAuth2db?.currentUser!.uid)
+                                    .set({
+                                  "id": constants.firebaseAuth2db?.currentUser!
+                                      .uid,
+                                  "type": "Student",
+                                }),
+                                print(
+                                    "++++++++++++++++++++++++Push Successful"),
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (context) =>
+                                        Student_landing_Page(
+                                            "", false, widget.schoolId)), (
+                                    Route<dynamic> route) => false),
+                              },
 
 
-                          }
-                          else{
-                            print("User Null+++++++++++++++++++++++"),
-                          }
-                        });
-
-
+                            }
+                            else
+                              {
+                                print("User Null+++++++++++++++++++++++"),
+                              }
+                          });
+                        }
+                        else{
+                          Fluttertoast.showToast(
+                              msg: "Enter the Correct OTP",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.TOP,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+                        }
                       },
                       child: Container(
                         height: height*7/92.125,
