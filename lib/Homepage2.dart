@@ -4321,7 +4321,6 @@ class _FrontpageState extends State<Frontpage>
                                                                     MainAxisAlignment
                                                                         .center,
                                                                     children: [
-
                                                                       Text(
                                                                         "Edit",
                                                                         style: GoogleFonts
@@ -4335,7 +4334,6 @@ class _FrontpageState extends State<Frontpage>
                                                                             FontWeight
                                                                                 .w600),
                                                                       ),
-
                                                                     ],
                                                                   ),
                                                                 ),

@@ -5441,8 +5441,7 @@ bool Loading=false;
                                                   var feesdata = snap2.data!
                                                       .docs[index];
 
-                                                  return
-                                                    Padding(
+                                                  return feesdata["feestype"] =="Public"?Padding(
                                                       padding: EdgeInsets.only(
                                                           bottom: height /
                                                               94.5),
@@ -5704,13 +5703,13 @@ bool Loading=false;
                                                           ),
                                                         ),
                                                       ),
-                                                    );
+                                                    ) : SizedBox();
                                                 });
                                         }),
                                     SizedBox(height: height / 92.125,),
 
                                     ///Paid Fees Reports
-                                    Text(
+                                   /* Text(
                                       "Previous Reports",
                                       style: GoogleFonts
                                           .poppins(
@@ -5829,7 +5828,7 @@ bool Loading=false;
                                                       ),
                                                     );
                                                 });
-                                        }),
+                                        }),*/
                                     SizedBox(height: height / 10.125,),
 
                                   ],

@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:http/http.dart"as http;
 import 'package:intl/intl.dart';
-
 import 'const_file.dart';
 
 
@@ -29,7 +28,6 @@ class Feedbackhistory extends StatefulWidget {
 
 class _FeedbackhistoryState extends State<Feedbackhistory> {
   late Constants constants;
-
   String dropfedback4 = "Outstanding";
   String dropdownvalueweditvalue = "Outstanding";
   List<String> feedback = ["Outstanding", "Excellent", "Good","Satisfactory", "Focus Needed"];
@@ -42,6 +40,19 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
   void initState() {
     constants = Constants(widget.schoolId);
     super.initState();
+  }
+  /// Temporary Function
+  getToken() async {
+    var docu = await constants.firestore2db?.collection("Students").orderBy('timestamp').get();
+    for(int i = 0; i<docu!.docs.length; i++){
+      constants.firestore2db?.collection("Students").doc(docu.docs[i].id).update({
+        'token' : ''
+      });
+      print(i);
+
+    }
+    print('999999999999999999999999999');
+
   }
 
   @override
@@ -82,6 +93,7 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
 
                   GestureDetector(
                     onTap: () {
+                      getToken();
                       setState(() {
 
                       });
@@ -160,8 +172,6 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                                   BorderRadius.circular(10)),
                               child: TextField(
                                 controller: remarkscon,
-
-
                                 style: GoogleFonts
                                     .poppins(
                                   color: Colors
@@ -349,7 +359,7 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                                           0xff0873c4),
                                     ));
                               }
-                              return ListView.builder(
+                            /*  return ListView.builder(
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: snapshot.data!.docs.length,
@@ -545,7 +555,9 @@ class _FeedbackhistoryState extends State<Feedbackhistory> {
                                         ),
                                       );
                                   }
-                              );
+                              );*/
+
+                              return SizedBox();
                             }
                         ),
 
