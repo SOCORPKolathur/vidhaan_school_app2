@@ -303,6 +303,7 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
         );
     showmarked();
+    print('marked????');
 
 
   }
@@ -712,7 +713,6 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
           ),
           Lottie.asset("assets/done.json"),
           SizedBox(height: height/15.12,),
-
           GestureDetector(
             onTap: (){
               Navigator.of(context).pop();
@@ -791,8 +791,12 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
                 onTap: (){
                   //verfiy(1);
                   if(checkin==false) {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DemoFaceid2(1, widget.schoolId)));
+                 /*   Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DemoFaceid2(1, widget.schoolId)));*/
+                    Marktheattendancefun();
+
+                    // Marktheattendancefun2();
+
                   }
                   else{
                     alreadymarked();
@@ -815,15 +819,19 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
                   //verfiy(2);
                   if(checkin==true) {
                     if (checkout == false) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => DemoFaceid2(2, widget.schoolId)));
+                 /*     Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DemoFaceid2(2, widget.schoolId)));*/
+
                     }
                     else {
                       alreadymarked();
                     }
                   }
                   else{
+                    print('kkk');
+
                     kindlycheckin();
+                    print('kssskk');
                   }
                 },
                 child: Container(
@@ -941,7 +949,6 @@ class _Today_Presents_PageState extends State<Today_Presents_Page> {
 
 
   }
-
   showwwaring(){
     double width = MediaQuery.of(context).size.width;
     return AwesomeDialog(

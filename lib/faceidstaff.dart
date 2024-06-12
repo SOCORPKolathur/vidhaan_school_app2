@@ -281,9 +281,10 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
 
   @override
   void initState() {
+    constants = Constants(widget.schoolId);
     cmonth = getMonth(DateTime.now().month);
     getstaffdetails();
-    constants = Constants(widget.schoolId);
+
 
     // TODO: implement initState
     super.initState();
@@ -542,7 +543,6 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
           "absent":false,
         }
     );
-
     constants.firestore2db?.collection("Staffs").doc(staffid).
     collection("Attendance").doc("${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}").
     set(
@@ -554,8 +554,6 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
           "checkOuttime":"-",
           "timstamp":DateTime.now().millisecondsSinceEpoch,
           "month": cmonth
-
-
         }
     );
 
@@ -575,15 +573,11 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
           "checkOuttime":"-",
           "timstamp":DateTime.now().millisecondsSinceEpoch,
         }
-
     );
     showmarked();
-
-
   }
   String section = "";
   String cmonth = "";
-
   String getMonth(int currentMonthIndex) {
     return DateFormat('MMM').format(DateTime(0, currentMonthIndex)).toString();
   }
@@ -603,10 +597,8 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
         btnOkText: "Ok"
     )..show();
   }
-
   Marktheattendancefun2() async {
     var document = await constants.firestore2db?.collection("Staffs").doc(staffid).collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
-
     if(document!.docs.length>0) {
       constants.firestore2db?.collection("Staffs").
       doc(staffid).
@@ -700,14 +692,10 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
   int status=0;
 
   getstaffdetails() async {
-
-
-
-
-
-    var document = await constants.firestore2db?.collection("Staffs").get();
+    print('Vjeclomokok');
+    var document = await  Constants(widget.schoolId).firestore2db?.collection("Staffs").get();
     for(int i=0;i<document!.docs.length;i++){
-      if(document.docs[i]["userid"]==constants.firebaseAuth2db?.currentUser!.uid){
+      if(document.docs[i]["userid"]== Constants(widget.schoolId).firebaseAuth2db?.currentUser!.uid){
         setState(() {
           staffid=document.docs[i].id;
         });
@@ -715,9 +703,9 @@ class _DemoFaceid2State extends State<DemoFaceid2> {
         print(staffid);
       }
       if(staffid.isNotEmpty){
-        var staffdocument= await constants.firestore2db?.collection("Staffs").doc(staffid).get();
+        var staffdocument= await Constants(widget.schoolId).firestore2db?.collection("Staffs").doc(staffid).get();
         Map<String,dynamic>?staffvalue=staffdocument!.data();
-        var document2 = await  constants.firestore2db?.collection("Staffs").doc(staffid).
+        var document2 = await   Constants(widget.schoolId).firestore2db?.collection("Staffs").doc(staffid).
         collection("Attendance").where("Date",isEqualTo: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}").get();
 
         setState(() {

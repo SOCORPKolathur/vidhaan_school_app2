@@ -7246,9 +7246,10 @@ bool Loading=false;
                                                         BorderRadius.circular(
                                                             12),
                                                         border: Border.all(
-                                                            color: Colors
-                                                                .black)),
-                                                    child: Padding(
+                                                            color: Colors.black
+
+                                                        )),
+                                                    child : Padding(
                                                       padding: EdgeInsets.only(
                                                           left: width / 45,
                                                           right: width / 45,
