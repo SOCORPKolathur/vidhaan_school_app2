@@ -14,7 +14,7 @@ import 'package:flutter/foundation.dart'
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
-class DefaultFirebaseOptions {
+class FifthFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       return web;
@@ -27,17 +27,17 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -47,29 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAca1G4Iz-UmDsNeHjkfcegAP7z2LGOUKg',
-    appId: '1:453216660661:web:b21015a7f2069aae2fe2fc',
-    messagingSenderId: '453216660661',
-    projectId: 'vidhaan-live',
-    authDomain: 'vidhaan-live.firebaseapp.com',
-    storageBucket: 'vidhaan-live.appspot.com',
-    measurementId: 'G-5L8V6NYX8K',
+    apiKey: 'AIzaSyDK-TW0DIYl9loTda-zHQO0aFRwpZAALUI',
+    appId: '1:1052400533176:web:76e8dccd2747f77f987e4d',
+    messagingSenderId: '1052400533176',
+    projectId: 'adithya-vidhyashram',
+    authDomain: 'adithya-vidhyashram.firebaseapp.com',
+    storageBucket: 'adithya-vidhyashram.appspot.com',
+    measurementId: 'G-38HX23ZX0T',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD7wwjZ7skyUd4vsWe7LFCBYjRlCn2eMnA',
-    appId: '1:453216660661:android:a4f1faeadb7f8ba32fe2fc',
-    messagingSenderId: '453216660661',
-    projectId: 'vidhaan-live',
-    storageBucket: 'vidhaan-live.appspot.com',
+    apiKey: 'AIzaSyD7cr6fQhsH74eoufUQpXZ-_IgGjyKMZLg',
+    appId: '1:1052400533176:android:05597ede8cf00ccf987e4d',
+    messagingSenderId: '1052400533176',
+    projectId: 'adithya-vidhyashram',
+    storageBucket: 'adithya-vidhyashram.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDSPLGvxZ-jrwHVqHy1sdTVe1tSJF7VyvY',
-    appId: '1:453216660661:ios:0f63b20534dde6422fe2fc',
-    messagingSenderId: '453216660661',
-    projectId: 'vidhaan-live',
-    storageBucket: 'vidhaan-live.appspot.com',
+    apiKey: 'AIzaSyCvHfBI2dXhZaw_0f70XIOquVq9pWJpTb8',
+    appId: '1:1052400533176:ios:61cbe0a692d5d0e4987e4d',
+    messagingSenderId: '1052400533176',
+    projectId: 'adithya-vidhyashram',
+    storageBucket: 'adithya-vidhyashram.appspot.com',
     iosBundleId: 'com.example.vidhaanSchoolApp',
   );
 }

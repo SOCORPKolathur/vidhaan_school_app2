@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-import '../const_file.dart';
+import '../utils/const_file.dart';
 
 class Staff_View_Reports extends StatefulWidget {
   String ?docid;
@@ -416,7 +416,10 @@ class _Staff_View_ReportsState extends State<Staff_View_Reports> {
     return
       Scaffold(
         appBar: AppBar(
-          title: Text("Attendance Reports"),
+          iconTheme: IconThemeData(color: Colors.white),
+          title: Text("Attendance Reports",  style: GoogleFonts.poppins(fontWeight: FontWeight.w700,color: Colors.white,
+            fontSize: width/18.36,)),
+          backgroundColor: Color(0xff0271C5),
         ),
         body: Center(
           child: SizedBox(

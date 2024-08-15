@@ -17,13 +17,14 @@ import 'package:splash_view/source/presentation/pages/pages.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vidhaan_school_app/firebase_options4.dart';
-import 'Student_Landing_Page.dart';
-import 'account_page.dart';
+import 'homepage/Student_Landing_Page.dart';
+import 'accounts/account_page.dart';
 import 'firebase_options1.dart';
 import 'firebase_options2.dart';
 import 'firebase_options3.dart';
-import 'homepage.dart';
-import 'const_file.dart';
+import 'firebase_options5.dart';
+import 'homepage/homepage.dart';
+import '../utils/const_file.dart';
 
 
 
@@ -77,6 +78,15 @@ void main() async {
     await Firebase.initializeApp(
       name: 'ForthApp',
       options: FourthFirebaseOptions.currentPlatform,
+    );
+  }
+  try {
+    // Initialize the third Firebase app if it hasn't been initialized
+    FirebaseApp fifthApp = Firebase.app('FifthApp');
+  } catch (e) {
+    await Firebase.initializeApp(
+      name: 'FifthApp',
+      options: FifthFirebaseOptions.currentPlatform,
     );
   }
 
@@ -244,6 +254,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       home:  splashscreen(),
+      // home:  Frontpage(_deviceId, schoolurl, ),
     );
   }
 }
@@ -252,22 +263,15 @@ class _MyAppState extends State<MyApp> {
 ///Splashscreen
 class splashscreen extends StatefulWidget {
   const splashscreen();
-
   @override
   _splashscreenState createState() => _splashscreenState();
 }
 class _splashscreenState extends State<splashscreen> {
-
-
   String? _deviceId;
   String schoolurl="";
   String schoolId="";
-
   bool user =false;
-
   late Constants constants;
-
-
   Future<void> initPlatformState() async {
     String? deviceId;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -276,12 +280,10 @@ class _splashscreenState extends State<splashscreen> {
     } on PlatformException {
       deviceId = 'Failed to get deviceId.';
     }
-
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
-
     setState(() {
       _deviceId = deviceId;
       print("deviceId->$_deviceId");
@@ -298,7 +300,6 @@ class _splashscreenState extends State<splashscreen> {
           constants = Constants(schoolId);
         });
       }
-
     }
     if(user==false){
       Timer(Duration(seconds: 5),
@@ -309,19 +310,18 @@ class _splashscreenState extends State<splashscreen> {
     }
     else{
       if(constants.firebaseAuth2db?.currentUser!=null){
+        print('USERRRRRRRRRRRRRRRRRRR');
         var getdate=await constants.firestore2db?.collection('deviceid').where("id",isEqualTo: constants.firebaseAuth2db?.currentUser!.uid).where("type",isEqualTo:"Student" ).get();
         var getdate2=await constants.firestore2db?.collection('deviceid').where("id",isEqualTo: constants.firebaseAuth2db?.currentUser!.uid).where("type",isEqualTo:"Teacher" ).get();
         if(getdate!.docs.length>0){
           Timer(Duration(seconds: 5),(){
             Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Student_landing_Page("",false,schoolId),));
-
           }
           );
         }
         if(getdate2!.docs.length>0){
           Timer(Duration(seconds: 5),(){
             Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Homepage(schoolId),));
-
           }
           );
         }
@@ -330,40 +330,30 @@ class _splashscreenState extends State<splashscreen> {
         print("Login Page");
         Timer(Duration(seconds: 5),(){
           Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: Accountpage(schoolId)));
-
-
         }
         );
         // Otppage("9176463821", "Teacher", "e71KBP6ky3KnurZlHpfZ"),
         // Otppage("9941123453", "Student", "i570pkx8k9u78gea"),
       }
-
     }
-
   }
   late VideoPlayerController _controller;
   void initState() {
     _controller = VideoPlayerController.asset("assets/VidhaanLogoVideonew2.mp4",videoPlayerOptions: VideoPlayerOptions(
       allowBackgroundPlayback: true,
       mixWithOthers: true,
-
     ))
       ..initialize().then((value) => {setState(() {})});
     _controller.setVolume(0.0);
     _controller.play();
     initPlatformState();
-
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
-
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return   Scaffold(
-
-
+    return Scaffold(
         body: GestureDetector(
           onTap: (){
             print(width);
@@ -380,21 +370,15 @@ class _splashscreenState extends State<splashscreen> {
             ),
           ),
         )
-
     );
-
   }
-
 }
-
 ///Page to enter School ID
 class MyHomePage extends StatefulWidget {
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
-
   bool school= false;
 
   late VideoPlayerController _controller;
